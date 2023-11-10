@@ -2,7 +2,7 @@
 
 ## components
 
-![Confluence Component Data Flow Diagram](diagrams/confluence-data-flow.png)
+![Confluence Component Data Flow Diagram](diagrams/confluence-data-flow.pdf)
 
 Confluence consists of several components
 -
