@@ -1,4 +1,7 @@
 environment           = ""
+edl_password          = ""
+edl_token             = ""
+edl_username          = ""
 mgmt_account          = ""
 prefix                = ""
 profile               = ""
