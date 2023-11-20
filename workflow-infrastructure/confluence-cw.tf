@@ -35,8 +35,33 @@ resource "aws_cloudwatch_log_group" "generate_cw_log_group_priors" {
 }
 
 # flpe
-resource "aws_cloudwatch_log_group" "generate_cw_log_group_flpe" {
-  name              = "/aws/batch/job/${var.prefix}-flpe/"
+resource "aws_cloudwatch_log_group" "generate_cw_log_group_hivdi" {
+  name              = "/aws/batch/job/${var.prefix}-hivdi/"
+  retention_in_days = 0
+}
+
+resource "aws_cloudwatch_log_group" "generate_cw_log_group_metroman" {
+  name              = "/aws/batch/job/${var.prefix}-metroman/"
+  retention_in_days = 0
+}
+
+resource "aws_cloudwatch_log_group" "generate_cw_log_group_momma" {
+  name              = "/aws/batch/job/${var.prefix}-momma/"
+  retention_in_days = 0
+}
+
+resource "aws_cloudwatch_log_group" "generate_cw_log_group_neobam" {
+  name              = "/aws/batch/job/${var.prefix}-neobam/"
+  retention_in_days = 0
+}
+
+resource "aws_cloudwatch_log_group" "generate_cw_log_group_sad" {
+  name              = "/aws/batch/job/${var.prefix}-sad/"
+  retention_in_days = 0
+}
+
+resource "aws_cloudwatch_log_group" "generate_cw_log_group_sic4dvar" {
+  name              = "/aws/batch/job/${var.prefix}-sic4dvar/"
   retention_in_days = 0
 }
 
