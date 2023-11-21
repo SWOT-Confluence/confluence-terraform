@@ -285,6 +285,15 @@ resource "aws_iam_policy" "batch_job_ssm_policy" {
         "Effect" : "Allow",
         "Action" : "ssm:DescribeParameters",
         "Resource" : "*"
+      },
+      {
+        "Sid" : "DecryptKey",
+        "Effect" : "Allow",
+        "Action" : [
+          "kms:DescribeKey",
+          "kms:Decrypt"
+        ],
+        "Resource" : "${data.aws_kms_key.ssm_key.arn}"
       }
     ]
   })
