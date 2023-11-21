@@ -32,3 +32,20 @@ To deploy:
 
 `<env>` can be `dev1`, `dev2`, `dev3` or `ops`
 `<named_profile>` is the name of the profile used to authenticate to AWS
+
+### deployment script
+
+Script to deploy Terraform AWS infrastructure
+
+REQUIRES:
+  
+- AWS CLI (https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
+- Terraform (https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli)
+
+Command line arguments:
+
+[1] s3_state_bucket: Name of the S3 bucket to store Terraform state in (no need for s3:// prefix)
+
+[2] profile: Name of profile used to authenticate AWS CLI commands
+
+Example usage: `./deploy.sh "s3-state-bucket-name" "confluence-named-profile"`
