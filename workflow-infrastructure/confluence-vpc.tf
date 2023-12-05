@@ -152,15 +152,15 @@ resource "aws_vpc_endpoint" "vpc_endpoint_s3" {
         "Effect" : "Allow",
         "Principal" : "*",
         "Action" : [
-          "s3:ListObjects",
+          "s3:PutObject",
           "s3:GetObject",
           "s3:ListBucket",
-          "s3:PutObject",
+          "s3:GetObjectAttributes",
           "s3:ListBucketMultipartUploads"
         ],
         "Resource" : [
-          "arn:aws:s3:::confluence-sos/*",
-          "arn:aws:s3:::confluence-sos"
+          "${aws_s3_bucket.aws_s3_bucket_sos.arn}",
+          "${aws_s3_bucket.aws_s3_bucket_sos.arn}/*" 
         ]
       }
     ]
