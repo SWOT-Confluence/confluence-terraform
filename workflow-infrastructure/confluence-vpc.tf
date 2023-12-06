@@ -1,8 +1,8 @@
 # VPC
 resource "aws_vpc" "vpc" {
-  cidr_block = var.vpc_cidr
+  cidr_block           = var.vpc_cidr
   enable_dns_hostnames = true
-  tags       = { Name = "${var.prefix}" }
+  tags                 = { Name = "${var.prefix}" }
 }
 
 # Subnets
@@ -160,7 +160,7 @@ resource "aws_vpc_endpoint" "vpc_endpoint_s3" {
         ],
         "Resource" : [
           "${aws_s3_bucket.aws_s3_bucket_sos.arn}",
-          "${aws_s3_bucket.aws_s3_bucket_sos.arn}/*" 
+          "${aws_s3_bucket.aws_s3_bucket_sos.arn}/*"
         ]
       }
     ]
