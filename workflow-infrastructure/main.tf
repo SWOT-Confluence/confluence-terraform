@@ -22,6 +22,10 @@ provider "aws" {
 # Data sources
 data "aws_caller_identity" "current" {}
 
+data "aws_key_pair" "ec2_key_pair" {
+  key_name = var.ec2_key_pair
+}
+
 data "aws_kms_key" "aws_s3" {
   key_id = "alias/aws/s3"
 }

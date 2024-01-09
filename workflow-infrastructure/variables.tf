@@ -21,6 +21,11 @@ variable "default_tags" {
   default = {}
 }
 
+variable "ec2_key_pair" {
+  type        = string
+  description = "Key pair used to access EC2 IDL license server"
+}
+
 variable "edl_password" {
   type        = string
   description = "Earthdata login password"
@@ -54,6 +59,21 @@ variable "prefix" {
 variable "profile" {
   type        = string
   description = "Named profile used for AWS authentication credentials"
+}
+
+variable "ssh_subnet_1" {
+  type        = string
+  description = "CIDR range to allow SSH from to EC2 EFS"
+}
+
+variable "ssh_subnet_2" {
+  type        = string
+  description = "CIDR range to allow SSH from to EC2 EFS"
+}
+
+variable "ssh_subnet_3" {
+  type        = string
+  description = "CIDR range to allow SSH from to EC2 EFS"
 }
 
 variable "subnet_a_public_cidr" {

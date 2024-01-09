@@ -7,10 +7,11 @@ resource "aws_vpc" "vpc" {
 
 # Subnets
 resource "aws_subnet" "subnet_a_public" {
-  vpc_id            = aws_vpc.vpc.id
-  cidr_block        = var.subnet_a_public_cidr
-  availability_zone = "us-west-2a"
-  tags              = { Name = "${var.prefix}-subnet-a-public" }
+  vpc_id                  = aws_vpc.vpc.id
+  cidr_block              = var.subnet_a_public_cidr
+  availability_zone       = "us-west-2a"
+  map_public_ip_on_launch = true
+  tags                    = { Name = "${var.prefix}-subnet-a-public" }
 }
 
 resource "aws_subnet" "subnet_a_private" {
