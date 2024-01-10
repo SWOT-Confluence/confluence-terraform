@@ -4,7 +4,6 @@
 
 ![Confluence Component Data Flow Diagram](diagrams/confluence-data-flow.pdf)
 
-Confluence consists of several components
 -
 
 ## aws infrastructure
@@ -12,11 +11,23 @@ Confluence consists of several components
 ### workflow-infrastructure
 
 The Confluence workflow includes the following AWS service in the `workflow-infrastructure` directory
+
+- AWS Batch compute environment, job queue definitions.
+- AWS CloudWatch Logs.
+- AWS EFS.
+- AWS IAM Roles & Policies.
+- AWS S3 SoS Bucket.
+- AWS Security Groups and VPC definition.
+- AWS System Manager Parameter Store and Key Management Service.
 -
 
 ### stepfunction-infrastructure
 
 The Confluence workflow includes the following AWS service in the `stepfunction-infrastructure` directory
+
+- AWS EventBridge rule.
+- AWS Step Function state machine.
+- AWS IAM Roles & Policies.
 -
 
 ## terraform
@@ -31,6 +42,7 @@ To deploy:
 4. Apply terraform modifications: `terraform apply tfplan`
 
 `<env>` can be `dev1`, `dev2`, `dev3` or `ops`
+
 `<named_profile>` is the name of the profile used to authenticate to AWS
 
 ### deployment script
