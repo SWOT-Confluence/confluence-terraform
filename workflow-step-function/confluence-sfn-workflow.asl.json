@@ -1,0 +1,680 @@
+{
+      "Comment": "Confluence Workflow",
+      "StartAt": "Enable Renew",
+      "States": {
+        "Enable Renew": {
+              "Type": "Task",
+              "Resource": "arn:aws:states:::lambda:invoke.waitForTaskToken",
+              "OutputPath": "$",
+              "ResultPath": "$.enable_renew",
+              "Parameters": {
+                  "FunctionName": "arn:aws:lambda:${aws_region}:${account_id}:function:${prefix}-enable-renew:$LATEST",
+                  "Payload": {
+                      "token.$": "$$.Task.Token"
+                  }
+              },
+              "Retry": [
+                  {
+                      "ErrorEquals": [
+                          "Lambda.ServiceException",
+                          "Lambda.AWSLambdaException",
+                          "Lambda.SdkClientException",
+                          "Lambda.TooManyRequestsException"
+                      ],
+                      "IntervalSeconds": 2,
+                      "MaxAttempts": 6,
+                      "BackoffRate": 2
+                  }
+              ],
+              "TimeoutSeconds": 600,
+              "Next": "Datagen"
+          },
+          "Datagen": {
+              "Type": "Task",
+              "Resource": "arn:aws:states:::batch:submitJob.sync",
+              "OutputPath": "$",
+              "ResultPath": "$.datagen",
+              "Parameters": {
+                  "JobName": "datagen",
+                  "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-datagen",
+                  "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-datagen",
+                  "PropagateTags": true,
+                  "ArrayProperties": {
+                      "Size": 6
+                  },
+                  "ContainerOverrides": {
+                      "Command": [
+                          "-c",
+                          "river",
+                          "-i",
+                          "-235",
+                          "-p",
+                          "POCLOUD",
+                          "-s",
+                          "SWOT_L2_HR_RiverSP_1.0",
+                          "-t",
+                          "2020-01-01T00:00:00Z,2023-05-05T23:59:59Z",
+                          "-d",
+                          "/data",
+                          "-k",
+                          "${ssm_key_id}"
+                      ]
+                  }
+              },
+              "Next": "Combine Data"
+          },
+          "Combine Data": {
+              "Type": "Task",
+              "Resource": "arn:aws:states:::batch:submitJob.sync",
+              "OutputPath": "$",
+              "ResultPath": "$.combine_data",
+              "Parameters": {
+                  "JobName": "combine_data",
+                  "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-combine_data",
+                  "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-combine_data",
+                  "PropagateTags": true,
+                  "ContainerOverrides": {
+                      "Command": [
+                          "-c",
+                          "/data/continent.json",
+                          "-d",
+                          "/data"
+                      ]
+                  }
+              },
+              "Next": "Generate Array Size"
+          },
+          "Generate Array Size": {
+              "Type": "Task",
+              "Resource": "arn:aws:states:::lambda:invoke.waitForTaskToken",
+              "OutputPath": "$",
+              "ResultPath": "$.array_size",
+              "Parameters": {
+                  "FunctionName": "arn:aws:lambda:${aws_region}:${account_id}:function:${prefix}-generate-array-size:$LATEST",
+                  "Payload": {
+                      "token.$": "$$.Task.Token"
+                  }
+              },
+              "Retry": [
+                  {
+                      "ErrorEquals": [
+                          "Lambda.ServiceException",
+                          "Lambda.AWSLambdaException",
+                          "Lambda.SdkClientException",
+                          "Lambda.TooManyRequestsException"
+                      ],
+                      "IntervalSeconds": 2,
+                      "MaxAttempts": 6,
+                      "BackoffRate": 2
+                  }
+              ],
+              "TimeoutSeconds": 600,
+              "Next": "Input"
+          },
+          "Input": {
+              "Type": "Task",
+              "Resource": "arn:aws:states:::batch:submitJob.sync",
+              "OutputPath": "$",
+              "ResultPath": "$.input",
+              "Parameters": {
+                  "JobName": "input",
+                  "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-input",
+                  "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-input",
+                  "PropagateTags": true,
+                  "ArrayProperties": {
+                      "Size.$": "$.array_size.reaches"
+                  },
+                  "ContainerOverrides": {
+                      "Command": [
+                          "-c", 
+                          "river", 
+                          "-i", 
+                          "-235", 
+                          "-r", 
+                          "/mnt/data/reach_node.json", 
+                          "-p", 
+                          "/mnt/data/cycle_passes.json", 
+                          "-s", 
+                          "/mnt/data/s3_list.json", 
+                          "-e", 
+                          "/mnt/data/s3_reach.json", 
+                          "-d", 
+                          "/mnt/data/swot"
+                      ]
+                  }
+              },
+              "Next": "Disable Renew"
+          },
+          "Disable Renew": {
+              "Type": "Task",
+              "Resource": "arn:aws:states:::batch:submitJob.sync",
+              "OutputPath": "$",
+              "ResultPath": "$.disable_renew",
+              "Parameters": {
+                  "JobName": "disable_renew",
+                  "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-disable_renew",
+                  "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-disable_renew",
+                  "PropagateTags": true
+              },
+              "Next": "Prediagnostics"
+          },
+          "Prediagnostics": {
+              "Type": "Task",
+              "Resource": "arn:aws:states:::batch:submitJob.sync",
+              "OutputPath": "$",
+              "ResultPath": "$.prediagnostics",
+              "Parameters": {
+                  "JobName": "prediagnostics",
+                  "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-prediagnostics",
+                  "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-prediagnostics",
+                  "PropagateTags": true,
+                  "ArrayProperties": {
+                      "Size.$": "$.array_size.reaches"
+                  },
+                  "ContainerOverrides": {
+                      "Command": [
+                          "reaches.json"
+                      ]
+                  }
+              },
+              "Next": "Priors Choice"
+          },
+          "Priors Choice": {
+              "Type": "Choice",
+              "Choices": [
+                  {
+                      "Variable": "$.run_type",
+                      "StringEquals": "constrained",
+                      "Next": "Priors Constrained"
+                  },
+                  {
+                      "Variable": "$.run_type",
+                      "StringEquals": "unconstrained",
+                      "Next": "Priors Unconstrained"
+                  }
+              ]
+          },
+          "Priors Constrained": {
+              "Type": "Task",
+              "Resource": "arn:aws:states:::batch:submitJob.sync",
+              "OutputPath": "$",
+              "ResultPath": "$.priors",
+              "Parameters": {
+                  "JobName": "priors",
+                  "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-priors",
+                  "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-priors",
+                  "PropagateTags": true,
+                  "ArrayProperties": {
+                      "Size": 6
+                  },
+                  "ContainerOverrides": {
+                      "Command": [
+                          "-i",
+                          "-235",
+                          "-r",
+                          "constrained",
+                          "-p",
+                          "usgs",
+                          "riggs",
+                          "gbpriors",
+                          "-g"
+                      ]
+                  }
+              },
+              "Next": "FLPE"
+          },
+          "Priors Unconstrained": {
+              "Type": "Task",
+              "Resource": "arn:aws:states:::batch:submitJob.sync",
+              "OutputPath": "$",
+              "ResultPath": "$.priors",
+              "Parameters": {
+                  "JobName": "priors",
+                  "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-priors",
+                  "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-priors",
+                  "PropagateTags": true,
+                  "ArrayProperties": {
+                      "Size": 6
+                  },
+                  "ContainerOverrides": {
+                      "Command": [
+                          "-i",
+                          "-235",
+                          "-r",
+                          "unconstrained",
+                          "-p",
+                          "usgs",
+                          "riggs",
+                          "gbpriors",
+                          "-g"
+                      ]
+                  }
+              },
+              "Next": "FLPE"
+          },
+          "FLPE": {
+              "Type": "Parallel",
+              "Branches": [
+                  {
+                      "StartAt": "Hivdi",
+                      "States": {
+                          "Hivdi": {
+                              "Type": "Task",
+                              "Resource": "arn:aws:states:::batch:submitJob.sync",
+                              "OutputPath": "$",
+                              "ResultPath": "$.hivdi",
+                              "Parameters": {
+                                  "JobName": "Constrained Neobam",
+                                  "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-hivdi",
+                                  "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-flpe",
+                                  "PropagateTags": true,
+                                  "ArrayProperties": {
+                                      "Size.$": "$.array_size.hivdisets"
+                                  }
+                              },
+                              "End": true
+                          }
+                      }
+                  },
+                  {
+                      "StartAt": "Metroman",
+                      "States": {
+                          "Metroman": {
+                              "Type": "Task",
+                              "Resource": "arn:aws:states:::batch:submitJob.sync",
+                              "OutputPath": "$",
+                              "ResultPath": "$.metroman",
+                              "Parameters": {
+                                  "JobName": "metroman",
+                                  "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-metroman",
+                                  "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-flpe",
+                                  "PropagateTags": true,
+                                  "ArrayProperties": {
+                                      "Size.$": "$.array_size.metrosets"
+                                  },
+                                  "ContainerOverrides": {
+                                      "Command": [
+                                          "metrosets.json",
+                                          "-235",
+                                          "-v"
+                                      ]
+                                  }
+                              },
+                              "End": true
+                          }
+                      }
+                  },
+                  {
+                      "StartAt": "Momma",
+                      "States": {
+                          "Momma": {
+                              "Type": "Task",
+                              "Resource": "arn:aws:states:::batch:submitJob.sync",
+                              "OutputPath": "$",
+                              "ResultPath": "$.momma",
+                              "Parameters": {
+                                  "JobName": "momma",
+                                  "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-momma",
+                                  "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-flpe",
+                                  "PropagateTags": true,
+                                  "ArrayProperties": {
+                                      "Size.$": "$.array_size.reaches"
+                                  },
+                                  "ContainerOverrides": {
+                                      "Command": [
+                                          "reaches.json"
+                                      ]
+                                  }
+                              },
+                              "End": true
+                          }
+                      }
+                  },
+                  {
+                      "StartAt": "Neobam",
+                      "States": {
+                          "Neobam": {
+                              "Type": "Task",
+                              "Resource": "arn:aws:states:::batch:submitJob.sync",
+                              "OutputPath": "$",
+                              "ResultPath": "$.neobam",
+                              "Parameters": {
+                                  "JobName": "neobam",
+                                  "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-neobam",
+                                  "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-flpe",
+                                  "PropagateTags": true,
+                                  "ArrayProperties": {
+                                      "Size.$": "$.array_size.reaches"
+                                  }
+                              },
+                              "End": true
+                          }
+                      }
+                  },
+                  {
+                      "StartAt": "Sad",
+                      "States": {
+                          "Sad": {
+                              "Type": "Task",
+                              "Resource": "arn:aws:states:::batch:submitJob.sync",
+                              "OutputPath": "$",
+                              "ResultPath": "$.sad",
+                              "Parameters": {
+                                  "JobName": "sad",
+                                  "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-sad",
+                                  "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-flpe",
+                                  "PropagateTags": true,
+                                  "ArrayProperties": {
+                                      "Size.$": "$.array_size.reaches"
+                                  },
+                                  "ContainerOverrides": {
+                                      "Command": [
+                                          "reaches.json"
+                                      ]
+                                  }
+                              },
+                              "End": true
+                          }
+                      }
+                  },
+                  {
+                      "StartAt": "Sic4dvar",
+                      "States": {
+                          "Sic4dvar": {
+                              "Type": "Task",
+                              "Resource": "arn:aws:states:::batch:submitJob.sync",
+                              "OutputPath": "$",
+                              "ResultPath": "$.sic4dvar",
+                              "Parameters": {
+                                  "JobName": "sic4dvar",
+                                  "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-sic4dvar",
+                                  "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-flpe",
+                                  "PropagateTags": true,
+                                  "ArrayProperties": {
+                                      "Size.$": "$.array_size.sicsets"
+                                  },
+                                  "ContainerOverrides": {
+                                      "Command": [
+                                          "--json",
+                                          "sicsets.json",
+                                          "--constraint",
+                                          "constrained"
+                                      ]
+                                  }
+                              },
+                              "End": true
+                          }
+                      }
+                  }
+              ],
+              "Next": "Postdiagnostics FLPE"
+          },
+          "Postdiagnostics FLPE": {
+              "Type": "Task",
+              "Resource": "arn:aws:states:::batch:submitJob.sync",
+              "OutputPath": "$",
+              "ResultPath": "$.postdiagnostics_flpe",
+              "Parameters": {
+                  "JobName": "postdiagnostics_flpe",
+                  "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-postdiagnostics-flpe",
+                  "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-postdiagnostics-flpe",
+                  "PropagateTags": true,
+                  "ArrayProperties": {
+                      "Size.$": "$.array_size.reaches"
+                  }
+              },
+              "Next": "Moi"
+          },
+          "Moi": {
+              "Type": "Task",
+              "Resource": "arn:aws:states:::batch:submitJob.sync",
+              "OutputPath": "$",
+              "ResultPath": "$.moi",
+              "Parameters": {
+                  "JobName": "moi",
+                  "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-moi",
+                  "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-moi",
+                  "PropagateTags": true,
+                  "ArrayProperties": {
+                      "Size.$": "$.array_size.basin"
+                  },
+                  "ContainerOverrides": {
+                      "Command": [
+                          "basin.json",
+                          "-v",
+                          "constrained",
+                          "-235"
+                      ]
+                  }
+              },
+              "Next": "Postdiagnostics MOI"
+          },
+          "Postdiagnostics MOI": {
+              "Type": "Task",
+              "Resource": "arn:aws:states:::batch:submitJob.sync",
+              "OutputPath": "$",
+              "ResultPath": "$.postdiagnostics_moi",
+              "Parameters": {
+                  "JobName": "postdiagnostics_moi",
+                  "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-postdiagnostics-moi",
+                  "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-postdiagnostics-moi",
+                  "PropagateTags": true,
+                  "ArrayProperties": {
+                      "Size.$": "$.array_size.reaches"
+                  }
+              },
+              "Next": "Offline Choice"
+          },
+          "Offline Choice": {
+              "Type": "Choice",
+              "Choices": [
+                  {
+                      "Variable": "$.run_type",
+                      "StringEquals": "constrained",
+                      "Next": "Offline Constrained"
+                  },
+                  {
+                      "Variable": "$.run_type",
+                      "StringEquals": "unconstrained",
+                      "Next": "Offline Unconstrained"
+                  }
+              ]
+          },
+          "Offline Constrained": {
+              "Type": "Task",
+              "Resource": "arn:aws:states:::batch:submitJob.sync",
+              "OutputPath": "$",
+              "ResultPath": "$.offline",
+              "Parameters": {
+                  "JobName": "offline",
+                  "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-offline",
+                  "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-offline",
+                  "PropagateTags": true,
+                  "ArrayProperties": {
+                      "Size.$": "$.array_size.reaches"
+                  },
+                  "ContainerOverrides": {
+                      "Command": [
+                          "constrained",
+                          "timeseries",
+                          "reaches.json"
+                      ]
+                  }
+              },
+              "Next": "Validation Choice"
+          },
+          "Offline Unconstrained": {
+              "Type": "Task",
+              "Resource": "arn:aws:states:::batch:submitJob.sync",
+              "OutputPath": "$",
+              "ResultPath": "$.offline",
+              "Parameters": {
+                  "JobName": "offline",
+                  "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-offline",
+                  "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-offline",
+                  "PropagateTags": true,
+                  "ArrayProperties": {
+                      "Size.$": "$.array_size.reaches"
+                  },
+                  "ContainerOverrides": {
+                      "Command": [
+                          "unconstrained",
+                          "timeseries",
+                          "reaches.json"
+                      ]
+                  }
+              },
+              "Next": "Validation Choice"
+          },
+          "Validation Choice": {
+              "Type": "Choice",
+              "Choices": [
+                  {
+                      "Variable": "$.run_type",
+                      "StringEquals": "constrained",
+                      "Next": "Validation Constrained"
+                  },
+                  {
+                      "Variable": "$.run_type",
+                      "StringEquals": "unconstrained",
+                      "Next": "Validation Unconstrained"
+                  }
+              ]
+          },
+          "Validation Constrained": {
+              "Type": "Task",
+              "Resource": "arn:aws:states:::batch:submitJob.sync",
+              "OutputPath": "$",
+              "ResultPath": "$.validation",
+              "Parameters": {
+                  "JobName": "validation",
+                  "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-validation",
+                  "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-validation",
+                  "PropagateTags": true,
+                  "ArrayProperties": {
+                      "Size.$": "$.array_size.reaches"
+                  },
+                  "ContainerOverrides": {
+                      "Command": [
+                          "reaches.json",
+                          "constrained"
+                      ]
+                  }
+              },
+              "Next": "Output Choice"
+          },
+          "Validation Unconstrained": {
+              "Type": "Task",
+              "Resource": "arn:aws:states:::batch:submitJob.sync",
+              "OutputPath": "$",
+              "ResultPath": "$.validation",
+              "Parameters": {
+                  "JobName": "validation",
+                  "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-validation",
+                  "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-validation",
+                  "PropagateTags": true,
+                  "ArrayProperties": {
+                      "Size.$": "$.array_size.reaches"
+                  },
+                  "ContainerOverrides": {
+                      "Command": [
+                          "reaches.json",
+                          "constrained"
+                      ]
+                  }
+              },
+              "Next": "Output Choice"
+          },
+          "Output Choice": {
+              "Type": "Choice",
+              "Choices": [
+                  {
+                      "Variable": "$.run_type",
+                      "StringEquals": "constrained",
+                      "Next": "Output Constrained"
+                  },
+                  {
+                      "Variable": "$.run_type",
+                      "StringEquals": "unconstrained",
+                      "Next": "Output Unconstrained"
+                  }
+              ]
+          },
+          "Output Constrained": {
+              "Type": "Task",
+              "Resource": "arn:aws:states:::batch:submitJob.sync",
+              "OutputPath": "$",
+              "ResultPath": "$.output",
+              "Parameters": {
+                  "JobName": "output",
+                  "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-output",
+                  "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-output",
+                  "PropagateTags": true,
+                  "ArrayProperties": {
+                      "Size": 6
+                  },
+                  "ContainerOverrides": {
+                      "Command": [
+                          "-i",
+                          "-235",
+                          "-c",
+                          "continent.json",
+                          "-r",
+                          "constrained",
+                          "-m",
+                          "hivdi",
+                          "metroman",
+                          "moi",
+                          "momma",
+                          "neobam",
+                          "prediagnostics",
+                          "priors",
+                          "sad",
+                          "sic4dvar",
+                          "swot"
+                      ]
+                  }
+              },
+              "Next": "Successful Run"
+          },
+          "Output Unconstrained": {
+              "Type": "Task",
+              "Resource": "arn:aws:states:::batch:submitJob.sync",
+              "OutputPath": "$",
+              "ResultPath": "$.output",
+              "Parameters": {
+                  "JobName": "output",
+                  "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-output",
+                  "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-output",
+                  "PropagateTags": true,
+                  "ArrayProperties": {
+                      "Size": 6
+                  },
+                  "ContainerOverrides": {
+                      "Command": [
+                          "-i",
+                          "-235",
+                          "-c",
+                          "continent.json",
+                          "-r",
+                          "unconstrained",
+                          "-m",
+                          "priors",
+                          "hivdi",
+                          "metroman",
+                          "moi",
+                          "momma",
+                          "neobam",
+                          "prediagnostics",
+                          "sad",
+                          "sic4dvar"
+                      ]
+                  }
+              },
+              "Next": "Successful Run"
+          },
+          "Successful Run": {
+              "Type": "Succeed"
+          }
+      }
+  }
