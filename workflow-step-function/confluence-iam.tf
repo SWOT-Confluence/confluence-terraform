@@ -40,6 +40,15 @@ resource "aws_iam_policy" "sfn_cloudwatch" {
           "logs:DescribeLogGroups"
         ],
         "Resource" : "*"
+      },
+      {
+        "Effect" : "Allow",
+        "Action" : [
+          "logs:CreateLogStream",
+          "logs:PutLogEvents",
+          "logs:DescribeLogGroups"
+        ],
+        "Resource" : aws_cloudwatch_log_group.generate_cw_log_group_sfn.arn
       }
     ]
   })
