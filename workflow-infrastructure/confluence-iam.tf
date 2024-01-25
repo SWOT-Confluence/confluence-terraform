@@ -234,7 +234,8 @@ resource "aws_iam_policy" "batch_job_s3_policy" {
           "s3:ListBucketVersions"
         ],
         "Resource" : [
-          "${aws_s3_bucket.aws_s3_bucket_sos.arn}"
+          "${aws_s3_bucket.aws_s3_bucket_sos.arn}",
+          "{${aws_s3_bucket.aws_s3_bucket_json.arn}}"
         ]
       },
       {
@@ -248,7 +249,8 @@ resource "aws_iam_policy" "batch_job_s3_policy" {
           "s3:ListMultipartUploadParts"
         ],
         "Resource" : [
-          "${aws_s3_bucket.aws_s3_bucket_sos.arn}/*"
+          "${aws_s3_bucket.aws_s3_bucket_sos.arn}/*",
+          "{${aws_s3_bucket.aws_s3_bucket_json.arn}}/*"
         ]
       }
     ]
