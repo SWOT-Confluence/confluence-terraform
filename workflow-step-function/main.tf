@@ -26,6 +26,10 @@ data "aws_kms_key" "ssm_key" {
   key_id = "alias/${var.prefix}-ssm-parameter-store"
 }
 
+data "aws_s3_bucket" "s3_json" {
+  bucket = "${var.prefix}-json"
+}
+
 # Local variables
 locals {
   account_id = data.aws_caller_identity.current.account_id

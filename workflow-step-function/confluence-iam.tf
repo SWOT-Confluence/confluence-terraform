@@ -160,6 +160,51 @@ resource "aws_iam_policy" "sfn_lambda" {
   })
 }
 
+# # S3
+resource "aws_iam_role_policy_attachment" "sfn_role_policy_attach_6" {
+  role       = aws_iam_role.step_function_role.name
+  policy_arn = aws_iam_policy.sfn_s3.arn
+}
+
+resource "aws_iam_policy" "sfn_s3" {
+  name        = "${var.prefix}-sfn-s3-policy"
+  description = "Step Function policy for access to S3 Bucket"
+  policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Sid" : "AllowListAllBuckets",
+        "Effect" : "Allow",
+        "Action" : "s3:ListAllMyBuckets",
+        "Resource" : "*"
+      },
+      {
+        "Sid" : "AllowListBuckets",
+        "Effect" : "Allow",
+        "Action" : [
+          "s3:ListBucket",
+          "s3:ListBucketVersions"
+        ],
+        "Resource" : [
+          "{${data.aws_s3_bucket.s3_json.arn}}"
+        ]
+      },
+      {
+        "Sid" : "AllGetObjects",
+        "Effect" : "Allow",
+        "Action" : [
+          "s3:GetObject",
+          "s3:ListBucket",
+          "s3:GetObjectAttributes",
+        ],
+        "Resource" : [
+          "{${data.aws_s3_bucket.s3_json.arn}}/*"
+        ]
+      }
+    ]
+  })
+}
+
 # EventBridge Role
 resource "aws_iam_role" "event_bridge_sfn_role" {
   name = "${var.prefix}-event-bridge-sfn-role"
