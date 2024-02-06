@@ -20,7 +20,7 @@ resource "aws_kms_key" "kms_key_ssm" {
         "Sid" : "Allow access for Key Administrators",
         "Effect" : "Allow",
         "Principal" : {
-          "AWS" : "arn:aws:iam::${local.account_id}:user/ntadmin-dev1"
+          "AWS" : "arn:aws:iam::${local.account_id}:user/${var.prefix}-${var.mgmt_account}"
         },
         "Action" : [
           "kms:Create*",
@@ -44,7 +44,7 @@ resource "aws_kms_key" "kms_key_ssm" {
         "Sid" : "Allow use of the key",
         "Effect" : "Allow",
         "Principal" : {
-          "AWS" : "arn:aws:iam::${local.account_id}:user/ntadmin-dev1"
+          "AWS" : "arn:aws:iam::${local.account_id}:user/${var.prefix}-${var.mgmt_account}"
         },
         "Action" : [
           "kms:Encrypt",
@@ -59,7 +59,7 @@ resource "aws_kms_key" "kms_key_ssm" {
         "Sid" : "Allow attachment of persistent resources",
         "Effect" : "Allow",
         "Principal" : {
-          "AWS" : "arn:aws:iam::${local.account_id}:user/ntadmin-dev1"
+          "AWS" : "arn:aws:iam::${local.account_id}:user/${var.prefix}-${var.mgmt_account}"
         },
         "Action" : [
           "kms:CreateGrant",
