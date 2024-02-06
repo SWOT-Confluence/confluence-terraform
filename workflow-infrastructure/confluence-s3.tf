@@ -31,7 +31,6 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "aws_s3_bucket_sos
 }
 
 # JSON S3 Bucket
-# SOS S3 Bucket
 resource "aws_s3_bucket" "aws_s3_bucket_json" {
   bucket        = "${var.prefix}-json"
   force_destroy = true
