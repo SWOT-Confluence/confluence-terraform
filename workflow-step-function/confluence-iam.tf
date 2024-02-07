@@ -147,14 +147,7 @@ resource "aws_iam_policy" "sfn_lambda" {
         "Action" : [
           "lambda:InvokeFunction"
         ],
-        "Resource" : "arn:aws:lambda:${var.aws_region}:${local.account_id}:function:${var.prefix}-enable-renew"
-      },
-      {
-        "Effect" : "Allow",
-        "Action" : [
-          "lambda:InvokeFunction"
-        ],
-        "Resource" : "arn:aws:lambda:${var.aws_region}:${local.account_id}:function:${var.prefix}-generate-array-size"
+        "Resource" : "arn:aws:lambda:${var.aws_region}:${local.account_id}:function:${var.prefix}-enable-renew:$LATEST"
       }
     ]
   })
@@ -186,7 +179,7 @@ resource "aws_iam_policy" "sfn_s3" {
           "s3:ListBucketVersions"
         ],
         "Resource" : [
-          "{${data.aws_s3_bucket.s3_json.arn}}"
+          "${data.aws_s3_bucket.s3_json.arn}"
         ]
       },
       {
@@ -198,38 +191,22 @@ resource "aws_iam_policy" "sfn_s3" {
           "s3:GetObjectAttributes",
         ],
         "Resource" : [
-          "{${data.aws_s3_bucket.s3_json.arn}}/*"
+          "${data.aws_s3_bucket.s3_json.arn}/*"
         ]
       }
     ]
   })
 }
 
-# EventBridge Role
-resource "aws_iam_role" "event_bridge_sfn_role" {
-  name = "${var.prefix}-event-bridge-sfn-role"
-  assume_role_policy = jsonencode({
-    "Version" : "2012-10-17",
-    "Statement" : [
-      {
-        "Effect" : "Allow",
-        "Principal" : {
-          "Service" : "events.amazonaws.com"
-        },
-        "Action" : "sts:AssumeRole"
-      }
-    ]
-  })
+# # States
+resource "aws_iam_role_policy_attachment" "sfn_role_policy_attach_7" {
+  role       = aws_iam_role.step_function_role.name
+  policy_arn = aws_iam_policy.sfn_states.arn
 }
 
-resource "aws_iam_role_policy_attachment" "event_bridge_sfn_role_policy_attach_1" {
-  role       = aws_iam_role.event_bridge_sfn_role.name
-  policy_arn = aws_iam_policy.event_bridge_sfn_policy.arn
-}
-
-resource "aws_iam_policy" "event_bridge_sfn_policy" {
-  name        = "${var.prefix}-event-bridge-sfn-policy"
-  description = "Allow EventBridge to execute Step Function state machine"
+resource "aws_iam_policy" "sfn_states" {
+  name        = "${var.prefix}-sfn-states-policy"
+  description = "Allow Step Function state machine to execute Step Function state machine"
   policy = jsonencode({
     "Version" : "2012-10-17",
     "Statement" : [
