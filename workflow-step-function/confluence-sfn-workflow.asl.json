@@ -45,9 +45,9 @@
                     "Mode": "DISTRIBUTED",
                     "ExecutionType": "STANDARD"
                 },
-                "StartAt": "Batch SubmitJob",
+                "StartAt": "Batch SubmitJob Datagen",
                 "States": {
-                    "Batch SubmitJob": {
+                    "Batch SubmitJob Datagen": {
                         "Type": "Task",
                         "Resource": "arn:aws:states:::batch:submitJob.sync",
                         "Parameters": {
@@ -142,9 +142,9 @@
                     "Mode": "DISTRIBUTED",
                     "ExecutionType": "STANDARD"
                 },
-                "StartAt": "Batch SubmitJob",
+                "StartAt": "Batch SubmitJob Input",
                 "States": {
-                    "Batch SubmitJob": {
+                    "Batch SubmitJob Input": {
                         "Type": "Task",
                         "Resource": "arn:aws:states:::batch:submitJob.sync",
                         "Parameters": {
@@ -221,9 +221,9 @@
                     "Mode": "DISTRIBUTED",
                     "ExecutionType": "STANDARD"
                 },
-                "StartAt": "Batch SubmitJob",
+                "StartAt": "Batch SubmitJob Prediagnostics",
                 "States": {
-                    "Batch SubmitJob": {
+                    "Batch SubmitJob Prediagnostics": {
                         "Type": "Task",
                         "Resource": "arn:aws:states:::batch:submitJob.sync",
                         "Parameters": {
@@ -290,9 +290,9 @@
                     "Mode": "DISTRIBUTED",
                     "ExecutionType": "STANDARD"
                 },
-                "StartAt": "Batch SubmitJob",
+                "StartAt": "Batch SubmitJob Priors Constrained",
                 "States": {
-                    "Batch SubmitJob": {
+                    "Batch SubmitJob Priors Constrained": {
                         "Type": "Task",
                         "Resource": "arn:aws:states:::batch:submitJob.sync",
                         "Parameters": {
@@ -351,9 +351,9 @@
                     "Mode": "DISTRIBUTED",
                     "ExecutionType": "STANDARD"
                 },
-                "StartAt": "Batch SubmitJob",
+                "StartAt": "Batch SubmitJob Priors Unconstrained",
                 "States": {
-                    "Batch SubmitJob": {
+                    "Batch SubmitJob Priors Unconstrained": {
                         "Type": "Task",
                         "Resource": "arn:aws:states:::batch:submitJob.sync",
                         "Parameters": {
@@ -417,9 +417,9 @@
                                     "Mode": "DISTRIBUTED",
                                     "ExecutionType": "STANDARD"
                                 },
-                                "StartAt": "Batch SubmitJob",
+                                "StartAt": "Batch SubmitJob Hivdi",
                                 "States": {
-                                    "Batch SubmitJob": {
+                                    "Batch SubmitJob Hivdi": {
                                         "Type": "Task",
                                         "Resource": "arn:aws:states:::batch:submitJob.sync",
                                         "Parameters": {
@@ -465,25 +465,56 @@
                     "StartAt": "Metroman",
                     "States": {
                         "Metroman": {
-                            "Type": "Task",
-                            "Resource": "arn:aws:states:::batch:submitJob.sync",
-                            "OutputPath": "$",
-                            "ResultPath": "$.metroman",
-                            "Parameters": {
-                                "JobName": "metroman",
-                                "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-metroman",
-                                "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-flpe",
-                                "PropagateTags": true,
-                                "ArrayProperties": {
-                                    "Size.$": "$.array_size.metrosets"
+                            "Type": "Map",
+                            "ItemSelector": {
+                                "ContextIndex.$": "$$.Map.Item.Index",
+                                "ContextValue.$": "$$.Map.Item.Value"
+                            },
+                            "ItemProcessor": {
+                                "ProcessorConfig": {
+                                    "Mode": "DISTRIBUTED",
+                                    "ExecutionType": "STANDARD"
                                 },
-                                "ContainerOverrides": {
-                                    "Command": [
-                                        "metrosets.json",
-                                        "-235",
-                                        "-v"
-                                    ]
+                                "StartAt": "Batch SubmitJob Metroman",
+                                "States": {
+                                    "Batch SubmitJob Metroman": {
+                                        "Type": "Task",
+                                        "Resource": "arn:aws:states:::batch:submitJob.sync",
+                                        "Parameters": {
+                                            "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-metroman",
+                                            "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-flpe",
+                                            "PropagateTags": true,
+                                            "ContainerOverrides": {
+                                                "Command": [
+                                                    "metrosets.json",
+                                                    "Ref::index",
+                                                    "-v"
+                                                ]
+                                            },
+                                            "JobName.$": "States.Format('confluence-metroman-{}',$.Items[0].ContextValue.reach_id)",
+                                            "Parameters": {
+                                                "index.$": "States.Format('{}',$.Items[0].ContextIndex)"
+                                            }
+                                        },
+                                        "End": true
+                                    }
                                 }
+                            },
+                            "ItemReader": {
+                                "Resource": "arn:aws:states:::s3:getObject",
+                                "ReaderConfig": {
+                                    "InputType": "JSON"
+                                },
+                                "Parameters": {
+                                    "Bucket": "${prefix}-json",
+                                    "Key": "reaches.json"
+                                }
+                            },
+                            "MaxConcurrency": 100,
+                            "Label": "metroman",
+                            "ItemBatcher": {
+                                "MaxInputBytesPerBatch": 131072,
+                                "MaxItemsPerBatch": 1
                             },
                             "End": true
                         }
@@ -493,23 +524,55 @@
                     "StartAt": "Momma",
                     "States": {
                         "Momma": {
-                            "Type": "Task",
-                            "Resource": "arn:aws:states:::batch:submitJob.sync",
-                            "OutputPath": "$",
-                            "ResultPath": "$.momma",
-                            "Parameters": {
-                                "JobName": "momma",
-                                "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-momma",
-                                "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-flpe",
-                                "PropagateTags": true,
-                                "ArrayProperties": {
-                                    "Size.$": "$.array_size.reaches"
+                            "Type": "Map",
+                            "ItemSelector": {
+                                "ContextIndex.$": "$$.Map.Item.Index",
+                                "ContextValue.$": "$$.Map.Item.Value"
+                            },
+                            "ItemProcessor": {
+                                "ProcessorConfig": {
+                                    "Mode": "DISTRIBUTED",
+                                    "ExecutionType": "STANDARD"
                                 },
-                                "ContainerOverrides": {
-                                    "Command": [
-                                        "reaches.json"
-                                    ]
+                                "StartAt": "Batch SubmitJob Momma",
+                                "States": {
+                                    "Batch SubmitJob Momma": {
+                                        "Type": "Task",
+                                        "Resource": "arn:aws:states:::batch:submitJob.sync",
+                                        "Parameters": {
+                                            "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-momma",
+                                            "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-flpe",
+                                            "PropagateTags": true,
+                                            "ContainerOverrides": {
+                                                "Command": [
+                                                    "Ref::index",
+                                                    "reaches.json"
+                                                ]
+                                            },
+                                            "JobName.$": "States.Format('confluence-momma-{}',$.Items[0].ContextValue.reach_id)",
+                                            "Parameters": {
+                                                "index.$": "States.Format('{}',$.Items[0].ContextIndex)"
+                                            }
+                                        },
+                                        "End": true
+                                    }
                                 }
+                            },
+                            "ItemReader": {
+                                "Resource": "arn:aws:states:::s3:getObject",
+                                "ReaderConfig": {
+                                    "InputType": "JSON"
+                                },
+                                "Parameters": {
+                                    "Bucket": "${prefix}-json",
+                                    "Key": "reaches.json"
+                                }
+                            },
+                            "MaxConcurrency": 100,
+                            "Label": "momma",
+                            "ItemBatcher": {
+                                "MaxInputBytesPerBatch": 131072,
+                                "MaxItemsPerBatch": 1
                             },
                             "End": true
                         }
@@ -519,18 +582,55 @@
                     "StartAt": "Neobam",
                     "States": {
                         "Neobam": {
-                            "Type": "Task",
-                            "Resource": "arn:aws:states:::batch:submitJob.sync",
-                            "OutputPath": "$",
-                            "ResultPath": "$.neobam",
-                            "Parameters": {
-                                "JobName": "neobam",
-                                "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-neobam",
-                                "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-flpe",
-                                "PropagateTags": true,
-                                "ArrayProperties": {
-                                    "Size.$": "$.array_size.reaches"
+                            "Type": "Map",
+                            "ItemSelector": {
+                                "ContextIndex.$": "$$.Map.Item.Index",
+                                "ContextValue.$": "$$.Map.Item.Value"
+                            },
+                            "ItemProcessor": {
+                                "ProcessorConfig": {
+                                    "Mode": "DISTRIBUTED",
+                                    "ExecutionType": "STANDARD"
+                                },
+                                "StartAt": "Batch SubmitJob Neobam",
+                                "States": {
+                                    "Batch SubmitJob Neobam": {
+                                        "Type": "Task",
+                                        "Resource": "arn:aws:states:::batch:submitJob.sync",
+                                        "Parameters": {
+                                            "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-neobam",
+                                            "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-flpe",
+                                            "PropagateTags": true,
+                                            "ContainerOverrides": {
+                                                "Command": [
+                                                    "Ref::index",
+                                                    "reaches.json"
+                                                ]
+                                            },
+                                            "JobName.$": "States.Format('confluence-neobam-{}',$.Items[0].ContextValue.reach_id)",
+                                            "Parameters": {
+                                                "index.$": "States.Format('{}',$.Items[0].ContextIndex)"
+                                            }
+                                        },
+                                        "End": true
+                                    }
                                 }
+                            },
+                            "ItemReader": {
+                                "Resource": "arn:aws:states:::s3:getObject",
+                                "ReaderConfig": {
+                                    "InputType": "JSON"
+                                },
+                                "Parameters": {
+                                    "Bucket": "${prefix}-json",
+                                    "Key": "reaches.json"
+                                }
+                            },
+                            "MaxConcurrency": 100,
+                            "Label": "neobam",
+                            "ItemBatcher": {
+                                "MaxInputBytesPerBatch": 131072,
+                                "MaxItemsPerBatch": 1
                             },
                             "End": true
                         }
@@ -540,23 +640,55 @@
                     "StartAt": "Sad",
                     "States": {
                         "Sad": {
-                            "Type": "Task",
-                            "Resource": "arn:aws:states:::batch:submitJob.sync",
-                            "OutputPath": "$",
-                            "ResultPath": "$.sad",
-                            "Parameters": {
-                                "JobName": "sad",
-                                "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-sad",
-                                "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-flpe",
-                                "PropagateTags": true,
-                                "ArrayProperties": {
-                                    "Size.$": "$.array_size.reaches"
+                            "Type": "Map",
+                            "ItemSelector": {
+                                "ContextIndex.$": "$$.Map.Item.Index",
+                                "ContextValue.$": "$$.Map.Item.Value"
+                            },
+                            "ItemProcessor": {
+                                "ProcessorConfig": {
+                                    "Mode": "DISTRIBUTED",
+                                    "ExecutionType": "STANDARD"
                                 },
-                                "ContainerOverrides": {
-                                    "Command": [
-                                        "reaches.json"
-                                    ]
+                                "StartAt": "Batch SubmitJob Sad",
+                                "States": {
+                                    "Batch SubmitJob Sad": {
+                                        "Type": "Task",
+                                        "Resource": "arn:aws:states:::batch:submitJob.sync",
+                                        "Parameters": {
+                                            "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-sad",
+                                            "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-flpe",
+                                            "PropagateTags": true,
+                                            "ContainerOverrides": {
+                                                "Command": [
+                                                    "Ref::index",
+                                                    "reaches.json"
+                                                ]
+                                            },
+                                            "JobName.$": "States.Format('confluence-sad-{}',$.Items[0].ContextValue.reach_id)",
+                                            "Parameters": {
+                                                "index.$": "States.Format('{}',$.Items[0].ContextIndex)"
+                                            }
+                                        },
+                                        "End": true
+                                    }
                                 }
+                            },
+                            "ItemReader": {
+                                "Resource": "arn:aws:states:::s3:getObject",
+                                "ReaderConfig": {
+                                    "InputType": "JSON"
+                                },
+                                "Parameters": {
+                                    "Bucket": "${prefix}-json",
+                                    "Key": "reaches.json"
+                                }
+                            },
+                            "MaxConcurrency": 100,
+                            "Label": "sad",
+                            "ItemBatcher": {
+                                "MaxInputBytesPerBatch": 131072,
+                                "MaxItemsPerBatch": 1
                             },
                             "End": true
                         }
@@ -566,26 +698,57 @@
                     "StartAt": "Sic4dvar",
                     "States": {
                         "Sic4dvar": {
-                            "Type": "Task",
-                            "Resource": "arn:aws:states:::batch:submitJob.sync",
-                            "OutputPath": "$",
-                            "ResultPath": "$.sic4dvar",
-                            "Parameters": {
-                                "JobName": "sic4dvar",
-                                "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-sic4dvar",
-                                "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-flpe",
-                                "PropagateTags": true,
-                                "ArrayProperties": {
-                                    "Size.$": "$.array_size.sicsets"
+                            "Type": "Map",
+                            "ItemSelector": {
+                                "ContextIndex.$": "$$.Map.Item.Index",
+                                "ContextValue.$": "$$.Map.Item.Value"
+                            },
+                            "ItemProcessor": {
+                                "ProcessorConfig": {
+                                    "Mode": "DISTRIBUTED",
+                                    "ExecutionType": "STANDARD"
                                 },
-                                "ContainerOverrides": {
-                                    "Command": [
-                                        "--json",
-                                        "sicsets.json",
-                                        "--constraint",
-                                        "constrained"
-                                    ]
+                                "StartAt": "Batch SubmitJob Sic4dvar",
+                                "States": {
+                                    "Batch SubmitJob Sic4dvar": {
+                                        "Type": "Task",
+                                        "Resource": "arn:aws:states:::batch:submitJob.sync",
+                                        "Parameters": {
+                                            "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-sic4dvar",
+                                            "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-flpe",
+                                            "PropagateTags": true,
+                                            "ContainerOverrides": {
+                                                "Command": [
+                                                    "--json",
+                                                    "sicsets.json",
+                                                    "--constraint",
+                                                    "constrained"
+                                                ],
+                                                "Environment" : [
+                                                    { "Name" : "BATCH_JOB_INDEX", "Value.$" : "States.Format('{}',$.Items[0].ContextIndex)" }
+                                                ]
+                                            },
+                                            "JobName.$": "States.Format('confluence-sic4dvar-{}',$.Items[0].ContextValue.reach_id)"
+                                        },
+                                        "End": true
+                                    }
                                 }
+                            },
+                            "ItemReader": {
+                                "Resource": "arn:aws:states:::s3:getObject",
+                                "ReaderConfig": {
+                                    "InputType": "JSON"
+                                },
+                                "Parameters": {
+                                    "Bucket": "${prefix}-json",
+                                    "Key": "reaches.json"
+                                }
+                            },
+                            "MaxConcurrency": 100,
+                            "Label": "sic4dvar",
+                            "ItemBatcher": {
+                                "MaxInputBytesPerBatch": 131072,
+                                "MaxItemsPerBatch": 1
                             },
                             "End": true
                         }
@@ -593,6 +756,585 @@
                 }
             ],
             "Next": "Postdiagnostics FLPE"
+        },
+        "Postdiagnostics FLPE": {
+            "Type": "Map",
+            "ItemSelector": {
+                "context_index.$": "$$.Map.Item.Index",
+                "context_value.$": "$$.Map.Item.Value",
+                "version.$": "$.version"
+            },
+            "ItemProcessor": {
+                "ProcessorConfig": {
+                    "Mode": "DISTRIBUTED",
+                    "ExecutionType": "STANDARD"
+                },
+                "StartAt": "Batch SubmitJob Postdiagnostics FLPE",
+                "States": {
+                    "Batch SubmitJob Postdiagnostics FLPE": {
+                        "Type": "Task",
+                        "Resource": "arn:aws:states:::batch:submitJob.sync",
+                        "Parameters": {
+                            "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-postdiagnostics-flpe",
+                            "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-postdiagnostics-flpe",
+                            "PropagateTags": true,
+                            "ContainerOverrides": {
+                                "Command": [
+                                    "0.25",
+                                    "Ref::index",
+                                    "reaches.json"
+                                ]
+                            },
+                            "JobName.$": "States.Format('confluence-postdiagnostics-flpe-{}-{}',$.Items[0].version, $.Items[0].context_value.reach_id)",
+                            "Parameters": {
+                                "index.$": "States.Format('{}',$.Items[0].context_index)"
+                            }
+                        },
+                        "End": true
+                    }
+                }
+            },
+            "ItemReader": {
+                "Resource": "arn:aws:states:::s3:getObject",
+                "ReaderConfig": {
+                    "InputType": "JSON"
+                },
+                "Parameters": {
+                    "Bucket": "${prefix}-json",
+                    "Key": "reaches.json"
+                }
+            },
+            "MaxConcurrency": 10,
+            "Label": "postdiagnostics-flpe",
+            "ItemBatcher": {
+                "MaxInputBytesPerBatch": 131072,
+                "MaxItemsPerBatch": 1
+            },
+            "Next": "Moi"
+        },
+        "Moi": {
+            "Type": "Map",
+            "ItemSelector": {
+                "context_index.$": "$$.Map.Item.Index",
+                "context_value.$": "$$.Map.Item.Value",
+                "version.$": "$.version"
+            },
+            "ItemProcessor": {
+                "ProcessorConfig": {
+                    "Mode": "DISTRIBUTED",
+                    "ExecutionType": "STANDARD"
+                },
+                "StartAt": "Batch SubmitJob Moi",
+                "States": {
+                    "Batch SubmitJob Moi": {
+                        "Type": "Task",
+                        "Resource": "arn:aws:states:::batch:submitJob.sync",
+                        "Parameters": {
+                            "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-moi",
+                            "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-moi",
+                            "PropagateTags": true,
+                            "ContainerOverrides": {
+                                "Command": [
+                                    "basin.json",
+                                    "-v",
+                                    "constrained",
+                                    "Ref::index"
+                                ]
+                            },
+                            "JobName.$": "States.Format('confluence-moi-{}-{}',$.Items[0].version, $.Items[0].context_value.reach_id)",
+                            "Parameters": {
+                                "index.$": "States.Format('{}',$.Items[0].context_index)"
+                            }
+                        },
+                        "End": true
+                    }
+                }
+            },
+            "ItemReader": {
+                "Resource": "arn:aws:states:::s3:getObject",
+                "ReaderConfig": {
+                    "InputType": "JSON"
+                },
+                "Parameters": {
+                    "Bucket": "${prefix}-json",
+                    "Key": "basin.json"
+                }
+            },
+            "MaxConcurrency": 10,
+            "Label": "moi",
+            "ItemBatcher": {
+                "MaxInputBytesPerBatch": 131072,
+                "MaxItemsPerBatch": 1
+            },
+            "Next": "Postdiagnostics MOI"
+        },
+        "Postdiagnostics MOI": {
+            "Type": "Map",
+            "ItemSelector": {
+                "context_index.$": "$$.Map.Item.Index",
+                "context_value.$": "$$.Map.Item.Value",
+                "version.$": "$.version"
+            },
+            "ItemProcessor": {
+                "ProcessorConfig": {
+                    "Mode": "DISTRIBUTED",
+                    "ExecutionType": "STANDARD"
+                },
+                "StartAt": "Batch SubmitJob Postdiagnostics MOI",
+                "States": {
+                    "Batch SubmitJob Postdiagnostics MOI": {
+                        "Type": "Task",
+                        "Resource": "arn:aws:states:::batch:submitJob.sync",
+                        "Parameters": {
+                            "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-postdiagnostics-moi",
+                            "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-postdiagnostics-moi",
+                            "PropagateTags": true,
+                            "ContainerOverrides": {
+                                "Command": [
+                                    "0.25",
+                                    "Ref::index",
+                                    "reaches.json"
+                                ]
+                            },
+                            "JobName.$": "States.Format('confluence-postdiagnostics-moi-{}-{}',$.Items[0].version, $.Items[0].context_value.reach_id)",
+                            "Parameters": {
+                                "index.$": "States.Format('{}',$.Items[0].context_index)"
+                            }
+                        },
+                        "End": true
+                    }
+                }
+            },
+            "ItemReader": {
+                "Resource": "arn:aws:states:::s3:getObject",
+                "ReaderConfig": {
+                    "InputType": "JSON"
+                },
+                "Parameters": {
+                    "Bucket": "${prefix}-json",
+                    "Key": "reaches.json"
+                }
+            },
+            "MaxConcurrency": 10,
+            "Label": "postdiagnostics-moi",
+            "ItemBatcher": {
+                "MaxInputBytesPerBatch": 131072,
+                "MaxItemsPerBatch": 1
+            },
+            "Next": "Offline Choice"
+        },
+        "Offline Choice": {
+            "Type": "Choice",
+            "Choices": [
+                {
+                    "Variable": "$.run_type",
+                    "StringEquals": "constrained",
+                    "Next": "Offline Constrained"
+                },
+                {
+                    "Variable": "$.run_type",
+                    "StringEquals": "unconstrained",
+                    "Next": "Offline Unconstrained"
+                }
+            ]
+        },
+        "Offline Constrained": {
+            "Type": "Map",
+            "ItemSelector": {
+                "context_index.$": "$$.Map.Item.Index",
+                "context_value.$": "$$.Map.Item.Value",
+                "version.$": "$.version"
+            },
+            "ItemProcessor": {
+                "ProcessorConfig": {
+                    "Mode": "DISTRIBUTED",
+                    "ExecutionType": "STANDARD"
+                },
+                "StartAt": "Batch SubmitJob Offline Constrained",
+                "States": {
+                    "Batch SubmitJob Offline Constrained": {
+                        "Type": "Task",
+                        "Resource": "arn:aws:states:::batch:submitJob.sync",
+                        "Parameters": {
+                            "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-offline",
+                            "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-offline",
+                            "PropagateTags": true,
+                            "ContainerOverrides": {
+                                "Command": [
+                                    "constrained",
+                                    "timeseries",
+                                    "integrator",
+                                    "reaches.json",
+                                    "Ref::index"
+                                ]
+                            },
+                            "JobName.$": "States.Format('confluence-offline-constrained-{}-{}',$.Items[0].version, $.Items[0].context_value.reach_id)",
+                            "Parameters": {
+                                "index.$": "States.Format('{}',$.Items[0].context_index)"
+                            }
+                        },
+                        "End": true
+                    }
+                }
+            },
+            "ItemReader": {
+                "Resource": "arn:aws:states:::s3:getObject",
+                "ReaderConfig": {
+                    "InputType": "JSON"
+                },
+                "Parameters": {
+                    "Bucket": "${prefix}-json",
+                    "Key": "reaches.json"
+                }
+            },
+            "MaxConcurrency": 10,
+            "Label": "offlineConstrained",
+            "ItemBatcher": {
+                "MaxInputBytesPerBatch": 131072,
+                "MaxItemsPerBatch": 1
+            },
+            "Next": "Validation Choice"
+        },
+        "Offline Unconstrained": {
+            "Type": "Map",
+            "ItemSelector": {
+                "context_index.$": "$$.Map.Item.Index",
+                "context_value.$": "$$.Map.Item.Value",
+                "version.$": "$.version"
+            },
+            "ItemProcessor": {
+                "ProcessorConfig": {
+                    "Mode": "DISTRIBUTED",
+                    "ExecutionType": "STANDARD"
+                },
+                "StartAt": "Batch SubmitJob Offline Unconstrained",
+                "States": {
+                    "Batch SubmitJob Offline Unconstrained": {
+                        "Type": "Task",
+                        "Resource": "arn:aws:states:::batch:submitJob.sync",
+                        "Parameters": {
+                            "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-offline",
+                            "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-offline",
+                            "PropagateTags": true,
+                            "ContainerOverrides": {
+                                "Command": [
+                                    "unconstrained",
+                                    "timeseries",
+                                    "integrator",
+                                    "reaches.json",
+                                    "Ref::index"
+                                ]
+                            },
+                            "JobName.$": "States.Format('confluence-offline-unconstrained-{}-{}',$.Items[0].version, $.Items[0].context_value.reach_id)",
+                            "Parameters": {
+                                "index.$": "States.Format('{}',$.Items[0].context_index)"
+                            }
+                        },
+                        "End": true
+                    }
+                }
+            },
+            "ItemReader": {
+                "Resource": "arn:aws:states:::s3:getObject",
+                "ReaderConfig": {
+                    "InputType": "JSON"
+                },
+                "Parameters": {
+                    "Bucket": "${prefix}-json",
+                    "Key": "reaches.json"
+                }
+            },
+            "MaxConcurrency": 10,
+            "Label": "offlineUnconstrained",
+            "ItemBatcher": {
+                "MaxInputBytesPerBatch": 131072,
+                "MaxItemsPerBatch": 1
+            },
+            "Next": "Validation Choice"
+        },
+        "Validation Choice": {
+            "Type": "Choice",
+            "Choices": [
+                {
+                    "Variable": "$.run_type",
+                    "StringEquals": "constrained",
+                    "Next": "Validation Constrained"
+                },
+                {
+                    "Variable": "$.run_type",
+                    "StringEquals": "unconstrained",
+                    "Next": "Validation Unconstrained"
+                }
+            ]
+        },
+        "Validation Constrained": {
+            "Type": "Map",
+            "ItemSelector": {
+                "context_index.$": "$$.Map.Item.Index",
+                "context_value.$": "$$.Map.Item.Value",
+                "version.$": "$.version"
+            },
+            "ItemProcessor": {
+                "ProcessorConfig": {
+                    "Mode": "DISTRIBUTED",
+                    "ExecutionType": "STANDARD"
+                },
+                "StartAt": "Batch SubmitJob Validation Constrained",
+                "States": {
+                    "Batch SubmitJob Validation Constrained": {
+                        "Type": "Task",
+                        "Resource": "arn:aws:states:::batch:submitJob.sync",
+                        "Parameters": {
+                            "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-validation",
+                            "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-validation",
+                            "PropagateTags": true,
+                            "ContainerOverrides": {
+                                "Command": [
+                                    "reaches.json",
+                                    "constrained",
+                                    "Ref::index"
+                                ]
+                            },
+                            "JobName.$": "States.Format('confluence-validation-constrained-{}-{}',$.Items[0].version, $.Items[0].context_value.reach_id)",
+                            "Parameters": {
+                                "index.$": "States.Format('{}',$.Items[0].context_index)"
+                            }
+                        },
+                        "End": true
+                    }
+                }
+            },
+            "ItemReader": {
+                "Resource": "arn:aws:states:::s3:getObject",
+                "ReaderConfig": {
+                    "InputType": "JSON"
+                },
+                "Parameters": {
+                    "Bucket": "${prefix}-json",
+                    "Key": "reaches.json"
+                }
+            },
+            "MaxConcurrency": 10,
+            "Label": "validationConstrained",
+            "ItemBatcher": {
+                "MaxInputBytesPerBatch": 131072,
+                "MaxItemsPerBatch": 1
+            },
+            "Next": "Output Choice"
+        },
+        "Validation Unconstrained": {
+            "Type": "Map",
+            "ItemSelector": {
+                "context_index.$": "$$.Map.Item.Index",
+                "context_value.$": "$$.Map.Item.Value",
+                "version.$": "$.version"
+            },
+            "ItemProcessor": {
+                "ProcessorConfig": {
+                    "Mode": "DISTRIBUTED",
+                    "ExecutionType": "STANDARD"
+                },
+                "StartAt": "Batch SubmitJob Validation Unconstrained",
+                "States": {
+                    "Batch SubmitJob Validation Unconstrained": {
+                        "Type": "Task",
+                        "Resource": "arn:aws:states:::batch:submitJob.sync",
+                        "Parameters": {
+                            "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-validation",
+                            "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-validation",
+                            "PropagateTags": true,
+                            "ContainerOverrides": {
+                                "Command": [
+                                    "reaches.json",
+                                    "constrained",
+                                    "Ref::index"
+                                ]
+                            },
+                            "JobName.$": "States.Format('confluence-validation-unconstrained-{}-{}',$.Items[0].version, $.Items[0].context_value.reach_id)",
+                            "Parameters": {
+                                "index.$": "States.Format('{}',$.Items[0].context_index)"
+                            }
+                        },
+                        "End": true
+                    }
+                }
+            },
+            "ItemReader": {
+                "Resource": "arn:aws:states:::s3:getObject",
+                "ReaderConfig": {
+                    "InputType": "JSON"
+                },
+                "Parameters": {
+                    "Bucket": "${prefix}-json",
+                    "Key": "reaches.json"
+                }
+            },
+            "MaxConcurrency": 10,
+            "Label": "validationUnconstrained",
+            "ItemBatcher": {
+                "MaxInputBytesPerBatch": 131072,
+                "MaxItemsPerBatch": 1
+            },
+            "Next": "Output Choice"
+        },
+        "Output Choice": {
+            "Type": "Choice",
+            "Choices": [
+                {
+                    "Variable": "$.run_type",
+                    "StringEquals": "constrained",
+                    "Next": "Output Constrained"
+                },
+                {
+                    "Variable": "$.run_type",
+                    "StringEquals": "unconstrained",
+                    "Next": "Output Unconstrained"
+                }
+            ]
+        },
+        "Output Constrained": {
+            "Type": "Map",
+            "ItemSelector": {
+                "context_index.$": "$$.Map.Item.Index",
+                "context_value.$": "$$.Map.Item.Value",
+                "version.$": "$.version"
+            },
+            "ItemProcessor": {
+                "ProcessorConfig": {
+                    "Mode": "DISTRIBUTED",
+                    "ExecutionType": "STANDARD"
+                },
+                "StartAt": "Batch SubmitJob Output Constrained",
+                "States": {
+                    "Batch SubmitJob Output Constrained": {
+                        "Type": "Task",
+                        "Resource": "arn:aws:states:::batch:submitJob.sync",
+                        "Parameters": {
+                            "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-output",
+                            "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-output",
+                            "PropagateTags": true,
+                            "ContainerOverrides": {
+                                "Command": [
+                                    "-i",
+                                    "Ref::index",
+                                    "-c",
+                                    "continent.json",
+                                    "-r",
+                                    "constrained",
+                                    "-m",
+                                    "priors",
+                                    "hivdi",
+                                    "metroman",
+                                    "moi",
+                                    "momma",
+                                    "neobam",
+                                    "offline",
+                                    "postdiagnostics",
+                                    "prediagnostics",
+                                    "sad",
+                                    "sic4dvar",
+                                    "swot",
+                                    "validation"
+                                ]
+                            },
+                            "JobName.$": "States.Format('confluence-output-constrained-{}-{}',$.Items[0].version, $.Items[0].context_value.reach_id)",
+                            "Parameters": {
+                                "index.$": "States.Format('{}',$.Items[0].context_index)"
+                            }
+                        },
+                        "End": true
+                    }
+                }
+            },
+            "ItemReader": {
+                "Resource": "arn:aws:states:::s3:getObject",
+                "ReaderConfig": {
+                    "InputType": "JSON"
+                },
+                "Parameters": {
+                    "Bucket": "${prefix}-json",
+                    "Key": "continent.json"
+                }
+            },
+            "MaxConcurrency": 10,
+            "Label": "outputConstrained",
+            "ItemBatcher": {
+                "MaxInputBytesPerBatch": 131072,
+                "MaxItemsPerBatch": 1
+            },
+            "Next": "Successful Run"
+        },
+        "Output Unconstrained": {
+            "Type": "Map",
+            "ItemSelector": {
+                "context_index.$": "$$.Map.Item.Index",
+                "context_value.$": "$$.Map.Item.Value",
+                "version.$": "$.version"
+            },
+            "ItemProcessor": {
+                "ProcessorConfig": {
+                    "Mode": "DISTRIBUTED",
+                    "ExecutionType": "STANDARD"
+                },
+                "StartAt": "Batch SubmitJob Output Unconstrained",
+                "States": {
+                    "Batch SubmitJob Output Unconstrained": {
+                        "Type": "Task",
+                        "Resource": "arn:aws:states:::batch:submitJob.sync",
+                        "Parameters": {
+                            "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-output",
+                            "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-output",
+                            "PropagateTags": true,
+                            "ContainerOverrides": {
+                                "Command": [
+                                    "-i",
+                                    "Ref::index",
+                                    "-c",
+                                    "continent.json",
+                                    "-r",
+                                    "constrained",
+                                    "-m",
+                                    "priors",
+                                    "hivdi",
+                                    "metroman",
+                                    "moi",
+                                    "momma",
+                                    "neobam",
+                                    "offline",
+                                    "postdiagnostics",
+                                    "prediagnostics",
+                                    "sad",
+                                    "sic4dvar",
+                                    "swot",
+                                    "validation"
+                                ]
+                            },
+                            "JobName.$": "States.Format('confluence-output-unconstrained-{}-{}',$.Items[0].version, $.Items[0].context_value.reach_id)",
+                            "Parameters": {
+                                "index.$": "States.Format('{}',$.Items[0].context_index)"
+                            }
+                        },
+                        "End": true
+                    }
+                }
+            },
+            "ItemReader": {
+                "Resource": "arn:aws:states:::s3:getObject",
+                "ReaderConfig": {
+                    "InputType": "JSON"
+                },
+                "Parameters": {
+                    "Bucket": "${prefix}-json",
+                    "Key": "continent.json"
+                }
+            },
+            "MaxConcurrency": 10,
+            "Label": "outputUnconstrained",
+            "ItemBatcher": {
+                "MaxInputBytesPerBatch": 131072,
+                "MaxItemsPerBatch": 1
+            },
+            "Next": "Successful Run"
         },
         "Successful Run": {
             "Type": "Succeed"
