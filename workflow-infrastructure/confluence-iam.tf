@@ -357,6 +357,13 @@ resource "aws_iam_policy" "batch_job_eb_policy" {
         "Resource" : [
           "arn:aws:scheduler:us-west-2:${local.account_id}:schedule/default/*renew*"
         ]
+      },
+      {
+        "Effect": "Allow",
+        "Action": "iam:PassRole",
+        "Resource": [
+          "arn:aws:iam::${local.account_id}:role/${var.prefix}-eventbridge-renew-execution-role"
+        ]
       }
     ]
   })
