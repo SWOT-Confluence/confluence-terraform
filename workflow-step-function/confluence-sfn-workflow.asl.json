@@ -31,6 +31,8 @@
         },
         "Datagen": {
             "Type": "Map",
+            "OutputPath": "$",
+            "ResultPath": "$.datagen",
             "ItemSelector": {
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
@@ -132,6 +134,8 @@
         },
         "Input": {
             "Type": "Map",
+            "OutputPath": "$",
+            "ResultPath": "$.input",
             "ItemSelector": {
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
@@ -202,15 +206,26 @@
             "OutputPath": "$",
             "ResultPath": "$.disable_renew",
             "Parameters": {
-                "JobName": "confluence-dev1-disable-renew",
-                "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-disable_renew",
-                "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-disable_renew",
-                "PropagateTags": true
+                "JobName.$": "States.Format('confluence-disable-renew-{}', $.Items[0].version)",
+                "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-disable-renew",
+                "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-disable-renew",
+                "PropagateTags": true,
+                "ContainerOverrides": {
+                    "Command": [
+                        "-p",
+                        "Ref::prefix"
+                    ]
+                },
+                "Parameters": {
+                    "prefix": "${prefix}"
+                }
             },
             "Next": "Prediagnostics"
         },
         "Prediagnostics": {
             "Type": "Map",
+            "OutputPath": "$",
+            "ResultPath": "$.prediagnostics",
             "ItemSelector": {
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
@@ -280,6 +295,8 @@
         },
         "Priors Constrained": {
             "Type": "Map",
+            "OutputPath": "$",
+            "ResultPath": "$.priors_constrained",
             "ItemSelector": {
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
@@ -341,6 +358,8 @@
         },
         "Priors Unconstrained": {
             "Type": "Map",
+            "OutputPath": "$",
+            "ResultPath": "$.priors_unconstrained",
             "ItemSelector": {
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
@@ -408,6 +427,8 @@
                     "States": {
                         "Hivdi": {
                             "Type": "Map",
+                            "OutputPath": "$",
+                            "ResultPath": "$.hivdi",
                             "ItemSelector": {
                                 "ContextIndex.$": "$$.Map.Item.Index",
                                 "ContextValue.$": "$$.Map.Item.Value"
@@ -466,6 +487,8 @@
                     "States": {
                         "Metroman": {
                             "Type": "Map",
+                            "OutputPath": "$",
+                            "ResultPath": "$.metroman",
                             "ItemSelector": {
                                 "ContextIndex.$": "$$.Map.Item.Index",
                                 "ContextValue.$": "$$.Map.Item.Value"
@@ -525,6 +548,8 @@
                     "States": {
                         "Momma": {
                             "Type": "Map",
+                            "OutputPath": "$",
+                            "ResultPath": "$.momma",
                             "ItemSelector": {
                                 "ContextIndex.$": "$$.Map.Item.Index",
                                 "ContextValue.$": "$$.Map.Item.Value"
@@ -583,6 +608,8 @@
                     "States": {
                         "Neobam": {
                             "Type": "Map",
+                            "OutputPath": "$",
+                            "ResultPath": "$.neobam",
                             "ItemSelector": {
                                 "ContextIndex.$": "$$.Map.Item.Index",
                                 "ContextValue.$": "$$.Map.Item.Value"
@@ -641,6 +668,8 @@
                     "States": {
                         "Sad": {
                             "Type": "Map",
+                            "OutputPath": "$",
+                            "ResultPath": "$.sad",
                             "ItemSelector": {
                                 "ContextIndex.$": "$$.Map.Item.Index",
                                 "ContextValue.$": "$$.Map.Item.Value"
@@ -699,6 +728,8 @@
                     "States": {
                         "Sic4dvar": {
                             "Type": "Map",
+                            "OutputPath": "$",
+                            "ResultPath": "$.sic4dvar",
                             "ItemSelector": {
                                 "ContextIndex.$": "$$.Map.Item.Index",
                                 "ContextValue.$": "$$.Map.Item.Value"
@@ -759,6 +790,8 @@
         },
         "Postdiagnostics FLPE": {
             "Type": "Map",
+            "OutputPath": "$",
+            "ResultPath": "$.postdiagnostics_flpe",
             "ItemSelector": {
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
@@ -814,6 +847,8 @@
         },
         "Moi": {
             "Type": "Map",
+            "OutputPath": "$",
+            "ResultPath": "$.moi",
             "ItemSelector": {
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
@@ -870,6 +905,8 @@
         },
         "Postdiagnostics MOI": {
             "Type": "Map",
+            "OutputPath": "$",
+            "ResultPath": "$.postdiagnostics_moi",
             "ItemSelector": {
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
@@ -940,6 +977,8 @@
         },
         "Offline Constrained": {
             "Type": "Map",
+            "OutputPath": "$",
+            "ResultPath": "$.offline_constrained",
             "ItemSelector": {
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
@@ -997,6 +1036,8 @@
         },
         "Offline Unconstrained": {
             "Type": "Map",
+            "OutputPath": "$",
+            "ResultPath": "$.offline_unconstrained",
             "ItemSelector": {
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
@@ -1069,6 +1110,8 @@
         },
         "Validation Constrained": {
             "Type": "Map",
+            "OutputPath": "$",
+            "ResultPath": "$.validation_constrained",
             "ItemSelector": {
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
@@ -1124,6 +1167,8 @@
         },
         "Validation Unconstrained": {
             "Type": "Map",
+            "OutputPath": "$",
+            "ResultPath": "$.validation_unconstrained",
             "ItemSelector": {
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
@@ -1194,6 +1239,8 @@
         },
         "Output Constrained": {
             "Type": "Map",
+            "OutputPath": "$",
+            "ResultPath": "$.output_constrained",
             "ItemSelector": {
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
@@ -1266,6 +1313,8 @@
         },
         "Output Unconstrained": {
             "Type": "Map",
+            "OutputPath": "$",
+            "ResultPath": "$.output_unconstrained",
             "ItemSelector": {
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
