@@ -206,7 +206,7 @@
             "OutputPath": "$",
             "ResultPath": "$.disable_renew",
             "Parameters": {
-                "JobName.$": "States.Format('confluence-disable-renew-{}', $.Items[0].version)",
+                "JobName.$": "States.Format('confluence-disable-renew-{}', $.version)",
                 "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-disable-renew",
                 "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-disable-renew",
                 "PropagateTags": true,
