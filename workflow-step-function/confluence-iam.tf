@@ -122,7 +122,8 @@ resource "aws_iam_policy" "sfn_batch" {
         "Action" : [
           "batch:SubmitJob",
           "batch:DescribeJobs",
-          "batch:TerminateJob"
+          "batch:TerminateJob",
+          "batch:TagResource"
         ],
         "Resource" : "*"
       }
