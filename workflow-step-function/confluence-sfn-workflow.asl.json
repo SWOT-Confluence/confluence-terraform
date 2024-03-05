@@ -344,12 +344,15 @@
                                     "usgs",
                                     "riggs",
                                     "gbpriors",
-                                    "-g"
+                                    "-g",
+                                    "-s",
+                                    "Ref::sos_bucket"
                                 ]
                             },
                             "JobName.$": "States.Format('confluence-priors-constrained-{}-{}',$.Items[0].version, $.Items[0].context_index)",
                             "Parameters": {
-                                "index.$": "States.Format('{}',$.Items[0].context_index)"
+                                "index.$": "States.Format('{}',$.Items[0].context_index)",
+                                "sos_bucket": "${prefix}-sos"
                             }
                         },
                         "End": true
@@ -410,12 +413,15 @@
                                     "usgs",
                                     "riggs",
                                     "gbpriors",
-                                    "-g"
+                                    "-g",
+                                    "-s",
+                                    "Ref::sos_bucket"
                                 ]
                             },
                             "JobName.$": "States.Format('confluence-priors-unconstrained-{}-{}',$.Items[0].version, $.Items[0].context_index)",
                             "Parameters": {
-                                "index.$": "States.Format('{}',$.Items[0].context_index)"
+                                "index.$": "States.Format('{}',$.Items[0].context_index)",
+                                "sos_bucket": "${prefix}-sos"
                             }
                         },
                         "End": true
@@ -442,6 +448,7 @@
         },
         "FLPE": {
             "Type": "Parallel",
+            "ResultPath": "$.flpe",
             "Branches": [
                 {
                     "StartAt": "Hivdi",
@@ -451,8 +458,9 @@
                             "OutputPath": "$",
                             "ResultPath": "$.hivdi",
                             "ItemSelector": {
-                                "ContextIndex.$": "$$.Map.Item.Index",
-                                "ContextValue.$": "$$.Map.Item.Value"
+                                "context_index.$": "$$.Map.Item.Index",
+                                "context_value.$": "$$.Map.Item.Value",
+                                "version.$": "$.version"
                             },
                             "ItemProcessor": {
                                 "ProcessorConfig": {
@@ -469,7 +477,7 @@
                                             "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-flpe",
                                             "PropagateTags": true,
                                             "Tags": {
-                                                "job.$": "States.Format('confluence-hivdi-{}-{}',$.Items[0].version, $.Items[0].context_value.reach_id)"
+                                                "job.$": "States.Format('confluence-hivdi-{}-{}',$.Items[0].version, $.Items[0].context_value[0].reach_id)"
                                             },
                                             "ContainerOverrides": {
                                                 "Command": [
@@ -477,9 +485,9 @@
                                                     "Ref::index"
                                                 ]
                                             },
-                                            "JobName.$": "States.Format('confluence-hivdi-{}-{}',$.Items[0].version, $.Items[0].context_value.reach_id)",
+                                            "JobName.$": "States.Format('confluence-hivdi-{}-{}',$.Items[0].version, $.Items[0].context_value[0].reach_id)",
                                             "Parameters": {
-                                                "index.$": "States.Format('{}',$.Items[0].ContextIndex)"
+                                                "index.$": "States.Format('{}',$.Items[0].context_index)"
                                             }
                                         },
                                         "End": true
@@ -493,7 +501,7 @@
                                 },
                                 "Parameters": {
                                     "Bucket": "${prefix}-json",
-                                    "Key": "reaches.json"
+                                    "Key": "hivdisets.json"
                                 }
                             },
                             "MaxConcurrency": 100,
@@ -514,8 +522,9 @@
                             "OutputPath": "$",
                             "ResultPath": "$.metroman",
                             "ItemSelector": {
-                                "ContextIndex.$": "$$.Map.Item.Index",
-                                "ContextValue.$": "$$.Map.Item.Value"
+                                "context_index.$": "$$.Map.Item.Index",
+                                "context_value.$": "$$.Map.Item.Value",
+                                "version.$": "$.version"
                             },
                             "ItemProcessor": {
                                 "ProcessorConfig": {
@@ -532,7 +541,7 @@
                                             "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-flpe",
                                             "PropagateTags": true,
                                             "Tags": {
-                                                "job.$": "States.Format('confluence-metroman-{}-{}',$.Items[0].version, $.Items[0].context_value.reach_id)"
+                                                "job.$": "States.Format('confluence-metroman-{}-{}',$.Items[0].version, $.Items[0].context_value[0].reach_id)"
                                             },
                                             "ContainerOverrides": {
                                                 "Command": [
@@ -541,9 +550,9 @@
                                                     "-v"
                                                 ]
                                             },
-                                            "JobName.$": "States.Format('confluence-metroman-{}-{}',$.Items[0].version, $.Items[0].context_value.reach_id)",
+                                            "JobName.$": "States.Format('confluence-metroman-{}-{}',$.Items[0].version, $.Items[0].context_value[0].reach_id)",
                                             "Parameters": {
-                                                "index.$": "States.Format('{}',$.Items[0].ContextIndex)"
+                                                "index.$": "States.Format('{}',$.Items[0].context_index)"
                                             }
                                         },
                                         "End": true
@@ -557,7 +566,7 @@
                                 },
                                 "Parameters": {
                                     "Bucket": "${prefix}-json",
-                                    "Key": "reaches.json"
+                                    "Key": "metrosets.json"
                                 }
                             },
                             "MaxConcurrency": 100,
@@ -578,8 +587,9 @@
                             "OutputPath": "$",
                             "ResultPath": "$.momma",
                             "ItemSelector": {
-                                "ContextIndex.$": "$$.Map.Item.Index",
-                                "ContextValue.$": "$$.Map.Item.Value"
+                                "context_index.$": "$$.Map.Item.Index",
+                                "context_value.$": "$$.Map.Item.Value",
+                                "version.$": "$.version"
                             },
                             "ItemProcessor": {
                                 "ProcessorConfig": {
@@ -606,7 +616,7 @@
                                             },
                                             "JobName.$": "States.Format('confluence-momma-{}-{}',$.Items[0].version, $.Items[0].context_value.reach_id)",
                                             "Parameters": {
-                                                "index.$": "States.Format('{}',$.Items[0].ContextIndex)"
+                                                "index.$": "States.Format('{}',$.Items[0].context_index)"
                                             }
                                         },
                                         "End": true
@@ -641,8 +651,9 @@
                             "OutputPath": "$",
                             "ResultPath": "$.neobam",
                             "ItemSelector": {
-                                "ContextIndex.$": "$$.Map.Item.Index",
-                                "ContextValue.$": "$$.Map.Item.Value"
+                                "context_index.$": "$$.Map.Item.Index",
+                                "context_value.$": "$$.Map.Item.Value",
+                                "version.$": "$.version"
                             },
                             "ItemProcessor": {
                                 "ProcessorConfig": {
@@ -669,7 +680,7 @@
                                             },
                                             "JobName.$": "States.Format('confluence-neobam-{}-{}',$.Items[0].version, $.Items[0].context_value.reach_id)",
                                             "Parameters": {
-                                                "index.$": "States.Format('{}',$.Items[0].ContextIndex)"
+                                                "index.$": "States.Format('{}',$.Items[0].context_index)"
                                             }
                                         },
                                         "End": true
@@ -704,8 +715,9 @@
                             "OutputPath": "$",
                             "ResultPath": "$.sad",
                             "ItemSelector": {
-                                "ContextIndex.$": "$$.Map.Item.Index",
-                                "ContextValue.$": "$$.Map.Item.Value"
+                                "context_index.$": "$$.Map.Item.Index",
+                                "context_value.$": "$$.Map.Item.Value",
+                                "version.$": "$.version"
                             },
                             "ItemProcessor": {
                                 "ProcessorConfig": {
@@ -732,7 +744,7 @@
                                             },
                                             "JobName.$": "States.Format('confluence-sad-{}-{}',$.Items[0].version, $.Items[0].context_value.reach_id)",
                                             "Parameters": {
-                                                "index.$": "States.Format('{}',$.Items[0].ContextIndex)"
+                                                "index.$": "States.Format('{}',$.Items[0].context_index)"
                                             }
                                         },
                                         "End": true
@@ -767,8 +779,9 @@
                             "OutputPath": "$",
                             "ResultPath": "$.sic4dvar",
                             "ItemSelector": {
-                                "ContextIndex.$": "$$.Map.Item.Index",
-                                "ContextValue.$": "$$.Map.Item.Value"
+                                "context_index.$": "$$.Map.Item.Index",
+                                "context_value.$": "$$.Map.Item.Value",
+                                "version.$": "$.version"
                             },
                             "ItemProcessor": {
                                 "ProcessorConfig": {
@@ -785,7 +798,7 @@
                                             "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-flpe",
                                             "PropagateTags": true,
                                             "Tags": {
-                                                "job.$": "States.Format('confluence-sic4dvar-{}-{}',$.Items[0].version, $.Items[0].context_value.reach_id)"
+                                                "job.$": "States.Format('confluence-sic4dvar-{}-{}',$.Items[0].version, $.Items[0].context_value[0].reach_id)"
                                             },
                                             "ContainerOverrides": {
                                                 "Command": [
@@ -795,10 +808,10 @@
                                                     "constrained"
                                                 ],
                                                 "Environment" : [
-                                                    { "Name" : "BATCH_JOB_INDEX", "Value.$" : "States.Format('{}',$.Items[0].ContextIndex)" }
+                                                    { "Name" : "BATCH_JOB_INDEX", "Value.$" : "States.Format('{}',$.Items[0].context_index)" }
                                                 ]
                                             },
-                                            "JobName.$": "States.Format('confluence-sic4dvar-{}-{}',$.Items[0].version, $.Items[0].context_value.reach_id)"
+                                            "JobName.$": "States.Format('confluence-sic4dvar-{}-{}',$.Items[0].version, $.Items[0].context_value[0].reach_id)"
                                         },
                                         "End": true
                                     }
@@ -811,7 +824,7 @@
                                 },
                                 "Parameters": {
                                     "Bucket": "${prefix}-json",
-                                    "Key": "reaches.json"
+                                    "Key": "sicsets.json"
                                 }
                             },
                             "MaxConcurrency": 100,
@@ -857,12 +870,14 @@
                                 "Command": [
                                     "0.25",
                                     "Ref::index",
-                                    "reaches.json"
+                                    "reaches.json",
+                                    "Ref::sos_bucket"
                                 ]
                             },
                             "JobName.$": "States.Format('confluence-postdiagnostics-flpe-{}-{}',$.Items[0].version, $.Items[0].context_value.reach_id)",
                             "Parameters": {
-                                "index.$": "States.Format('{}',$.Items[0].context_index)"
+                                "index.$": "States.Format('{}',$.Items[0].context_index)",
+                                "sos_bucket": "${prefix}-sos"
                             }
                         },
                         "End": true
@@ -978,12 +993,14 @@
                                 "Command": [
                                     "0.25",
                                     "Ref::index",
-                                    "reaches.json"
+                                    "reaches.json",
+                                    "Ref::sos_bucket"
                                 ]
                             },
                             "JobName.$": "States.Format('confluence-postdiagnostics-moi-{}-{}',$.Items[0].version, $.Items[0].context_value.reach_id)",
                             "Parameters": {
-                                "index.$": "States.Format('{}',$.Items[0].context_index)"
+                                "index.$": "States.Format('{}',$.Items[0].context_index)",
+                                "sos_bucket": "${prefix}-sos"
                             }
                         },
                         "End": true
