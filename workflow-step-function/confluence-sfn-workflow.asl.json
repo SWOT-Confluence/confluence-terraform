@@ -1348,6 +1348,8 @@
                                     "continent.json",
                                     "-r",
                                     "constrained",
+                                    "-s",
+                                    "Ref::sos_bucket",
                                     "-m",
                                     "priors",
                                     "hivdi",
@@ -1366,7 +1368,8 @@
                             },
                             "JobName.$": "States.Format('confluence-output-constrained-{}-{}',$.Items[0].version, $.Items[0].context_index)",
                             "Parameters": {
-                                "index.$": "States.Format('{}',$.Items[0].context_index)"
+                                "index.$": "States.Format('{}',$.Items[0].context_index)",
+                                "sos_bucket": "${prefix}-sos"
                             }
                         },
                         "End": true
