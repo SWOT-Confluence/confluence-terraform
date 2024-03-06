@@ -118,12 +118,12 @@
             "OutputPath": "$",
             "ResultPath": "$.combine_data",
             "Parameters": {
-                "JobName.$": "States.Format('confluence-combine-data-{}',$.Items[0].version)",
+                "JobName.$": "States.Format('confluence-combine-data-{}',$.version)",
                 "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-combine-data",
                 "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-combine-data",
                 "PropagateTags": true,
                 "Tags": {
-                    "job.$": "States.Format('confluence-combine-data-{}',$.Items[0].version)"
+                    "job.$": "States.Format('confluence-combine-data-{}',$.version)"
                 },
                 "ContainerOverrides": {
                     "Command": [
