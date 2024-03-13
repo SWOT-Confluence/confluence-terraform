@@ -1064,7 +1064,7 @@
                             "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-moi",
                             "PropagateTags": true,
                             "Tags": {
-                                "job.$": "States.Format('confluence-moi-{}-{}',$.Items[0].version, $.Items[0].context_value.reach_id)"
+                                "job.$": "States.Format('confluence-moi-{}-{}',$.Items[0].version, $.Items[0].context_value.basin_id)"
                             },
                             "ContainerOverrides": {
                                 "Command": [
@@ -1074,7 +1074,7 @@
                                     "Ref::index"
                                 ]
                             },
-                            "JobName.$": "States.Format('confluence-moi-{}-{}',$.Items[0].version, $.Items[0].context_value.reach_id)",
+                            "JobName.$": "States.Format('confluence-moi-{}-{}',$.Items[0].version, $.Items[0].context_value.basin_id)",
                             "Parameters": {
                                 "index.$": "States.Format('{}',$.Items[0].context_index)"
                             }
