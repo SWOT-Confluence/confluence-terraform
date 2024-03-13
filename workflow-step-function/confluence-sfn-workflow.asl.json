@@ -6,7 +6,7 @@
             "Type": "Task",
             "Resource": "arn:aws:states:::lambda:invoke.waitForTaskToken",
             "OutputPath": "$",
-            "ResultPath": "$.enable_renew",
+            "ResultPath": null,
             "Parameters": {
                 "FunctionName": "arn:aws:lambda:${aws_region}:${account_id}:function:${prefix}-enable-renew:$LATEST",
                 "Payload": {
@@ -51,6 +51,15 @@
                 "States": {
                     "Batch SubmitJob Datagen": {
                         "Type": "Task",
+                        "ResultSelector": {
+                            "container_command.$": "$.Container.Command",
+                            "log_stream.$": "$.Container.LogStreamName",
+                            "job_name.$": "$.JobName",
+                            "job_id.$": "$.JobId",
+                            "created_at.$": "$.CreatedAt",
+                            "started_at.$": "$.StartedAt",
+                            "stopped_at.$": "$.StoppedAt"
+                        },
                         "Resource": "arn:aws:states:::batch:submitJob.sync",
                         "Parameters": {
                             "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-datagen",
@@ -78,7 +87,7 @@
                                     "-u",
                                     "Ref::reachsubsetfile",
                                     "-b",
-                                    "-w", 
+                                    "-w",
                                     "/data/sword_patches_v215.json"
                                 ]
                             },
@@ -117,6 +126,15 @@
             "Resource": "arn:aws:states:::batch:submitJob.sync",
             "OutputPath": "$",
             "ResultPath": "$.combine_data",
+            "ResultSelector": {
+                "container_command.$": "$.Container.Command",
+                "log_stream.$": "$.Container.LogStreamName",
+                "job_name.$": "$.JobName",
+                "job_id.$": "$.JobId",
+                "created_at.$": "$.CreatedAt",
+                "started_at.$": "$.StartedAt",
+                "stopped_at.$": "$.StoppedAt"
+            },
             "Parameters": {
                 "JobName.$": "States.Format('confluence-combine-data-{}',$.version)",
                 "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-combine-data",
@@ -156,6 +174,15 @@
                 "States": {
                     "Batch SubmitJob Input": {
                         "Type": "Task",
+                        "ResultSelector": {
+                            "container_command.$": "$.Container.Command",
+                            "log_stream.$": "$.Container.LogStreamName",
+                            "job_name.$": "$.JobName",
+                            "job_id.$": "$.JobId",
+                            "created_at.$": "$.CreatedAt",
+                            "started_at.$": "$.StartedAt",
+                            "stopped_at.$": "$.StoppedAt"
+                        },
                         "Resource": "arn:aws:states:::batch:submitJob.sync",
                         "Parameters": {
                             "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-input",
@@ -214,6 +241,15 @@
             "Resource": "arn:aws:states:::batch:submitJob.sync",
             "OutputPath": "$",
             "ResultPath": "$.disable_renew",
+            "ResultSelector": {
+                "container_command.$": "$.Container.Command",
+                "log_stream.$": "$.Container.LogStreamName",
+                "job_name.$": "$.JobName",
+                "job_id.$": "$.JobId",
+                "created_at.$": "$.CreatedAt",
+                "started_at.$": "$.StartedAt",
+                "stopped_at.$": "$.StoppedAt"
+            },
             "Parameters": {
                 "JobName.$": "States.Format('confluence-disable-renew-{}', $.version)",
                 "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-disable-renew",
@@ -252,6 +288,15 @@
                 "States": {
                     "Batch SubmitJob Prediagnostics": {
                         "Type": "Task",
+                        "ResultSelector": {
+                            "container_command.$": "$.Container.Command",
+                            "log_stream.$": "$.Container.LogStreamName",
+                            "job_name.$": "$.JobName",
+                            "job_id.$": "$.JobId",
+                            "created_at.$": "$.CreatedAt",
+                            "started_at.$": "$.StartedAt",
+                            "stopped_at.$": "$.StoppedAt"
+                        },
                         "Resource": "arn:aws:states:::batch:submitJob.sync",
                         "Parameters": {
                             "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-prediagnostics",
@@ -326,6 +371,15 @@
                 "States": {
                     "Batch SubmitJob Priors Constrained": {
                         "Type": "Task",
+                        "ResultSelector": {
+                            "container_command.$": "$.Container.Command",
+                            "log_stream.$": "$.Container.LogStreamName",
+                            "job_name.$": "$.JobName",
+                            "job_id.$": "$.JobId",
+                            "created_at.$": "$.CreatedAt",
+                            "started_at.$": "$.StartedAt",
+                            "stopped_at.$": "$.StoppedAt"
+                        },
                         "Resource": "arn:aws:states:::batch:submitJob.sync",
                         "Parameters": {
                             "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-priors",
@@ -395,6 +449,15 @@
                 "States": {
                     "Batch SubmitJob Priors Unconstrained": {
                         "Type": "Task",
+                        "ResultSelector": {
+                            "container_command.$": "$.Container.Command",
+                            "log_stream.$": "$.Container.LogStreamName",
+                            "job_name.$": "$.JobName",
+                            "job_id.$": "$.JobId",
+                            "created_at.$": "$.CreatedAt",
+                            "started_at.$": "$.StartedAt",
+                            "stopped_at.$": "$.StoppedAt"
+                        },
                         "Resource": "arn:aws:states:::batch:submitJob.sync",
                         "Parameters": {
                             "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-priors",
@@ -471,6 +534,15 @@
                                 "States": {
                                     "Batch SubmitJob Hivdi": {
                                         "Type": "Task",
+                                        "ResultSelector": {
+                                            "container_command.$": "$.Container.Command",
+                                            "log_stream.$": "$.Container.LogStreamName",
+                                            "job_name.$": "$.JobName",
+                                            "job_id.$": "$.JobId",
+                                            "created_at.$": "$.CreatedAt",
+                                            "started_at.$": "$.StartedAt",
+                                            "stopped_at.$": "$.StoppedAt"
+                                        },
                                         "Resource": "arn:aws:states:::batch:submitJob.sync",
                                         "Parameters": {
                                             "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-hivdi",
@@ -535,6 +607,15 @@
                                 "States": {
                                     "Batch SubmitJob Metroman": {
                                         "Type": "Task",
+                                        "ResultSelector": {
+                                            "container_command.$": "$.Container.Command",
+                                            "log_stream.$": "$.Container.LogStreamName",
+                                            "job_name.$": "$.JobName",
+                                            "job_id.$": "$.JobId",
+                                            "created_at.$": "$.CreatedAt",
+                                            "started_at.$": "$.StartedAt",
+                                            "stopped_at.$": "$.StoppedAt"
+                                        },
                                         "Resource": "arn:aws:states:::batch:submitJob.sync",
                                         "Parameters": {
                                             "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-metroman",
@@ -600,6 +681,15 @@
                                 "States": {
                                     "Batch SubmitJob Momma": {
                                         "Type": "Task",
+                                        "ResultSelector": {
+                                            "container_command.$": "$.Container.Command",
+                                            "log_stream.$": "$.Container.LogStreamName",
+                                            "job_name.$": "$.JobName",
+                                            "job_id.$": "$.JobId",
+                                            "created_at.$": "$.CreatedAt",
+                                            "started_at.$": "$.StartedAt",
+                                            "stopped_at.$": "$.StoppedAt"
+                                        },
                                         "Resource": "arn:aws:states:::batch:submitJob.sync",
                                         "Parameters": {
                                             "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-momma",
@@ -664,6 +754,15 @@
                                 "States": {
                                     "Batch SubmitJob Neobam": {
                                         "Type": "Task",
+                                        "ResultSelector": {
+                                            "container_command.$": "$.Container.Command",
+                                            "log_stream.$": "$.Container.LogStreamName",
+                                            "job_name.$": "$.JobName",
+                                            "job_id.$": "$.JobId",
+                                            "created_at.$": "$.CreatedAt",
+                                            "started_at.$": "$.StartedAt",
+                                            "stopped_at.$": "$.StoppedAt"
+                                        },
                                         "Resource": "arn:aws:states:::batch:submitJob.sync",
                                         "Parameters": {
                                             "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-neobam",
@@ -728,6 +827,15 @@
                                 "States": {
                                     "Batch SubmitJob Sad": {
                                         "Type": "Task",
+                                        "ResultSelector": {
+                                            "container_command.$": "$.Container.Command",
+                                            "log_stream.$": "$.Container.LogStreamName",
+                                            "job_name.$": "$.JobName",
+                                            "job_id.$": "$.JobId",
+                                            "created_at.$": "$.CreatedAt",
+                                            "started_at.$": "$.StartedAt",
+                                            "stopped_at.$": "$.StoppedAt"
+                                        },
                                         "Resource": "arn:aws:states:::batch:submitJob.sync",
                                         "Parameters": {
                                             "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-sad",
@@ -792,6 +900,15 @@
                                 "States": {
                                     "Batch SubmitJob Sic4dvar": {
                                         "Type": "Task",
+                                        "ResultSelector": {
+                                            "container_command.$": "$.Container.Command",
+                                            "log_stream.$": "$.Container.LogStreamName",
+                                            "job_name.$": "$.JobName",
+                                            "job_id.$": "$.JobId",
+                                            "created_at.$": "$.CreatedAt",
+                                            "started_at.$": "$.StartedAt",
+                                            "stopped_at.$": "$.StoppedAt"
+                                        },
                                         "Resource": "arn:aws:states:::batch:submitJob.sync",
                                         "Parameters": {
                                             "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-sic4dvar",
@@ -807,8 +924,11 @@
                                                     "--constraint",
                                                     "constrained"
                                                 ],
-                                                "Environment" : [
-                                                    { "Name" : "BATCH_JOB_INDEX", "Value.$" : "States.Format('{}',$.Items[0].context_index)" }
+                                                "Environment": [
+                                                    {
+                                                        "Name": "BATCH_JOB_INDEX",
+                                                        "Value.$": "States.Format('{}',$.Items[0].context_index)"
+                                                    }
                                                 ]
                                             },
                                             "JobName.$": "States.Format('confluence-sic4dvar-{}-{}',$.Items[0].version, $.Items[0].context_value[0].reach_id)"
@@ -858,6 +978,15 @@
                 "States": {
                     "Batch SubmitJob Postdiagnostics FLPE": {
                         "Type": "Task",
+                        "ResultSelector": {
+                            "container_command.$": "$.Container.Command",
+                            "log_stream.$": "$.Container.LogStreamName",
+                            "job_name.$": "$.JobName",
+                            "job_id.$": "$.JobId",
+                            "created_at.$": "$.CreatedAt",
+                            "started_at.$": "$.StartedAt",
+                            "stopped_at.$": "$.StoppedAt"
+                        },
                         "Resource": "arn:aws:states:::batch:submitJob.sync",
                         "Parameters": {
                             "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-postdiagnostics-flpe",
@@ -920,6 +1049,15 @@
                 "States": {
                     "Batch SubmitJob Moi": {
                         "Type": "Task",
+                        "ResultSelector": {
+                            "container_command.$": "$.Container.Command",
+                            "log_stream.$": "$.Container.LogStreamName",
+                            "job_name.$": "$.JobName",
+                            "job_id.$": "$.JobId",
+                            "created_at.$": "$.CreatedAt",
+                            "started_at.$": "$.StartedAt",
+                            "stopped_at.$": "$.StoppedAt"
+                        },
                         "Resource": "arn:aws:states:::batch:submitJob.sync",
                         "Parameters": {
                             "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-moi",
@@ -981,6 +1119,15 @@
                 "States": {
                     "Batch SubmitJob Postdiagnostics MOI": {
                         "Type": "Task",
+                        "ResultSelector": {
+                            "container_command.$": "$.Container.Command",
+                            "log_stream.$": "$.Container.LogStreamName",
+                            "job_name.$": "$.JobName",
+                            "job_id.$": "$.JobId",
+                            "created_at.$": "$.CreatedAt",
+                            "started_at.$": "$.StartedAt",
+                            "stopped_at.$": "$.StoppedAt"
+                        },
                         "Resource": "arn:aws:states:::batch:submitJob.sync",
                         "Parameters": {
                             "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-postdiagnostics-moi",
@@ -1058,6 +1205,15 @@
                 "States": {
                     "Batch SubmitJob Offline Constrained": {
                         "Type": "Task",
+                        "ResultSelector": {
+                            "container_command.$": "$.Container.Command",
+                            "log_stream.$": "$.Container.LogStreamName",
+                            "job_name.$": "$.JobName",
+                            "job_id.$": "$.JobId",
+                            "created_at.$": "$.CreatedAt",
+                            "started_at.$": "$.StartedAt",
+                            "stopped_at.$": "$.StoppedAt"
+                        },
                         "Resource": "arn:aws:states:::batch:submitJob.sync",
                         "Parameters": {
                             "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-offline",
@@ -1120,6 +1276,15 @@
                 "States": {
                     "Batch SubmitJob Offline Unconstrained": {
                         "Type": "Task",
+                        "ResultSelector": {
+                            "container_command.$": "$.Container.Command",
+                            "log_stream.$": "$.Container.LogStreamName",
+                            "job_name.$": "$.JobName",
+                            "job_id.$": "$.JobId",
+                            "created_at.$": "$.CreatedAt",
+                            "started_at.$": "$.StartedAt",
+                            "stopped_at.$": "$.StoppedAt"
+                        },
                         "Resource": "arn:aws:states:::batch:submitJob.sync",
                         "Parameters": {
                             "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-offline",
@@ -1197,6 +1362,15 @@
                 "States": {
                     "Batch SubmitJob Validation Constrained": {
                         "Type": "Task",
+                        "ResultSelector": {
+                            "container_command.$": "$.Container.Command",
+                            "log_stream.$": "$.Container.LogStreamName",
+                            "job_name.$": "$.JobName",
+                            "job_id.$": "$.JobId",
+                            "created_at.$": "$.CreatedAt",
+                            "started_at.$": "$.StartedAt",
+                            "stopped_at.$": "$.StoppedAt"
+                        },
                         "Resource": "arn:aws:states:::batch:submitJob.sync",
                         "Parameters": {
                             "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-validation",
@@ -1257,6 +1431,15 @@
                 "States": {
                     "Batch SubmitJob Validation Unconstrained": {
                         "Type": "Task",
+                        "ResultSelector": {
+                            "container_command.$": "$.Container.Command",
+                            "log_stream.$": "$.Container.LogStreamName",
+                            "job_name.$": "$.JobName",
+                            "job_id.$": "$.JobId",
+                            "created_at.$": "$.CreatedAt",
+                            "started_at.$": "$.StartedAt",
+                            "stopped_at.$": "$.StoppedAt"
+                        },
                         "Resource": "arn:aws:states:::batch:submitJob.sync",
                         "Parameters": {
                             "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-validation",
@@ -1332,6 +1515,15 @@
                 "States": {
                     "Batch SubmitJob Output Constrained": {
                         "Type": "Task",
+                        "ResultSelector": {
+                            "container_command.$": "$.Container.Command",
+                            "log_stream.$": "$.Container.LogStreamName",
+                            "job_name.$": "$.JobName",
+                            "job_id.$": "$.JobId",
+                            "created_at.$": "$.CreatedAt",
+                            "started_at.$": "$.StartedAt",
+                            "stopped_at.$": "$.StoppedAt"
+                        },
                         "Resource": "arn:aws:states:::batch:submitJob.sync",
                         "Parameters": {
                             "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-output",
@@ -1412,6 +1604,15 @@
                 "States": {
                     "Batch SubmitJob Output Unconstrained": {
                         "Type": "Task",
+                        "ResultSelector": {
+                            "container_command.$": "$.Container.Command",
+                            "log_stream.$": "$.Container.LogStreamName",
+                            "job_name.$": "$.JobName",
+                            "job_id.$": "$.JobId",
+                            "created_at.$": "$.CreatedAt",
+                            "started_at.$": "$.StartedAt",
+                            "stopped_at.$": "$.StoppedAt"
+                        },
                         "Resource": "arn:aws:states:::batch:submitJob.sync",
                         "Parameters": {
                             "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-output",
