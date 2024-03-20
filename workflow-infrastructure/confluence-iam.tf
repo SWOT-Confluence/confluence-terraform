@@ -295,7 +295,7 @@ resource "aws_iam_policy" "batch_job_ssm_policy" {
           "kms:DescribeKey",
           "kms:Decrypt"
         ],
-        "Resource" : "${data.aws_kms_key.ssm_key.arn}"
+        "Resource" : "${aws_kms_key.kms_key_ssm.arn}"
       }
     ]
   })
