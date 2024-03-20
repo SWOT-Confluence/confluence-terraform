@@ -306,6 +306,24 @@ resource "aws_efs_mount_target" "efs_mt_d_in" {
   ]
 }
 
+# Enable Renew access point
+resource "aws_efs_access_point" "generate_efs_ap_in" {
+  file_system_id = aws_efs_file_system.efs_fs_in.id
+  tags           = { Name = "${var.prefix}-enable-renew" }
+  posix_user {
+    gid = 0
+    uid = 0
+  }
+  root_directory {
+    creation_info {
+      owner_gid   = 1000
+      owner_uid   = 1000
+      permissions = 0755
+    }
+    path = "/"
+  }
+}
+
 # flpe
 resource "aws_efs_file_system" "efs_fs_flpe" {
   creation_token   = "${var.prefix}-flpe"
