@@ -78,7 +78,3 @@ mkdir -p /mnt/output/sos
 mkdir -p /mnt/validation/figs
 
 chown -R ec2-user /mnt/*
-
-# Install NetCDF library
-sudo amazon-linux-extras install epel -y
-sudo yum install -y netcdf
