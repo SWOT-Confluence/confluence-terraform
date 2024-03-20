@@ -75,6 +75,8 @@ mkdir -p /mnt/logs/sic4dvar
 
 mkdir -p /mnt/output/sos
 
+mkdir -p /mnt/validation/figs
+
 chown -R ec2-user /mnt/*
 
 # Install NetCDF library
