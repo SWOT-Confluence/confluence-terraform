@@ -1029,9 +1029,24 @@
                 "MaxInputBytesPerBatch": 131072,
                 "MaxItemsPerBatch": 1
             },
-            "Next": "Moi"
+            "Next": "Moi Choice"
         },
-        "Moi": {
+        "Moi Choice": {
+            "Type": "Choice",
+            "Choices": [
+                {
+                    "Variable": "$.run_type",
+                    "StringEquals": "constrained",
+                    "Next": "Moi Constrained"
+                },
+                {
+                    "Variable": "$.run_type",
+                    "StringEquals": "unconstrained",
+                    "Next": "Moi Unconstrained"
+                }
+            ]
+        },
+        "Moi Constrained": {
             "Type": "Map",
             "OutputPath": "$",
             "ResultPath": "$.moi",
@@ -1045,9 +1060,9 @@
                     "Mode": "DISTRIBUTED",
                     "ExecutionType": "STANDARD"
                 },
-                "StartAt": "Batch SubmitJob Moi",
+                "StartAt": "Batch SubmitJob Moi Constrained",
                 "States": {
-                    "Batch SubmitJob Moi": {
+                    "Batch SubmitJob Moi Constrained": {
                         "Type": "Task",
                         "ResultSelector": {
                             "container_command.$": "$.Container.Command",
@@ -1094,7 +1109,77 @@
                 }
             },
             "MaxConcurrency": 10,
-            "Label": "moi",
+            "Label": "moi_constrained",
+            "ItemBatcher": {
+                "MaxInputBytesPerBatch": 131072,
+                "MaxItemsPerBatch": 1
+            },
+            "Next": "Postdiagnostics MOI"
+        },
+        "Moi Unconstrained": {
+            "Type": "Map",
+            "OutputPath": "$",
+            "ResultPath": "$.moi",
+            "ItemSelector": {
+                "context_index.$": "$$.Map.Item.Index",
+                "context_value.$": "$$.Map.Item.Value",
+                "version.$": "$.version"
+            },
+            "ItemProcessor": {
+                "ProcessorConfig": {
+                    "Mode": "DISTRIBUTED",
+                    "ExecutionType": "STANDARD"
+                },
+                "StartAt": "Batch SubmitJob Moi Unconstrained",
+                "States": {
+                    "Batch SubmitJob Moi Unconstrained": {
+                        "Type": "Task",
+                        "ResultSelector": {
+                            "container_command.$": "$.Container.Command",
+                            "log_stream.$": "$.Container.LogStreamName",
+                            "job_name.$": "$.JobName",
+                            "job_id.$": "$.JobId",
+                            "created_at.$": "$.CreatedAt",
+                            "started_at.$": "$.StartedAt",
+                            "stopped_at.$": "$.StoppedAt"
+                        },
+                        "Resource": "arn:aws:states:::batch:submitJob.sync",
+                        "Parameters": {
+                            "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-moi",
+                            "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-moi",
+                            "PropagateTags": true,
+                            "Tags": {
+                                "job.$": "States.Format('confluence-moi-{}-{}',$.Items[0].version, $.Items[0].context_value.basin_id)"
+                            },
+                            "ContainerOverrides": {
+                                "Command": [
+                                    "basin.json",
+                                    "-v",
+                                    "unconstrained",
+                                    "Ref::index"
+                                ]
+                            },
+                            "JobName.$": "States.Format('confluence-moi-{}-{}',$.Items[0].version, $.Items[0].context_value.basin_id)",
+                            "Parameters": {
+                                "index.$": "States.Format('{}',$.Items[0].context_index)"
+                            }
+                        },
+                        "End": true
+                    }
+                }
+            },
+            "ItemReader": {
+                "Resource": "arn:aws:states:::s3:getObject",
+                "ReaderConfig": {
+                    "InputType": "JSON"
+                },
+                "Parameters": {
+                    "Bucket": "${prefix}-json",
+                    "Key": "basin.json"
+                }
+            },
+            "MaxConcurrency": 10,
+            "Label": "moi_unconstrained",
             "ItemBatcher": {
                 "MaxInputBytesPerBatch": 131072,
                 "MaxItemsPerBatch": 1
