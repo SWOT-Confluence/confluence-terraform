@@ -69,7 +69,8 @@ mkdir -p /mnt/flpe/sic4dvar
 mkdir -p /mnt/input/gage
 mkdir -p /mnt/input/sos
 mkdir -p /mnt/input/sword
-mkdir -p /mnt/input/swot
+mkdir -p /mnt/input/swot/creation_logs
+
 
 mkdir -p /mnt/logs/sic4dvar
 
