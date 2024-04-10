@@ -334,7 +334,7 @@
                             "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-prediagnostics",
                             "PropagateTags": true,
                             "Tags": {
-                                "job.$": "States.Format('confluence-input-{}-{}',$.version, $.context_value.reach_id)"
+                                "job.$": "States.Format('confluence-prediagnostics-{}-{}',$.version, $.context_value.reach_id)"
                             },
                             "ContainerOverrides": {
                                 "Command": [
@@ -342,7 +342,7 @@
                                     "reaches.json"
                                 ]
                             },
-                            "JobName.$": "States.Format('confluence-input-{}-{}',$.version, $.context_value.reach_id)",
+                            "JobName.$": "States.Format('confluence-prediagnostics-{}-{}',$.version, $.context_value.reach_id)",
                             "Parameters": {
                                 "index.$": "States.Format('{}',$.context_index)"
                             }
