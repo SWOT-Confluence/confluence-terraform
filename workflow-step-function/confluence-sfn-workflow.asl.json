@@ -113,12 +113,9 @@
                     "Key": "continent-datagen.json"
                 }
             },
-            "MaxConcurrency": 10,
+            "MaxConcurrency": 0,
             "Label": "datagen",
-            "ItemBatcher": {
-                "MaxInputBytesPerBatch": 131072,
-                "MaxItemsPerBatch": 1
-            },
+            
             "Next": "Combine Data"
         },
         "Combine Data": {
@@ -228,12 +225,8 @@
                     "Key": "reaches.json"
                 }
             },
-            "MaxConcurrency": 10,
+            "MaxConcurrency": 0,
             "Label": "input",
-            "ItemBatcher": {
-                "MaxInputBytesPerBatch": 131072,
-                "MaxItemsPerBatch": 1
-            },
             "Next": "Disable Renew"
         },
         "Disable Renew": {
@@ -330,12 +323,8 @@
                     "Key": "reaches.json"
                 }
             },
-            "MaxConcurrency": 10,
+            "MaxConcurrency": 0,
             "Label": "prediagnostics",
-            "ItemBatcher": {
-                "MaxInputBytesPerBatch": 131072,
-                "MaxItemsPerBatch": 1
-            },
             "Next": "Priors Choice"
         },
         "Priors Choice": {
@@ -423,12 +412,8 @@
                     "Key": "continent.json"
                 }
             },
-            "MaxConcurrency": 10,
+            "MaxConcurrency": 0,
             "Label": "priorsConstrained",
-            "ItemBatcher": {
-                "MaxInputBytesPerBatch": 131072,
-                "MaxItemsPerBatch": 1
-            },
             "Next": "FLPE"
         },
         "Priors Unconstrained": {
@@ -501,12 +486,8 @@
                     "Key": "continent.json"
                 }
             },
-            "MaxConcurrency": 10,
+            "MaxConcurrency": 0,
             "Label": "priorsUnconstrained",
-            "ItemBatcher": {
-                "MaxInputBytesPerBatch": 131072,
-                "MaxItemsPerBatch": 1
-            },
             "Next": "FLPE"
         },
         "FLPE": {
@@ -1023,12 +1004,8 @@
                     "Key": "reaches.json"
                 }
             },
-            "MaxConcurrency": 10,
+            "MaxConcurrency": 0,
             "Label": "postdiagnostics-flpe",
-            "ItemBatcher": {
-                "MaxInputBytesPerBatch": 131072,
-                "MaxItemsPerBatch": 1
-            },
             "Next": "Moi Choice"
         },
         "Moi Choice": {
@@ -1108,12 +1085,8 @@
                     "Key": "basin.json"
                 }
             },
-            "MaxConcurrency": 10,
+            "MaxConcurrency": 0,
             "Label": "moi_constrained",
-            "ItemBatcher": {
-                "MaxInputBytesPerBatch": 131072,
-                "MaxItemsPerBatch": 1
-            },
             "Next": "Postdiagnostics MOI"
         },
         "Moi Unconstrained": {
@@ -1178,12 +1151,8 @@
                     "Key": "basin.json"
                 }
             },
-            "MaxConcurrency": 10,
+            "MaxConcurrency": 0,
             "Label": "moi_unconstrained",
-            "ItemBatcher": {
-                "MaxInputBytesPerBatch": 131072,
-                "MaxItemsPerBatch": 1
-            },
             "Next": "Postdiagnostics MOI"
         },
         "Postdiagnostics MOI": {
@@ -1249,12 +1218,8 @@
                     "Key": "reaches.json"
                 }
             },
-            "MaxConcurrency": 10,
+            "MaxConcurrency": 0,
             "Label": "postdiagnostics-moi",
-            "ItemBatcher": {
-                "MaxInputBytesPerBatch": 131072,
-                "MaxItemsPerBatch": 1
-            },
             "Next": "Offline Choice"
         },
         "Offline Choice": {
@@ -1335,12 +1300,8 @@
                     "Key": "reaches.json"
                 }
             },
-            "MaxConcurrency": 10,
+            "MaxConcurrency": 0,
             "Label": "offlineConstrained",
-            "ItemBatcher": {
-                "MaxInputBytesPerBatch": 131072,
-                "MaxItemsPerBatch": 1
-            },
             "Next": "Validation Choice"
         },
         "Offline Unconstrained": {
@@ -1406,12 +1367,8 @@
                     "Key": "reaches.json"
                 }
             },
-            "MaxConcurrency": 10,
+            "MaxConcurrency": 0,
             "Label": "offlineUnconstrained",
-            "ItemBatcher": {
-                "MaxInputBytesPerBatch": 131072,
-                "MaxItemsPerBatch": 1
-            },
             "Next": "Validation Choice"
         },
         "Validation Choice": {
@@ -1490,12 +1447,8 @@
                     "Key": "reaches.json"
                 }
             },
-            "MaxConcurrency": 10,
+            "MaxConcurrency": 0,
             "Label": "validationConstrained",
-            "ItemBatcher": {
-                "MaxInputBytesPerBatch": 131072,
-                "MaxItemsPerBatch": 1
-            },
             "Next": "Output Choice"
         },
         "Validation Unconstrained": {
@@ -1559,12 +1512,8 @@
                     "Key": "reaches.json"
                 }
             },
-            "MaxConcurrency": 10,
+            "MaxConcurrency": 0,
             "Label": "validationUnconstrained",
-            "ItemBatcher": {
-                "MaxInputBytesPerBatch": 131072,
-                "MaxItemsPerBatch": 1
-            },
             "Next": "Output Choice"
         },
         "Output Choice": {
@@ -1663,12 +1612,8 @@
                     "Key": "continent.json"
                 }
             },
-            "MaxConcurrency": 10,
+            "MaxConcurrency": 0,
             "Label": "outputConstrained",
-            "ItemBatcher": {
-                "MaxInputBytesPerBatch": 131072,
-                "MaxItemsPerBatch": 1
-            },
             "Next": "Successful Run"
         },
         "Output Unconstrained": {
@@ -1749,12 +1694,8 @@
                     "Key": "continent.json"
                 }
             },
-            "MaxConcurrency": 10,
+            "MaxConcurrency": 0,
             "Label": "outputUnconstrained",
-            "ItemBatcher": {
-                "MaxInputBytesPerBatch": 131072,
-                "MaxItemsPerBatch": 1
-            },
             "Next": "Successful Run"
         },
         "Successful Run": {
