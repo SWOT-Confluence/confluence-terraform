@@ -551,12 +551,7 @@
                                     "Key": "hivdisets.json"
                                 }
                             },
-                            "MaxConcurrency": 100,
                             "Label": "hivdi",
-                            "ItemBatcher": {
-                                "MaxInputBytesPerBatch": 131072,
-                                "MaxItemsPerBatch": 1
-                            },
                             "End": true
                         }
                     }
@@ -625,12 +620,7 @@
                                     "Key": "metrosets.json"
                                 }
                             },
-                            "MaxConcurrency": 100,
                             "Label": "metroman",
-                            "ItemBatcher": {
-                                "MaxInputBytesPerBatch": 131072,
-                                "MaxItemsPerBatch": 1
-                            },
                             "End": true
                         }
                     }
@@ -698,12 +688,7 @@
                                     "Key": "reaches.json"
                                 }
                             },
-                            "MaxConcurrency": 100,
                             "Label": "momma",
-                            "ItemBatcher": {
-                                "MaxInputBytesPerBatch": 131072,
-                                "MaxItemsPerBatch": 1
-                            },
                             "End": true
                         }
                     }
@@ -771,12 +756,7 @@
                                     "Key": "reaches.json"
                                 }
                             },
-                            "MaxConcurrency": 100,
                             "Label": "neobam",
-                            "ItemBatcher": {
-                                "MaxInputBytesPerBatch": 131072,
-                                "MaxItemsPerBatch": 1
-                            },
                             "End": true
                         }
                     }
@@ -844,12 +824,7 @@
                                     "Key": "reaches.json"
                                 }
                             },
-                            "MaxConcurrency": 100,
                             "Label": "sad",
-                            "ItemBatcher": {
-                                "MaxInputBytesPerBatch": 131072,
-                                "MaxItemsPerBatch": 1
-                            },
                             "End": true
                         }
                     }
@@ -922,12 +897,7 @@
                                     "Key": "sicsets.json"
                                 }
                             },
-                            "MaxConcurrency": 100,
                             "Label": "sic4dvar",
-                            "ItemBatcher": {
-                                "MaxInputBytesPerBatch": 131072,
-                                "MaxItemsPerBatch": 1
-                            },
                             "End": true
                         }
                     }
