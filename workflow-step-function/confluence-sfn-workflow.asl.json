@@ -26,9 +26,24 @@
                 }
             ],
             "TimeoutSeconds": 600,
-            "Next": "Datagen"
+            "Next": "Datagen Choice"
         },
-        "Datagen": {
+        "Datagen Choice": {
+            "Type": "Choice",
+            "Choices": [
+                {
+                    "Variable": "$.reach_subset_file",
+                    "IsPresent": true,
+                    "Next": "Datagen Reach Subset"
+                },
+                {
+                    "Variable": "$.reach_subset_file",
+                    "IsPresent": false,
+                    "Next": "Datagen Global"
+                }
+            ]
+        },
+        "Datagen Reach Subset": {
             "Type": "Map",
             "ToleratedFailurePercentagePath": "$.tolerated_failure_percentage",
             "ResultPath": null,
@@ -46,9 +61,9 @@
                     "Mode": "DISTRIBUTED",
                     "ExecutionType": "STANDARD"
                 },
-                "StartAt": "Batch SubmitJob Datagen",
+                "StartAt": "Batch SubmitJob Datagen Reach Subset",
                 "States": {
-                    "Batch SubmitJob Datagen": {
+                    "Batch SubmitJob Datagen Reach Subset": {
                         "Type": "Task",
                         "Resource": "arn:aws:states:::batch:submitJob.sync",
                         "Parameters": {
@@ -103,7 +118,81 @@
                     "Key": "continent-datagen.json"
                 }
             },
-            "Label": "datagen",
+            "Label": "datagen_reach_subset",
+            "Next": "Combine Data"
+        },
+        "Datagen Global": {
+            "Type": "Map",
+            "ToleratedFailurePercentagePath": "$.tolerated_failure_percentage",
+            "ResultPath": null,
+            "ItemSelector": {
+                "context_index.$": "$$.Map.Item.Index",
+                "context_value.$": "$$.Map.Item.Value",
+                "collection.$": "$.collection",
+                "start_time.$": "$.start_time",
+                "end_time.$": "$.end_time",
+                "version.$": "$.version"
+            },
+            "ItemProcessor": {
+                "ProcessorConfig": {
+                    "Mode": "DISTRIBUTED",
+                    "ExecutionType": "STANDARD"
+                },
+                "StartAt": "Batch SubmitJob Datagen Global",
+                "States": {
+                    "Batch SubmitJob Datagen Global": {
+                        "Type": "Task",
+                        "Resource": "arn:aws:states:::batch:submitJob.sync",
+                        "Parameters": {
+                            "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-datagen",
+                            "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-datagen",
+                            "PropagateTags": true,
+                            "Tags": {
+                                "job.$": "States.Format('confluence-datagen-{}-{}', $.version, $.context_index)"
+                            },
+                            "ContainerOverrides": {
+                                "Command": [
+                                    "-c",
+                                    "river",
+                                    "-i",
+                                    "Ref::index",
+                                    "-p",
+                                    "POCLOUD",
+                                    "-s",
+                                    "Ref::collection",
+                                    "-t",
+                                    "Ref::datequery",
+                                    "-d",
+                                    "/data",
+                                    "-k",
+                                    "${ssm_key_id}",
+                                    "-b",
+                                    "-w",
+                                    "/data/sword_patches_v215.json"
+                                ]
+                            },
+                            "JobName.$": "States.Format('confluence-datagen-{}-{}', $.version, $.context_index)",
+                            "Parameters": {
+                                "collection.$": "$.collection",
+                                "datequery.$": "States.Format('{},{}', $.start_time, $.end_time)",
+                                "index.$": "States.Format('{}', $.context_index)"
+                            }
+                        },
+                        "End": true
+                    }
+                }
+            },
+            "ItemReader": {
+                "Resource": "arn:aws:states:::s3:getObject",
+                "ReaderConfig": {
+                    "InputType": "JSON"
+                },
+                "Parameters": {
+                    "Bucket": "${prefix}-json",
+                    "Key": "continent-datagen.json"
+                }
+            },
+            "Label": "datagen_global",
             "Next": "Combine Data"
         },
         "Combine Data": {
