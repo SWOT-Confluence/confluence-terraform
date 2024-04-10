@@ -5,7 +5,6 @@
         "Enable Renew": {
             "Type": "Task",
             "Resource": "arn:aws:states:::lambda:invoke.waitForTaskToken",
-            "OutputPath": "$",
             "ResultPath": null,
             "Parameters": {
                 "FunctionName": "arn:aws:lambda:${aws_region}:${account_id}:function:${prefix}-enable-renew:$LATEST",
@@ -32,8 +31,7 @@
         "Datagen": {
             "Type": "Map",
             "ToleratedFailurePercentagePath": "$.tolerated_failure_percentage",
-            "OutputPath": "$",
-            "ResultPath": "$.datagen",
+            "ResultPath": null,
             "ItemSelector": {
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
@@ -52,15 +50,6 @@
                 "States": {
                     "Batch SubmitJob Datagen": {
                         "Type": "Task",
-                        "ResultSelector": {
-                            "container_command.$": "$.Container.Command",
-                            "log_stream.$": "$.Container.LogStreamName",
-                            "job_name.$": "$.JobName",
-                            "job_id.$": "$.JobId",
-                            "created_at.$": "$.CreatedAt",
-                            "started_at.$": "$.StartedAt",
-                            "stopped_at.$": "$.StoppedAt"
-                        },
                         "Resource": "arn:aws:states:::batch:submitJob.sync",
                         "Parameters": {
                             "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-datagen",
@@ -120,17 +109,7 @@
         "Combine Data": {
             "Type": "Task",
             "Resource": "arn:aws:states:::batch:submitJob.sync",
-            "OutputPath": "$",
-            "ResultPath": "$.combine_data",
-            "ResultSelector": {
-                "container_command.$": "$.Container.Command",
-                "log_stream.$": "$.Container.LogStreamName",
-                "job_name.$": "$.JobName",
-                "job_id.$": "$.JobId",
-                "created_at.$": "$.CreatedAt",
-                "started_at.$": "$.StartedAt",
-                "stopped_at.$": "$.StoppedAt"
-            },
+            "ResultPath": null,
             "Parameters": {
                 "JobName.$": "States.Format('confluence-combine-data-{}',$.version)",
                 "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-combine-data",
@@ -155,8 +134,7 @@
         "Input": {
             "Type": "Map",
             "ToleratedFailurePercentagePath": "$.tolerated_failure_percentage",
-            "OutputPath": "$",
-            "ResultPath": "$.input",
+            "ResultPath": null,
             "ItemSelector": {
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
@@ -171,15 +149,6 @@
                 "States": {
                     "Batch SubmitJob Input": {
                         "Type": "Task",
-                        "ResultSelector": {
-                            "container_command.$": "$.Container.Command",
-                            "log_stream.$": "$.Container.LogStreamName",
-                            "job_name.$": "$.JobName",
-                            "job_id.$": "$.JobId",
-                            "created_at.$": "$.CreatedAt",
-                            "started_at.$": "$.StartedAt",
-                            "stopped_at.$": "$.StoppedAt"
-                        },
                         "Resource": "arn:aws:states:::batch:submitJob.sync",
                         "Parameters": {
                             "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-input",
@@ -231,17 +200,7 @@
         "Disable Renew": {
             "Type": "Task",
             "Resource": "arn:aws:states:::batch:submitJob.sync",
-            "OutputPath": "$",
-            "ResultPath": "$.disable_renew",
-            "ResultSelector": {
-                "container_command.$": "$.Container.Command",
-                "log_stream.$": "$.Container.LogStreamName",
-                "job_name.$": "$.JobName",
-                "job_id.$": "$.JobId",
-                "created_at.$": "$.CreatedAt",
-                "started_at.$": "$.StartedAt",
-                "stopped_at.$": "$.StoppedAt"
-            },
+            "ResultPath": null,
             "Parameters": {
                 "JobName.$": "States.Format('confluence-disable-renew-{}', $.version)",
                 "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-disable-renew",
@@ -265,8 +224,7 @@
         "Prediagnostics": {
             "Type": "Map",
             "ToleratedFailurePercentagePath": "$.tolerated_failure_percentage",
-            "OutputPath": "$",
-            "ResultPath": "$.prediagnostics",
+            "ResultPath": null,
             "ItemSelector": {
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
@@ -281,15 +239,6 @@
                 "States": {
                     "Batch SubmitJob Prediagnostics": {
                         "Type": "Task",
-                        "ResultSelector": {
-                            "container_command.$": "$.Container.Command",
-                            "log_stream.$": "$.Container.LogStreamName",
-                            "job_name.$": "$.JobName",
-                            "job_id.$": "$.JobId",
-                            "created_at.$": "$.CreatedAt",
-                            "started_at.$": "$.StartedAt",
-                            "stopped_at.$": "$.StoppedAt"
-                        },
                         "Resource": "arn:aws:states:::batch:submitJob.sync",
                         "Parameters": {
                             "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-prediagnostics",
@@ -344,8 +293,7 @@
         "Priors Constrained": {
             "Type": "Map",
             "ToleratedFailurePercentagePath": "$.tolerated_failure_percentage",
-            "OutputPath": "$",
-            "ResultPath": "$.priors_constrained",
+            "ResultPath": null,
             "ItemSelector": {
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
@@ -360,15 +308,6 @@
                 "States": {
                     "Batch SubmitJob Priors Constrained": {
                         "Type": "Task",
-                        "ResultSelector": {
-                            "container_command.$": "$.Container.Command",
-                            "log_stream.$": "$.Container.LogStreamName",
-                            "job_name.$": "$.JobName",
-                            "job_id.$": "$.JobId",
-                            "created_at.$": "$.CreatedAt",
-                            "started_at.$": "$.StartedAt",
-                            "stopped_at.$": "$.StoppedAt"
-                        },
                         "Resource": "arn:aws:states:::batch:submitJob.sync",
                         "Parameters": {
                             "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-priors",
@@ -418,8 +357,7 @@
         "Priors Unconstrained": {
             "Type": "Map",
             "ToleratedFailurePercentagePath": "$.tolerated_failure_percentage",
-            "OutputPath": "$",
-            "ResultPath": "$.priors_unconstrained",
+            "ResultPath": null,
             "ItemSelector": {
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
@@ -434,15 +372,6 @@
                 "States": {
                     "Batch SubmitJob Priors Unconstrained": {
                         "Type": "Task",
-                        "ResultSelector": {
-                            "container_command.$": "$.Container.Command",
-                            "log_stream.$": "$.Container.LogStreamName",
-                            "job_name.$": "$.JobName",
-                            "job_id.$": "$.JobId",
-                            "created_at.$": "$.CreatedAt",
-                            "started_at.$": "$.StartedAt",
-                            "stopped_at.$": "$.StoppedAt"
-                        },
                         "Resource": "arn:aws:states:::batch:submitJob.sync",
                         "Parameters": {
                             "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-priors",
@@ -491,7 +420,7 @@
         },
         "FLPE": {
             "Type": "Parallel",
-            "ResultPath": "$.flpe",
+            "ResultPath": null,
             "Branches": [
                 {
                     "StartAt": "Hivdi",
@@ -499,8 +428,7 @@
                         "Hivdi": {
                             "Type": "Map",
                             "ToleratedFailurePercentagePath": "$.tolerated_failure_percentage",
-                            "OutputPath": "$",
-                            "ResultPath": "$.hivdi",
+                            "ResultPath": null,
                             "ItemSelector": {
                                 "context_index.$": "$$.Map.Item.Index",
                                 "context_value.$": "$$.Map.Item.Value",
@@ -515,15 +443,6 @@
                                 "States": {
                                     "Batch SubmitJob Hivdi": {
                                         "Type": "Task",
-                                        "ResultSelector": {
-                                            "container_command.$": "$.Container.Command",
-                                            "log_stream.$": "$.Container.LogStreamName",
-                                            "job_name.$": "$.JobName",
-                                            "job_id.$": "$.JobId",
-                                            "created_at.$": "$.CreatedAt",
-                                            "started_at.$": "$.StartedAt",
-                                            "stopped_at.$": "$.StoppedAt"
-                                        },
                                         "Resource": "arn:aws:states:::batch:submitJob.sync",
                                         "Parameters": {
                                             "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-hivdi",
@@ -568,8 +487,7 @@
                         "Metroman": {
                             "Type": "Map",
                             "ToleratedFailurePercentagePath": "$.tolerated_failure_percentage",
-                            "OutputPath": "$",
-                            "ResultPath": "$.metroman",
+                            "ResultPath": null,
                             "ItemSelector": {
                                 "context_index.$": "$$.Map.Item.Index",
                                 "context_value.$": "$$.Map.Item.Value",
@@ -584,15 +502,6 @@
                                 "States": {
                                     "Batch SubmitJob Metroman": {
                                         "Type": "Task",
-                                        "ResultSelector": {
-                                            "container_command.$": "$.Container.Command",
-                                            "log_stream.$": "$.Container.LogStreamName",
-                                            "job_name.$": "$.JobName",
-                                            "job_id.$": "$.JobId",
-                                            "created_at.$": "$.CreatedAt",
-                                            "started_at.$": "$.StartedAt",
-                                            "stopped_at.$": "$.StoppedAt"
-                                        },
                                         "Resource": "arn:aws:states:::batch:submitJob.sync",
                                         "Parameters": {
                                             "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-metroman",
@@ -638,8 +547,7 @@
                         "Momma": {
                             "Type": "Map",
                             "ToleratedFailurePercentagePath": "$.tolerated_failure_percentage",
-                            "OutputPath": "$",
-                            "ResultPath": "$.momma",
+                            "ResultPath": null,
                             "ItemSelector": {
                                 "context_index.$": "$$.Map.Item.Index",
                                 "context_value.$": "$$.Map.Item.Value",
@@ -654,15 +562,6 @@
                                 "States": {
                                     "Batch SubmitJob Momma": {
                                         "Type": "Task",
-                                        "ResultSelector": {
-                                            "container_command.$": "$.Container.Command",
-                                            "log_stream.$": "$.Container.LogStreamName",
-                                            "job_name.$": "$.JobName",
-                                            "job_id.$": "$.JobId",
-                                            "created_at.$": "$.CreatedAt",
-                                            "started_at.$": "$.StartedAt",
-                                            "stopped_at.$": "$.StoppedAt"
-                                        },
                                         "Resource": "arn:aws:states:::batch:submitJob.sync",
                                         "Parameters": {
                                             "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-momma",
@@ -707,8 +606,7 @@
                         "Neobam": {
                             "Type": "Map",
                             "ToleratedFailurePercentagePath": "$.tolerated_failure_percentage",
-                            "OutputPath": "$",
-                            "ResultPath": "$.neobam",
+                            "ResultPath": null,
                             "ItemSelector": {
                                 "context_index.$": "$$.Map.Item.Index",
                                 "context_value.$": "$$.Map.Item.Value",
@@ -723,15 +621,6 @@
                                 "States": {
                                     "Batch SubmitJob Neobam": {
                                         "Type": "Task",
-                                        "ResultSelector": {
-                                            "container_command.$": "$.Container.Command",
-                                            "log_stream.$": "$.Container.LogStreamName",
-                                            "job_name.$": "$.JobName",
-                                            "job_id.$": "$.JobId",
-                                            "created_at.$": "$.CreatedAt",
-                                            "started_at.$": "$.StartedAt",
-                                            "stopped_at.$": "$.StoppedAt"
-                                        },
                                         "Resource": "arn:aws:states:::batch:submitJob.sync",
                                         "Parameters": {
                                             "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-neobam",
@@ -776,8 +665,7 @@
                         "Sad": {
                             "Type": "Map",
                             "ToleratedFailurePercentagePath": "$.tolerated_failure_percentage",
-                            "OutputPath": "$",
-                            "ResultPath": "$.sad",
+                            "ResultPath": null,
                             "ItemSelector": {
                                 "context_index.$": "$$.Map.Item.Index",
                                 "context_value.$": "$$.Map.Item.Value",
@@ -792,15 +680,6 @@
                                 "States": {
                                     "Batch SubmitJob Sad": {
                                         "Type": "Task",
-                                        "ResultSelector": {
-                                            "container_command.$": "$.Container.Command",
-                                            "log_stream.$": "$.Container.LogStreamName",
-                                            "job_name.$": "$.JobName",
-                                            "job_id.$": "$.JobId",
-                                            "created_at.$": "$.CreatedAt",
-                                            "started_at.$": "$.StartedAt",
-                                            "stopped_at.$": "$.StoppedAt"
-                                        },
                                         "Resource": "arn:aws:states:::batch:submitJob.sync",
                                         "Parameters": {
                                             "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-sad",
@@ -845,8 +724,7 @@
                         "Sic4dvar": {
                             "Type": "Map",
                             "ToleratedFailurePercentagePath": "$.tolerated_failure_percentage",
-                            "OutputPath": "$",
-                            "ResultPath": "$.sic4dvar",
+                            "ResultPath": null,
                             "ItemSelector": {
                                 "context_index.$": "$$.Map.Item.Index",
                                 "context_value.$": "$$.Map.Item.Value",
@@ -861,15 +739,6 @@
                                 "States": {
                                     "Batch SubmitJob Sic4dvar": {
                                         "Type": "Task",
-                                        "ResultSelector": {
-                                            "container_command.$": "$.Container.Command",
-                                            "log_stream.$": "$.Container.LogStreamName",
-                                            "job_name.$": "$.JobName",
-                                            "job_id.$": "$.JobId",
-                                            "created_at.$": "$.CreatedAt",
-                                            "started_at.$": "$.StartedAt",
-                                            "stopped_at.$": "$.StoppedAt"
-                                        },
                                         "Resource": "arn:aws:states:::batch:submitJob.sync",
                                         "Parameters": {
                                             "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-sic4dvar",
@@ -919,8 +788,7 @@
         "Postdiagnostics FLPE": {
             "Type": "Map",
             "ToleratedFailurePercentagePath": "$.tolerated_failure_percentage",
-            "OutputPath": "$",
-            "ResultPath": "$.postdiagnostics_flpe",
+            "ResultPath": null,
             "ItemSelector": {
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
@@ -935,15 +803,6 @@
                 "States": {
                     "Batch SubmitJob Postdiagnostics FLPE": {
                         "Type": "Task",
-                        "ResultSelector": {
-                            "container_command.$": "$.Container.Command",
-                            "log_stream.$": "$.Container.LogStreamName",
-                            "job_name.$": "$.JobName",
-                            "job_id.$": "$.JobId",
-                            "created_at.$": "$.CreatedAt",
-                            "started_at.$": "$.StartedAt",
-                            "stopped_at.$": "$.StoppedAt"
-                        },
                         "Resource": "arn:aws:states:::batch:submitJob.sync",
                         "Parameters": {
                             "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-postdiagnostics-flpe",
@@ -1001,8 +860,7 @@
         "Moi Constrained": {
             "Type": "Map",
             "ToleratedFailurePercentagePath": "$.tolerated_failure_percentage",
-            "OutputPath": "$",
-            "ResultPath": "$.moi",
+            "ResultPath": null,
             "ItemSelector": {
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
@@ -1017,15 +875,6 @@
                 "States": {
                     "Batch SubmitJob Moi Constrained": {
                         "Type": "Task",
-                        "ResultSelector": {
-                            "container_command.$": "$.Container.Command",
-                            "log_stream.$": "$.Container.LogStreamName",
-                            "job_name.$": "$.JobName",
-                            "job_id.$": "$.JobId",
-                            "created_at.$": "$.CreatedAt",
-                            "started_at.$": "$.StartedAt",
-                            "stopped_at.$": "$.StoppedAt"
-                        },
                         "Resource": "arn:aws:states:::batch:submitJob.sync",
                         "Parameters": {
                             "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-moi",
@@ -1067,8 +916,7 @@
         "Moi Unconstrained": {
             "Type": "Map",
             "ToleratedFailurePercentagePath": "$.tolerated_failure_percentage",
-            "OutputPath": "$",
-            "ResultPath": "$.moi",
+            "ResultPath": null,
             "ItemSelector": {
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
@@ -1083,15 +931,6 @@
                 "States": {
                     "Batch SubmitJob Moi Unconstrained": {
                         "Type": "Task",
-                        "ResultSelector": {
-                            "container_command.$": "$.Container.Command",
-                            "log_stream.$": "$.Container.LogStreamName",
-                            "job_name.$": "$.JobName",
-                            "job_id.$": "$.JobId",
-                            "created_at.$": "$.CreatedAt",
-                            "started_at.$": "$.StartedAt",
-                            "stopped_at.$": "$.StoppedAt"
-                        },
                         "Resource": "arn:aws:states:::batch:submitJob.sync",
                         "Parameters": {
                             "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-moi",
@@ -1133,8 +972,7 @@
         "Postdiagnostics MOI": {
             "Type": "Map",
             "ToleratedFailurePercentagePath": "$.tolerated_failure_percentage",
-            "OutputPath": "$",
-            "ResultPath": "$.postdiagnostics_moi",
+            "ResultPath": null,
             "ItemSelector": {
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
@@ -1149,15 +987,6 @@
                 "States": {
                     "Batch SubmitJob Postdiagnostics MOI": {
                         "Type": "Task",
-                        "ResultSelector": {
-                            "container_command.$": "$.Container.Command",
-                            "log_stream.$": "$.Container.LogStreamName",
-                            "job_name.$": "$.JobName",
-                            "job_id.$": "$.JobId",
-                            "created_at.$": "$.CreatedAt",
-                            "started_at.$": "$.StartedAt",
-                            "stopped_at.$": "$.StoppedAt"
-                        },
                         "Resource": "arn:aws:states:::batch:submitJob.sync",
                         "Parameters": {
                             "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-postdiagnostics-moi",
@@ -1215,8 +1044,7 @@
         "Offline Constrained": {
             "Type": "Map",
             "ToleratedFailurePercentagePath": "$.tolerated_failure_percentage",
-            "OutputPath": "$",
-            "ResultPath": "$.offline_constrained",
+            "ResultPath": null,
             "ItemSelector": {
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
@@ -1231,15 +1059,6 @@
                 "States": {
                     "Batch SubmitJob Offline Constrained": {
                         "Type": "Task",
-                        "ResultSelector": {
-                            "container_command.$": "$.Container.Command",
-                            "log_stream.$": "$.Container.LogStreamName",
-                            "job_name.$": "$.JobName",
-                            "job_id.$": "$.JobId",
-                            "created_at.$": "$.CreatedAt",
-                            "started_at.$": "$.StartedAt",
-                            "stopped_at.$": "$.StoppedAt"
-                        },
                         "Resource": "arn:aws:states:::batch:submitJob.sync",
                         "Parameters": {
                             "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-offline",
@@ -1282,8 +1101,7 @@
         "Offline Unconstrained": {
             "Type": "Map",
             "ToleratedFailurePercentagePath": "$.tolerated_failure_percentage",
-            "OutputPath": "$",
-            "ResultPath": "$.offline_unconstrained",
+            "ResultPath": null,
             "ItemSelector": {
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
@@ -1298,15 +1116,6 @@
                 "States": {
                     "Batch SubmitJob Offline Unconstrained": {
                         "Type": "Task",
-                        "ResultSelector": {
-                            "container_command.$": "$.Container.Command",
-                            "log_stream.$": "$.Container.LogStreamName",
-                            "job_name.$": "$.JobName",
-                            "job_id.$": "$.JobId",
-                            "created_at.$": "$.CreatedAt",
-                            "started_at.$": "$.StartedAt",
-                            "stopped_at.$": "$.StoppedAt"
-                        },
                         "Resource": "arn:aws:states:::batch:submitJob.sync",
                         "Parameters": {
                             "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-offline",
@@ -1364,8 +1173,7 @@
         "Validation Constrained": {
             "Type": "Map",
             "ToleratedFailurePercentagePath": "$.tolerated_failure_percentage",
-            "OutputPath": "$",
-            "ResultPath": "$.validation_constrained",
+            "ResultPath": null,
             "ItemSelector": {
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
@@ -1380,15 +1188,6 @@
                 "States": {
                     "Batch SubmitJob Validation Constrained": {
                         "Type": "Task",
-                        "ResultSelector": {
-                            "container_command.$": "$.Container.Command",
-                            "log_stream.$": "$.Container.LogStreamName",
-                            "job_name.$": "$.JobName",
-                            "job_id.$": "$.JobId",
-                            "created_at.$": "$.CreatedAt",
-                            "started_at.$": "$.StartedAt",
-                            "stopped_at.$": "$.StoppedAt"
-                        },
                         "Resource": "arn:aws:states:::batch:submitJob.sync",
                         "Parameters": {
                             "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-validation",
@@ -1429,8 +1228,7 @@
         "Validation Unconstrained": {
             "Type": "Map",
             "ToleratedFailurePercentagePath": "$.tolerated_failure_percentage",
-            "OutputPath": "$",
-            "ResultPath": "$.validation_unconstrained",
+            "ResultPath": null,
             "ItemSelector": {
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
@@ -1445,15 +1243,6 @@
                 "States": {
                     "Batch SubmitJob Validation Unconstrained": {
                         "Type": "Task",
-                        "ResultSelector": {
-                            "container_command.$": "$.Container.Command",
-                            "log_stream.$": "$.Container.LogStreamName",
-                            "job_name.$": "$.JobName",
-                            "job_id.$": "$.JobId",
-                            "created_at.$": "$.CreatedAt",
-                            "started_at.$": "$.StartedAt",
-                            "stopped_at.$": "$.StoppedAt"
-                        },
                         "Resource": "arn:aws:states:::batch:submitJob.sync",
                         "Parameters": {
                             "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-validation",
@@ -1509,8 +1298,7 @@
         "Output Constrained": {
             "Type": "Map",
             "ToleratedFailurePercentagePath": "$.tolerated_failure_percentage",
-            "OutputPath": "$",
-            "ResultPath": "$.output_constrained",
+            "ResultPath": null,
             "ItemSelector": {
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
@@ -1525,15 +1313,6 @@
                 "States": {
                     "Batch SubmitJob Output Constrained": {
                         "Type": "Task",
-                        "ResultSelector": {
-                            "container_command.$": "$.Container.Command",
-                            "log_stream.$": "$.Container.LogStreamName",
-                            "job_name.$": "$.JobName",
-                            "job_id.$": "$.JobId",
-                            "created_at.$": "$.CreatedAt",
-                            "started_at.$": "$.StartedAt",
-                            "stopped_at.$": "$.StoppedAt"
-                        },
                         "Resource": "arn:aws:states:::batch:submitJob.sync",
                         "Parameters": {
                             "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-output",
@@ -1594,8 +1373,7 @@
         "Output Unconstrained": {
             "Type": "Map",
             "ToleratedFailurePercentagePath": "$.tolerated_failure_percentage",
-            "OutputPath": "$",
-            "ResultPath": "$.output_unconstrained",
+            "ResultPath": null,
             "ItemSelector": {
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
@@ -1610,15 +1388,6 @@
                 "States": {
                     "Batch SubmitJob Output Unconstrained": {
                         "Type": "Task",
-                        "ResultSelector": {
-                            "container_command.$": "$.Container.Command",
-                            "log_stream.$": "$.Container.LogStreamName",
-                            "job_name.$": "$.JobName",
-                            "job_id.$": "$.JobId",
-                            "created_at.$": "$.CreatedAt",
-                            "started_at.$": "$.StartedAt",
-                            "stopped_at.$": "$.StoppedAt"
-                        },
                         "Resource": "arn:aws:states:::batch:submitJob.sync",
                         "Parameters": {
                             "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-output",
