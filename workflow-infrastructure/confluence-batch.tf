@@ -4,7 +4,7 @@
 resource "aws_batch_compute_environment" "ce_data" {
   compute_environment_name = "${var.prefix}-data"
   compute_resources {
-    max_vcpus          = 30
+    max_vcpus          = 10000
     security_group_ids = [aws_vpc.vpc.default_security_group_id]
     subnets = [
       aws_subnet.subnet_a_private.id,
@@ -23,7 +23,7 @@ resource "aws_batch_compute_environment" "ce_data" {
 resource "aws_batch_compute_environment" "ce_diagnostics" {
   compute_environment_name = "${var.prefix}-diagnostics"
   compute_resources {
-    max_vcpus          = 30
+    max_vcpus          = 10000
     security_group_ids = [aws_vpc.vpc.default_security_group_id]
     subnets = [
       aws_subnet.subnet_a_private.id,
@@ -42,7 +42,7 @@ resource "aws_batch_compute_environment" "ce_diagnostics" {
 resource "aws_batch_compute_environment" "ce_flpe" {
   compute_environment_name = "${var.prefix}-flpe"
   compute_resources {
-    max_vcpus          = 30
+    max_vcpus          = 10000
     security_group_ids = [aws_vpc.vpc.default_security_group_id]
     subnets = [
       aws_subnet.subnet_a_private.id,
@@ -61,7 +61,7 @@ resource "aws_batch_compute_environment" "ce_flpe" {
 resource "aws_batch_compute_environment" "ce_discharge_metrics" {
   compute_environment_name = "${var.prefix}-discharge-metrics"
   compute_resources {
-    max_vcpus          = 30
+    max_vcpus          = 10000
     security_group_ids = [aws_vpc.vpc.default_security_group_id]
     subnets = [
       aws_subnet.subnet_a_private.id,
@@ -80,104 +80,143 @@ resource "aws_batch_compute_environment" "ce_discharge_metrics" {
 
 # # combine_data
 resource "aws_batch_job_queue" "jq_combine_data" {
-  name                 = "${var.prefix}-combine-data"
-  state                = "ENABLED"
-  priority             = 10
-  compute_environments = [aws_batch_compute_environment.ce_data.arn]
+  name     = "${var.prefix}-combine-data"
+  state    = "ENABLED"
+  priority = 10
+  compute_environment_order {
+    order               = 1
+    compute_environment = aws_batch_compute_environment.ce_data.arn
+  }
 }
 
 # # datagen
 resource "aws_batch_job_queue" "jq_datagen" {
-  name                 = "${var.prefix}-datagen"
-  state                = "ENABLED"
-  priority             = 10
-  compute_environments = [aws_batch_compute_environment.ce_data.arn]
+  name     = "${var.prefix}-datagen"
+  state    = "ENABLED"
+  priority = 10
+  compute_environment_order {
+    order               = 1
+    compute_environment = aws_batch_compute_environment.ce_data.arn
+  }
 }
 
 # # disable_renew
 resource "aws_batch_job_queue" "jq_disable_renew" {
-  name                 = "${var.prefix}-disable-renew"
-  state                = "ENABLED"
-  priority             = 10
-  compute_environments = [aws_batch_compute_environment.ce_data.arn]
+  name     = "${var.prefix}-disable-renew"
+  state    = "ENABLED"
+  priority = 10
+  compute_environment_order {
+    order               = 1
+    compute_environment = aws_batch_compute_environment.ce_data.arn
+  }
 }
 
 # # flpe
 resource "aws_batch_job_queue" "jq_flpe" {
-  name                 = "${var.prefix}-flpe"
-  state                = "ENABLED"
-  priority             = 10
-  compute_environments = [aws_batch_compute_environment.ce_flpe.arn]
+  name     = "${var.prefix}-flpe"
+  state    = "ENABLED"
+  priority = 10
+  compute_environment_order {
+    order               = 1
+    compute_environment = aws_batch_compute_environment.ce_flpe.arn
+  }
 }
 
 # # input
 resource "aws_batch_job_queue" "jq_input" {
-  name                 = "${var.prefix}-input"
-  state                = "ENABLED"
-  priority             = 10
-  compute_environments = [aws_batch_compute_environment.ce_data.arn]
+  name     = "${var.prefix}-input"
+  state    = "ENABLED"
+  priority = 10
+  compute_environment_order {
+    order               = 1
+    compute_environment = aws_batch_compute_environment.ce_data.arn
+  }
 }
 
 # # moi
 resource "aws_batch_job_queue" "jq_moi" {
-  name                 = "${var.prefix}-moi"
-  state                = "ENABLED"
-  priority             = 10
-  compute_environments = [aws_batch_compute_environment.ce_flpe.arn]
+  name     = "${var.prefix}-moi"
+  state    = "ENABLED"
+  priority = 10
+  compute_environment_order {
+    order               = 1
+    compute_environment = aws_batch_compute_environment.ce_flpe.arn
+  }
 }
 
 # # offline
 resource "aws_batch_job_queue" "jq_offline" {
-  name                 = "${var.prefix}-offline"
-  state                = "ENABLED"
-  priority             = 10
-  compute_environments = [aws_batch_compute_environment.ce_discharge_metrics.arn]
+  name     = "${var.prefix}-offline"
+  state    = "ENABLED"
+  priority = 10
+  compute_environment_order {
+    order               = 1
+    compute_environment = aws_batch_compute_environment.ce_discharge_metrics.arn
+  }
 }
 
 # # output
 resource "aws_batch_job_queue" "jq_output" {
-  name                 = "${var.prefix}-output"
-  state                = "ENABLED"
-  priority             = 10
-  compute_environments = [aws_batch_compute_environment.ce_data.arn]
+  name     = "${var.prefix}-output"
+  state    = "ENABLED"
+  priority = 10
+  compute_environment_order {
+    order               = 1
+    compute_environment = aws_batch_compute_environment.ce_data.arn
+  }
 }
 
 # # postdiagnostics flpe
 resource "aws_batch_job_queue" "jq_postdiagnostics_flpe" {
-  name                 = "${var.prefix}-postdiagnostics-flpe"
-  state                = "ENABLED"
-  priority             = 10
-  compute_environments = [aws_batch_compute_environment.ce_diagnostics.arn]
+  name     = "${var.prefix}-postdiagnostics-flpe"
+  state    = "ENABLED"
+  priority = 10
+  compute_environment_order {
+    order               = 1
+    compute_environment = aws_batch_compute_environment.ce_diagnostics.arn
+  }
 }
 
 # # postdiagnostics moi
 resource "aws_batch_job_queue" "jq_postdiagnostics_moi" {
-  name                 = "${var.prefix}-postdiagnostics-moi"
-  state                = "ENABLED"
-  priority             = 10
-  compute_environments = [aws_batch_compute_environment.ce_diagnostics.arn]
+  name     = "${var.prefix}-postdiagnostics-moi"
+  state    = "ENABLED"
+  priority = 10
+  compute_environment_order {
+    order               = 1
+    compute_environment = aws_batch_compute_environment.ce_diagnostics.arn
+  }
 }
 
 # # prediagnostics
 resource "aws_batch_job_queue" "jq_prediagnostics" {
-  name                 = "${var.prefix}-prediagnostics"
-  state                = "ENABLED"
-  priority             = 10
-  compute_environments = [aws_batch_compute_environment.ce_diagnostics.arn]
+  name     = "${var.prefix}-prediagnostics"
+  state    = "ENABLED"
+  priority = 10
+  compute_environment_order {
+    order               = 1
+    compute_environment = aws_batch_compute_environment.ce_diagnostics.arn
+  }
 }
 
 # # priors
 resource "aws_batch_job_queue" "jq_prior" {
-  name                 = "${var.prefix}-priors"
-  state                = "ENABLED"
-  priority             = 10
-  compute_environments = [aws_batch_compute_environment.ce_data.arn]
+  name     = "${var.prefix}-priors"
+  state    = "ENABLED"
+  priority = 10
+  compute_environment_order {
+    order               = 1
+    compute_environment = aws_batch_compute_environment.ce_data.arn
+  }
 }
 
 # # validation
 resource "aws_batch_job_queue" "jq_validation" {
-  name                 = "${var.prefix}-validation"
-  state                = "ENABLED"
-  priority             = 10
-  compute_environments = [aws_batch_compute_environment.ce_discharge_metrics.arn]
+  name     = "${var.prefix}-validation"
+  state    = "ENABLED"
+  priority = 10
+  compute_environment_order {
+    order               = 1
+    compute_environment = aws_batch_compute_environment.ce_discharge_metrics.arn
+  }
 }
