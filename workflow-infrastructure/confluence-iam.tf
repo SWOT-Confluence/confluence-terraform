@@ -359,9 +359,9 @@ resource "aws_iam_policy" "batch_job_eb_policy" {
         ]
       },
       {
-        "Effect": "Allow",
-        "Action": "iam:PassRole",
-        "Resource": [
+        "Effect" : "Allow",
+        "Action" : "iam:PassRole",
+        "Resource" : [
           "arn:aws:iam::${local.account_id}:role/${var.prefix}-eventbridge-renew-execution-role"
         ]
       }

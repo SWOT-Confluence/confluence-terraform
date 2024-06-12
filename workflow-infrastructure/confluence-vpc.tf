@@ -44,8 +44,8 @@ resource "aws_subnet" "subnet_d" {
 
 # EIP
 resource "aws_eip" "eip_nat" {
-  vpc  = true
-  tags = { Name = "${var.prefix}-eip" }
+  domain = "vpc"
+  tags   = { Name = "${var.prefix}-eip" }
 }
 
 # Internet Gateway
