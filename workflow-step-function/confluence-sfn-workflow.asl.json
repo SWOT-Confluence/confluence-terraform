@@ -93,7 +93,7 @@
                                     "Ref::reachsubsetfile",
                                     "-b",
                                     "-w",
-                                    "/data/sword_patches_v215.json"
+                                    "/data/sword_patches_v216.json"
                                 ]
                             },
                             "JobName.$": "States.Format('confluence-datagen-{}-{}', $.version, $.context_index)",
@@ -168,7 +168,7 @@
                                     "${ssm_key_id}",
                                     "-b",
                                     "-w",
-                                    "/data/sword_patches_v215.json"
+                                    "/data/sword_patches_v216.json"
                                 ]
                             },
                             "JobName.$": "States.Format('confluence-datagen-{}-{}', $.version, $.context_index)",
@@ -1493,6 +1493,8 @@
                                     "continent.json",
                                     "-r",
                                     "constrained",
+                                    "-s",
+                                    "Ref::sos_bucket",
                                     "-m",
                                     "priors",
                                     "hivdi",
@@ -1511,7 +1513,8 @@
                             },
                             "JobName.$": "States.Format('confluence-output-unconstrained-{}-{}',$.version, $.context_index)",
                             "Parameters": {
-                                "index.$": "States.Format('{}',$.context_index)"
+                                "index.$": "States.Format('{}',$.context_index)",
+                                "sos_bucket": "${prefix}-sos"
                             }
                         },
                         "End": true
