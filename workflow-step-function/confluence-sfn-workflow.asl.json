@@ -93,7 +93,9 @@
                                     "Ref::reachsubsetfile",
                                     "-b",
                                     "-w",
-                                    "/data/sword_patches_v216.json"
+                                    "/data/sword_patches_v216.json",
+                                    "-j",
+                                    "continent-datagen.json"
                                 ]
                             },
                             "JobName.$": "States.Format('confluence-datagen-{}-{}', $.version, $.context_index)",
@@ -168,7 +170,9 @@
                                     "${ssm_key_id}",
                                     "-b",
                                     "-w",
-                                    "/data/sword_patches_v216.json"
+                                    "/data/sword_patches_v216.json",
+                                    "-j",
+                                    "continent-datagen.json"
                                 ]
                             },
                             "JobName.$": "States.Format('confluence-datagen-{}-{}', $.version, $.context_index)",
