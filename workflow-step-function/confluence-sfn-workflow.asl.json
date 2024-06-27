@@ -844,19 +844,14 @@
                                             },
                                             "ContainerOverrides": {
                                                 "Command": [
-                                                    "--json",
-                                                    "sicsets.json",
-                                                    "--constraint",
-                                                    "constrained"
-                                                ],
-                                                "Environment": [
-                                                    {
-                                                        "Name": "BATCH_JOB_INDEX",
-                                                        "Value.$": "States.Format('{}',$.context_index)"
-                                                    }
+                                                    "--index",
+                                                    "Ref::index"
                                                 ]
                                             },
-                                            "JobName.$": "States.Format('confluence-sic4dvar-{}-{}',$.version, $.context_value[0].reach_id)"
+                                            "JobName.$": "States.Format('confluence-sic4dvar-{}-{}',$.version, $.context_value[0].reach_id)",
+                                            "Parameters": {
+                                                "index.$": "States.Format('{}',$.context_index)"
+                                            }
                                         },
                                         "End": true
                                     }
