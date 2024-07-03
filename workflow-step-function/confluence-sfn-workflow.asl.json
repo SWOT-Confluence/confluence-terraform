@@ -844,8 +844,11 @@
                                             },
                                             "ContainerOverrides": {
                                                 "Command": [
-                                                    "--index",
-                                                    "Ref::index"
+                                                    "--flag_specific_index",
+                                                    "--reach_index",
+                                                    "Ref::index",
+                                                    "--filename",
+                                                    "reaches.json"
                                                 ]
                                             },
                                             "JobName.$": "States.Format('confluence-sic4dvar-{}-{}',$.version, $.context_value[0].reach_id)",
