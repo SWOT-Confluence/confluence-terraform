@@ -1,6 +1,6 @@
-# datagen
-resource "aws_cloudwatch_log_group" "generate_cw_log_group_datagen" {
-  name              = "/aws/batch/job/${var.prefix}-datagen/"
+# setfinder
+resource "aws_cloudwatch_log_group" "generate_cw_log_group_setfinder" {
+  name              = "/aws/batch/job/${var.prefix}-setfinder/"
   retention_in_days = 0
 }
 

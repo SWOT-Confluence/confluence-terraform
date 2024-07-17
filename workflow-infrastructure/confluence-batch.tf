@@ -89,9 +89,9 @@ resource "aws_batch_job_queue" "jq_combine_data" {
   }
 }
 
-# # datagen
-resource "aws_batch_job_queue" "jq_datagen" {
-  name     = "${var.prefix}-datagen"
+# # setfinder
+resource "aws_batch_job_queue" "jq_setfinder" {
+  name     = "${var.prefix}-setfinder"
   state    = "ENABLED"
   priority = 10
   compute_environment_order {
