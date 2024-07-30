@@ -16,12 +16,6 @@ resource "aws_cloudwatch_log_group" "generate_cw_log_group_input" {
   retention_in_days = 0
 }
 
-# disable_renew
-resource "aws_cloudwatch_log_group" "generate_cw_log_group_disable_renew" {
-  name              = "/aws/batch/job/${var.prefix}-disable-renew/"
-  retention_in_days = 0
-}
-
 # prediagnostics
 resource "aws_cloudwatch_log_group" "generate_cw_log_group_prediagnostics" {
   name              = "/aws/batch/job/${var.prefix}-prediagnostics/"

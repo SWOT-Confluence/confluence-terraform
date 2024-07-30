@@ -306,10 +306,10 @@ resource "aws_efs_mount_target" "efs_mt_d_in" {
   ]
 }
 
-# Enable Renew access point
+# init workflow access point
 resource "aws_efs_access_point" "generate_efs_ap_in" {
   file_system_id = aws_efs_file_system.efs_fs_in.id
-  tags           = { Name = "${var.prefix}-enable-renew" }
+  tags           = { Name = "${var.prefix}-init-workflow" }
   posix_user {
     gid = 0
     uid = 0
