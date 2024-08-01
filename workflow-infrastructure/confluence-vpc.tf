@@ -163,7 +163,9 @@ resource "aws_vpc_endpoint" "vpc_endpoint_s3" {
           "${aws_s3_bucket.aws_s3_bucket_sos.arn}",
           "${aws_s3_bucket.aws_s3_bucket_sos.arn}/*",
           "${aws_s3_bucket.aws_s3_bucket_json.arn}",
-          "${aws_s3_bucket.aws_s3_bucket_json.arn}/*"
+          "${aws_s3_bucket.aws_s3_bucket_json.arn}/*",
+          "${aws_s3_bucket.aws_s3_bucket_config.arn}",
+          "${aws_s3_bucket.aws_s3_bucket_config.arn}/*"
         ]
       }
     ]
