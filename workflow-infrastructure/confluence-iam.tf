@@ -235,7 +235,8 @@ resource "aws_iam_policy" "batch_job_s3_policy" {
         ],
         "Resource" : [
           "${aws_s3_bucket.aws_s3_bucket_sos.arn}",
-          "${aws_s3_bucket.aws_s3_bucket_json.arn}"
+          "${aws_s3_bucket.aws_s3_bucket_json.arn}",
+          "${aws_s3_bucket.aws_s3_bucket_config.arn}"
         ]
       },
       {
@@ -250,7 +251,8 @@ resource "aws_iam_policy" "batch_job_s3_policy" {
         ],
         "Resource" : [
           "${aws_s3_bucket.aws_s3_bucket_sos.arn}/*",
-          "${aws_s3_bucket.aws_s3_bucket_json.arn}/*"
+          "${aws_s3_bucket.aws_s3_bucket_json.arn}/*",
+          "${aws_s3_bucket.aws_s3_bucket_config.arn}/*"
         ]
       }
     ]

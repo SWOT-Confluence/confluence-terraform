@@ -88,3 +88,8 @@ resource "aws_cloudwatch_log_group" "generate_cw_log_group_output" {
   name              = "/aws/batch/job/${var.prefix}-output/"
   retention_in_days = 0
 }
+
+resource "aws_cloudwatch_log_group" "generate_cw_log_group_init" {
+  name              = "/aws/batch/job/${var.prefix}-init-workflow/"
+  retention_in_days = 0
+}
