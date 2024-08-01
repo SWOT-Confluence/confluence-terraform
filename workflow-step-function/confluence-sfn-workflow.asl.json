@@ -1,31 +1,31 @@
 {
     "Comment": "Confluence Workflow",
-    "StartAt": "Enable Renew",
+    "StartAt": "Init Workflow",
     "States": {
-        "Enable Renew": {
+        "Init Workflow": {
             "Type": "Task",
-            "Resource": "arn:aws:states:::lambda:invoke.waitForTaskToken",
+            "Resource": "arn:aws:states:::batch:submitJob.sync",
             "ResultPath": null,
             "Parameters": {
-                "FunctionName": "arn:aws:lambda:${aws_region}:${account_id}:function:${prefix}-enable-renew:$LATEST",
-                "Payload": {
-                    "token.$": "$$.Task.Token"
+                "JobName.$": "States.Format('confluence-init-workflow-{}',$.version)",
+                "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-init-workflow",
+                "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-init-workflow",
+                "PropagateTags": true,
+                "Tags": {
+                    "job.$": "States.Format('confluence-init-workflow-{}',$.version)"
+                },
+                "ContainerOverrides": {
+                    "Command": [
+                        "-p",
+                        "confluence-dev1",
+                        "-r",
+                        "Ref::reachsubsetfile"
+                    ]
+                },
+                "Parameters": {
+                    "reachsubsetfile.$": "$.reach_subset_file"
                 }
             },
-            "Retry": [
-                {
-                    "ErrorEquals": [
-                        "Lambda.ServiceException",
-                        "Lambda.AWSLambdaException",
-                        "Lambda.SdkClientException",
-                        "Lambda.TooManyRequestsException"
-                    ],
-                    "IntervalSeconds": 2,
-                    "MaxAttempts": 2,
-                    "BackoffRate": 2
-                }
-            ],
-            "TimeoutSeconds": 600,
             "Next": "Setfinder Choice"
         },
         "Setfinder Choice": {
