@@ -203,6 +203,8 @@
                         "/data",
                         "-u",
                         "${prefix}-json",
+                        "-u",
+                        "${prefix}-json",
                         "-e",
                         "-s",
                         "16"
