@@ -264,8 +264,6 @@
                 },
                 "ContainerOverrides": {
                     "Command": [
-                        "-c",
-                        "continent.json",
                         "-d",
                         "/data",
                         "-u",
