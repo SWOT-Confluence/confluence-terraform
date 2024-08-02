@@ -68,7 +68,7 @@
                             "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-setfinder",
                             "PropagateTags": true,
                             "Tags": {
-                                "job.$": "States.Format('confluence-setfinder-{}-{}', $.version, $.context_index)"
+                                "job.$": "States.Format('confluence-setfinder-subset-{}-{}', $.version, $.context_index)"
                             },
                             "ContainerOverrides": {
                                 "Command": [
@@ -114,6 +114,73 @@
             },
             "Label": "setfinder_reach_subset",
             "Next": "Combine Data Reach Subset"
+        },
+        "Setfinder Subset Not Expanded": {
+            "Type": "Map",
+            "ToleratedFailurePercentagePath": "$.tolerated_failure_percentage",
+            "ResultPath": null,
+            "ItemSelector": {
+                "context_index.$": "$$.Map.Item.Index",
+                "context_value.$": "$$.Map.Item.Value",
+                "version.$": "$.version"
+            },
+            "ItemProcessor": {
+                "ProcessorConfig": {
+                    "Mode": "DISTRIBUTED",
+                    "ExecutionType": "STANDARD"
+                },
+                "StartAt": "Batch SubmitJob Setfinder Reach Subset Not Expanded",
+                "States": {
+                    "Batch SubmitJob Setfinder Reach Subset Not Expanded": {
+                        "Type": "Task",
+                        "Resource": "arn:aws:states:::batch:submitJob.sync",
+                        "Parameters": {
+                            "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-setfinder",
+                            "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-setfinder",
+                            "PropagateTags": true,
+                            "Tags": {
+                                "job.$": "States.Format('confluence-setfinder-subset-not-expanded-{}-{}', $.version, $.context_index)"
+                            },
+                            "ContainerOverrides": {
+                                "Command": [
+                                    "-i",
+                                    "Ref::index",
+                                    "-a",
+                                    "MetroMan",
+                                    "HiVDI",
+                                    "SIC",
+                                    "NeoBAM",
+                                    "-n",
+                                    "/data",
+                                    "-o", 
+                                    "/data",
+                                    "-s",
+                                    "16",
+                                    "-c",
+                                    "continent-setfinder.json"
+                                ]
+                            },
+                            "JobName.$": "States.Format('confluence-setfinder-subset-not-expanded-{}-{}', $.version, $.context_index)",
+                            "Parameters": {
+                                "index.$": "States.Format('{}', $.context_index)"
+                            }
+                        },
+                        "End": true
+                    }
+                }
+            },
+            "ItemReader": {
+                "Resource": "arn:aws:states:::s3:getObject",
+                "ReaderConfig": {
+                    "InputType": "JSON"
+                },
+                "Parameters": {
+                    "Bucket": "${prefix}-json",
+                    "Key": "continent-setfinder.json" 
+                }
+            },
+            "Label": "setfinder_reach_subset_not_expanded",
+            "Next": "Combine Data Global"
         },
         "Setfinder Global": {
             "Type": "Map",
@@ -161,7 +228,7 @@
                                     "continent-setfinder.json"
                                 ]
                             },
-                            "JobName.$": "States.Format('confluence-setfinder-{}-{}', $.version, $.context_index)",
+                            "JobName.$": "States.Format('confluence-setfinder-global-{}-{}', $.version, $.context_index)",
                             "Parameters": {
                                 "index.$": "States.Format('{}', $.context_index)"
                             }
@@ -193,7 +260,7 @@
                 "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-combine-data",
                 "PropagateTags": true,
                 "Tags": {
-                    "job.$": "States.Format('confluence-combine-data-{}',$.version)"
+                    "job.$": "States.Format('confluence-combine-data-subset-{}',$.version)"
                 },
                 "ContainerOverrides": {
                     "Command": [
@@ -223,7 +290,7 @@
                 "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-combine-data",
                 "PropagateTags": true,
                 "Tags": {
-                    "job.$": "States.Format('confluence-combine-data-{}',$.version)"
+                    "job.$": "States.Format('confluence-combine-data-global-{}',$.version)"
                 },
                 "ContainerOverrides": {
                     "Command": [
@@ -278,7 +345,7 @@
                                     "/mnt/data/sword"
                                 ]
                             },
-                            "JobName.$": "States.Format('confluence-input-{}-{}',$.version, $.context_value.reach_id)",
+                            "JobName.$": "States.Format('confluence-input-subset-{}-{}',$.version, $.context_value.reach_id)",
                             "Parameters": {
                                 "index.$": "States.Format('{}',$.context_index)"
                             }
@@ -298,7 +365,7 @@
                 }
             },
             "Label": "input_reach_subset",
-            "Next": "Setfinder Global"
+            "Next": "Setfinder Subset Not Expanded"
         },
         "Input Global": {
             "Type": "Map",
@@ -338,7 +405,7 @@
                                     "/mnt/data/sword"
                                 ]
                             },
-                            "JobName.$": "States.Format('confluence-input-{}-{}',$.version, $.context_value.reach_id)",
+                            "JobName.$": "States.Format('confluence-input-global-{}-{}',$.version, $.context_value.reach_id)",
                             "Parameters": {
                                 "index.$": "States.Format('{}',$.context_index)"
                             }
