@@ -92,7 +92,7 @@
                                     "Ref::reachsubsetfile"
                                 ]
                             },
-                            "JobName.$": "States.Format('confluence-setfinder-{}-{}', $.version, $.context_index)",
+                            "JobName.$": "States.Format('confluence-setfinder-subset-{}-{}', $.version, $.context_index)",
                             "Parameters": {
                                 "reachsubsetfile.$": "$.reach_subset_file",
                                 "index.$": "States.Format('{}', $.context_index)"
@@ -139,7 +139,7 @@
                             "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-setfinder",
                             "PropagateTags": true,
                             "Tags": {
-                                "job.$": "States.Format('confluence-setfinder-{}-{}', $.version, $.context_index)"
+                                "job.$": "States.Format('confluence-setfinder-global-{}-{}', $.version, $.context_index)"
                             },
                             "ContainerOverrides": {
                                 "Command": [
@@ -188,7 +188,7 @@
             "Resource": "arn:aws:states:::batch:submitJob.sync",
             "ResultPath": null,
             "Parameters": {
-                "JobName.$": "States.Format('confluence-combine-data-{}',$.version)",
+                "JobName.$": "States.Format('confluence-combine-data-subset-{}',$.version)",
                 "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-combine-data",
                 "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-combine-data",
                 "PropagateTags": true,
@@ -216,7 +216,7 @@
             "Resource": "arn:aws:states:::batch:submitJob.sync",
             "ResultPath": null,
             "Parameters": {
-                "JobName.$": "States.Format('confluence-combine-data-{}',$.version)",
+                "JobName.$": "States.Format('confluence-combine-data-global-{}',$.version)",
                 "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-combine-data",
                 "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-combine-data",
                 "PropagateTags": true,
@@ -262,7 +262,7 @@
                             "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-input",
                             "PropagateTags": true,
                             "Tags": {
-                                "job.$": "States.Format('confluence-input-{}-{}',$.version, $.context_value.reach_id)"
+                                "job.$": "States.Format('confluence-input-subset-{}-{}',$.version, $.context_value.reach_id)"
                             },
                             "ContainerOverrides": {
                                 "Command": [
@@ -322,7 +322,7 @@
                             "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-input",
                             "PropagateTags": true,
                             "Tags": {
-                                "job.$": "States.Format('confluence-input-{}-{}',$.version, $.context_value.reach_id)"
+                                "job.$": "States.Format('confluence-input-global-{}-{}',$.version, $.context_value.reach_id)"
                             },
                             "ContainerOverrides": {
                                 "Command": [
