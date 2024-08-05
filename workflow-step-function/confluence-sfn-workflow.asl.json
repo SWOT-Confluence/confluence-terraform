@@ -1,18 +1,33 @@
 {
     "Comment": "Confluence Workflow",
-    "StartAt": "Init Workflow",
+    "StartAt": "Init Workflow Choice",
     "States": {
-        "Init Workflow": {
+        "Init Workflow Choice": {
+            "Type": "Choice",
+            "Choices": [
+                {
+                    "Variable": "$.reach_subset_file",
+                    "IsPresent": true,
+                    "Next": "Init Workflow Reach Subset"
+                },
+                {
+                    "Variable": "$.reach_subset_file",
+                    "IsPresent": false,
+                    "Next": "Init Workflow Global"
+                }
+            ]
+        },
+        "Init Workflow Reach Subset": {
             "Type": "Task",
             "Resource": "arn:aws:states:::batch:submitJob.sync",
             "ResultPath": null,
             "Parameters": {
-                "JobName.$": "States.Format('confluence-init-workflow-{}',$.version)",
+                "JobName.$": "States.Format('confluence-init-workflow-subset-{}',$.version)",
                 "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-init-workflow",
                 "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-init-workflow",
                 "PropagateTags": true,
                 "Tags": {
-                    "job.$": "States.Format('confluence-init-workflow-{}',$.version)"
+                    "job.$": "States.Format('confluence-init-workflow-subset-{}',$.version)"
                 },
                 "ContainerOverrides": {
                     "Command": [
@@ -26,22 +41,28 @@
                     "reachsubsetfile.$": "$.reach_subset_file"
                 }
             },
-            "Next": "Setfinder Choice"
+            "Next": "Setfinder Reach Subset"
         },
-        "Setfinder Choice": {
-            "Type": "Choice",
-            "Choices": [
-                {
-                    "Variable": "$.reach_subset_file",
-                    "IsPresent": true,
-                    "Next": "Setfinder Reach Subset"
+        "Init Workflow Global": {
+            "Type": "Task",
+            "Resource": "arn:aws:states:::batch:submitJob.sync",
+            "ResultPath": null,
+            "Parameters": {
+                "JobName.$": "States.Format('confluence-init-workflow-global-{}',$.version)",
+                "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-init-workflow",
+                "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-init-workflow",
+                "PropagateTags": true,
+                "Tags": {
+                    "job.$": "States.Format('confluence-init-workflow-global-{}',$.version)"
                 },
-                {
-                    "Variable": "$.reach_subset_file",
-                    "IsPresent": false,
-                    "Next": "Setfinder Global"
+                "ContainerOverrides": {
+                    "Command": [
+                        "-p",
+                        "confluence-dev1"
+                    ]
                 }
-            ]
+            },
+            "Next": "Setfinder Global"
         },
         "Setfinder Reach Subset": {
             "Type": "Map",
