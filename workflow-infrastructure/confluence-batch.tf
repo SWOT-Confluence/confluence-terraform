@@ -100,17 +100,6 @@ resource "aws_batch_job_queue" "jq_setfinder" {
   }
 }
 
-# # disable_renew
-resource "aws_batch_job_queue" "jq_disable_renew" {
-  name     = "${var.prefix}-disable-renew"
-  state    = "ENABLED"
-  priority = 10
-  compute_environment_order {
-    order               = 1
-    compute_environment = aws_batch_compute_environment.ce_data.arn
-  }
-}
-
 # # flpe
 resource "aws_batch_job_queue" "jq_flpe" {
   name     = "${var.prefix}-flpe"
@@ -218,5 +207,16 @@ resource "aws_batch_job_queue" "jq_validation" {
   compute_environment_order {
     order               = 1
     compute_environment = aws_batch_compute_environment.ce_discharge_metrics.arn
+  }
+}
+
+# # init-workflow
+resource "aws_batch_job_queue" "jq_init_workflow" {
+  name     = "${var.prefix}-init-workflow"
+  state    = "ENABLED"
+  priority = 10
+  compute_environment_order {
+    order               = 1
+    compute_environment = aws_batch_compute_environment.ce_data.arn
   }
 }

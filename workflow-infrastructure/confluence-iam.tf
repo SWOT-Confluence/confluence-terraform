@@ -235,7 +235,8 @@ resource "aws_iam_policy" "batch_job_s3_policy" {
         ],
         "Resource" : [
           "${aws_s3_bucket.aws_s3_bucket_sos.arn}",
-          "${aws_s3_bucket.aws_s3_bucket_json.arn}"
+          "${aws_s3_bucket.aws_s3_bucket_json.arn}",
+          "${aws_s3_bucket.aws_s3_bucket_config.arn}"
         ]
       },
       {
@@ -250,119 +251,8 @@ resource "aws_iam_policy" "batch_job_s3_policy" {
         ],
         "Resource" : [
           "${aws_s3_bucket.aws_s3_bucket_sos.arn}/*",
-          "${aws_s3_bucket.aws_s3_bucket_json.arn}/*"
-        ]
-      }
-    ]
-  })
-}
-
-# # SSM
-resource "aws_iam_role_policy_attachment" "batch_job_ssm_role_policy" {
-  role       = aws_iam_role.batch_job_role.name
-  policy_arn = aws_iam_policy.batch_job_ssm_policy.arn
-}
-
-resource "aws_iam_policy" "batch_job_ssm_policy" {
-  name        = "${var.prefix}-batch-job-ssm-policy"
-  description = "Amazon Batch job policy for SSM actions"
-  policy = jsonencode({
-    "Version" : "2012-10-17",
-    "Statement" : [
-      {
-        "Sid" : "GetAndPut",
-        "Effect" : "Allow",
-        "Action" : [
-          "ssm:PutParameter",
-          "ssm:GetParameter*"
-        ],
-        "Resource" : [
-          "arn:aws:ssm:us-west-2:${local.account_id}:parameter/s3_*",
-          "arn:aws:ssm:us-west-2:${local.account_id}:parameter/edl_*",
-          "arn:aws:ssm:us-west-2:${local.account_id}:parameter/bearer*"
-        ]
-      },
-      {
-        "Sid" : "Describe",
-        "Effect" : "Allow",
-        "Action" : "ssm:DescribeParameters",
-        "Resource" : "*"
-      },
-      {
-        "Sid" : "DecryptKey",
-        "Effect" : "Allow",
-        "Action" : [
-          "kms:DescribeKey",
-          "kms:Decrypt"
-        ],
-        "Resource" : "${aws_kms_key.kms_key_ssm.arn}"
-      }
-    ]
-  })
-}
-
-# # KMS
-resource "aws_iam_role_policy_attachment" "batch_job_kms_role_policy" {
-  role       = aws_iam_role.batch_job_role.name
-  policy_arn = aws_iam_policy.batch_job_kms_policy.arn
-}
-
-resource "aws_iam_policy" "batch_job_kms_policy" {
-  name        = "${var.prefix}-batch-job-kms-policy"
-  description = "Amazon Batch job policy for KMS actions"
-  policy = jsonencode({
-    "Version" : "2012-10-17",
-    "Statement" : [
-      {
-        "Sid" : "EncryptDecryptSSMKey",
-        "Effect" : "Allow",
-        "Action" : [
-          "kms:Encrypt",
-          "kms:Decrypt"
-        ],
-        "Resource" : "arn:aws:kms:us-west-2:${local.account_id}:key/1416df6c-7a20-46a1-949d-d26975acfdd0"
-      },
-      {
-        "Sid" : "AllowS3KMSKeyAccess",
-        "Effect" : "Allow",
-        "Action" : [
-          "kms:Decrypt",
-          "kms:GenerateDataKey"
-        ],
-        "Resource" : "${data.aws_kms_key.aws_s3.arn}"
-      }
-    ]
-  })
-}
-
-# # EventBridge
-resource "aws_iam_role_policy_attachment" "batch_job_eb_role_policy" {
-  role       = aws_iam_role.batch_job_role.name
-  policy_arn = aws_iam_policy.batch_job_eb_policy.arn
-}
-
-resource "aws_iam_policy" "batch_job_eb_policy" {
-  name        = "${var.prefix}-batch-job-eb-policy"
-  description = "Amazon Batch job policy for EventBridge actions"
-  policy = jsonencode({
-    "Version" : "2012-10-17",
-    "Statement" : [
-      {
-        "Sid" : "AllowGetUpdateSchedule",
-        "Effect" : "Allow",
-        "Action" : [
-          "scheduler:GetSchedule",
-          "scheduler:UpdateSchedule"
-        ],
-        "Resource" : [
-          "arn:aws:scheduler:us-west-2:${local.account_id}:schedule/default/*renew*"
-        ]
-      },
-      {
-        "Effect" : "Allow",
-        "Action" : "iam:PassRole",
-        "Resource" : [
-          "arn:aws:iam::${local.account_id}:role/${var.prefix}-eventbridge-renew-execution-role"
+          "${aws_s3_bucket.aws_s3_bucket_json.arn}/*",
+          "${aws_s3_bucket.aws_s3_bucket_config.arn}/*"
         ]
       }
     ]

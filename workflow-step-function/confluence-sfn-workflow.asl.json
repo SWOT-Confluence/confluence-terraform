@@ -1,58 +1,76 @@
 {
     "Comment": "Confluence Workflow",
-    "StartAt": "Enable Renew",
+    "StartAt": "Init Workflow Choice",
     "States": {
-        "Enable Renew": {
-            "Type": "Task",
-            "Resource": "arn:aws:states:::lambda:invoke.waitForTaskToken",
-            "ResultPath": null,
-            "Parameters": {
-                "FunctionName": "arn:aws:lambda:${aws_region}:${account_id}:function:${prefix}-enable-renew:$LATEST",
-                "Payload": {
-                    "token.$": "$$.Task.Token"
-                }
-            },
-            "Retry": [
-                {
-                    "ErrorEquals": [
-                        "Lambda.ServiceException",
-                        "Lambda.AWSLambdaException",
-                        "Lambda.SdkClientException",
-                        "Lambda.TooManyRequestsException"
-                    ],
-                    "IntervalSeconds": 2,
-                    "MaxAttempts": 2,
-                    "BackoffRate": 2
-                }
-            ],
-            "TimeoutSeconds": 600,
-            "Next": "Datagen Choice"
-        },
-        "Datagen Choice": {
+        "Init Workflow Choice": {
             "Type": "Choice",
             "Choices": [
                 {
                     "Variable": "$.reach_subset_file",
                     "IsPresent": true,
-                    "Next": "Datagen Reach Subset"
+                    "Next": "Init Workflow Reach Subset"
                 },
                 {
                     "Variable": "$.reach_subset_file",
                     "IsPresent": false,
-                    "Next": "Datagen Global"
+                    "Next": "Init Workflow Global"
                 }
             ]
         },
-        "Datagen Reach Subset": {
+        "Init Workflow Reach Subset": {
+            "Type": "Task",
+            "Resource": "arn:aws:states:::batch:submitJob.sync",
+            "ResultPath": null,
+            "Parameters": {
+                "JobName.$": "States.Format('confluence-init-workflow-subset-{}',$.version)",
+                "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-init-workflow",
+                "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-init-workflow",
+                "PropagateTags": true,
+                "Tags": {
+                    "job.$": "States.Format('confluence-init-workflow-subset-{}',$.version)"
+                },
+                "ContainerOverrides": {
+                    "Command": [
+                        "-p",
+                        "confluence-dev1",
+                        "-r",
+                        "Ref::reachsubsetfile"
+                    ]
+                },
+                "Parameters": {
+                    "reachsubsetfile.$": "$.reach_subset_file"
+                }
+            },
+            "Next": "Setfinder Reach Subset"
+        },
+        "Init Workflow Global": {
+            "Type": "Task",
+            "Resource": "arn:aws:states:::batch:submitJob.sync",
+            "ResultPath": null,
+            "Parameters": {
+                "JobName.$": "States.Format('confluence-init-workflow-global-{}',$.version)",
+                "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-init-workflow",
+                "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-init-workflow",
+                "PropagateTags": true,
+                "Tags": {
+                    "job.$": "States.Format('confluence-init-workflow-global-{}',$.version)"
+                },
+                "ContainerOverrides": {
+                    "Command": [
+                        "-p",
+                        "confluence-dev1"
+                    ]
+                }
+            },
+            "Next": "Setfinder Global"
+        },
+        "Setfinder Reach Subset": {
             "Type": "Map",
             "ToleratedFailurePercentagePath": "$.tolerated_failure_percentage",
             "ResultPath": null,
             "ItemSelector": {
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
-                "collection.$": "$.collection",
-                "start_time.$": "$.start_time",
-                "end_time.$": "$.end_time",
                 "reach_subset_file.$": "$.reach_subset_file",
                 "version.$": "$.version"
             },
@@ -61,48 +79,43 @@
                     "Mode": "DISTRIBUTED",
                     "ExecutionType": "STANDARD"
                 },
-                "StartAt": "Batch SubmitJob Datagen Reach Subset",
+                "StartAt": "Batch SubmitJob Setfinder Reach Subset",
                 "States": {
-                    "Batch SubmitJob Datagen Reach Subset": {
+                    "Batch SubmitJob Setfinder Reach Subset": {
                         "Type": "Task",
                         "Resource": "arn:aws:states:::batch:submitJob.sync",
                         "Parameters": {
-                            "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-datagen",
-                            "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-datagen",
+                            "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-setfinder",
+                            "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-setfinder",
                             "PropagateTags": true,
                             "Tags": {
-                                "job.$": "States.Format('confluence-datagen-{}-{}', $.version, $.context_index)"
+                                "job.$": "States.Format('confluence-setfinder-subset-{}-{}', $.version, $.context_index)"
                             },
                             "ContainerOverrides": {
                                 "Command": [
-                                    "-c",
-                                    "river",
                                     "-i",
                                     "Ref::index",
-                                    "-p",
-                                    "POCLOUD",
-                                    "-s",
-                                    "Ref::collection",
-                                    "-t",
-                                    "Ref::datequery",
-                                    "-d",
+                                    "-a",
+                                    "MetroMan",
+                                    "HiVDI",
+                                    "SIC",
+                                    "NeoBAM",
+                                    "-n",
                                     "/data",
-                                    "-k",
-                                    "${ssm_key_id}",
-                                    "-u",
-                                    "Ref::reachsubsetfile",
-                                    "-b",
-                                    "-w",
-                                    "/data/sword_patches_v216.json",
-                                    "-j",
-                                    "continent-datagen.json"
+                                    "-o", 
+                                    "/data",
+                                    "-s",
+                                    "16",
+                                    "-e",
+                                    "-c",
+                                    "continent-setfinder.json",
+                                    "-r",
+                                    "Ref::reachsubsetfile"
                                 ]
                             },
-                            "JobName.$": "States.Format('confluence-datagen-{}-{}', $.version, $.context_index)",
+                            "JobName.$": "States.Format('confluence-setfinder-subset-{}-{}', $.version, $.context_index)",
                             "Parameters": {
-                                "collection.$": "$.collection",
-                                "datequery.$": "States.Format('{},{}', $.start_time, $.end_time)",
-                                "reachsubsetfile.$": "States.Format('/data/{}', $.reach_subset_file)",
+                                "reachsubsetfile.$": "$.reach_subset_file",
                                 "index.$": "States.Format('{}', $.context_index)"
                             }
                         },
@@ -117,22 +130,19 @@
                 },
                 "Parameters": {
                     "Bucket": "${prefix}-json",
-                    "Key": "continent-datagen.json"
+                    "Key": "continent-setfinder.json" 
                 }
             },
-            "Label": "datagen_reach_subset",
-            "Next": "Combine Data"
+            "Label": "setfinder_reach_subset",
+            "Next": "Combine Data Reach Subset"
         },
-        "Datagen Global": {
+        "Setfinder Subset Not Expanded": {
             "Type": "Map",
             "ToleratedFailurePercentagePath": "$.tolerated_failure_percentage",
             "ResultPath": null,
             "ItemSelector": {
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
-                "collection.$": "$.collection",
-                "start_time.$": "$.start_time",
-                "end_time.$": "$.end_time",
                 "version.$": "$.version"
             },
             "ItemProcessor": {
@@ -140,45 +150,39 @@
                     "Mode": "DISTRIBUTED",
                     "ExecutionType": "STANDARD"
                 },
-                "StartAt": "Batch SubmitJob Datagen Global",
+                "StartAt": "Batch SubmitJob Setfinder Reach Subset Not Expanded",
                 "States": {
-                    "Batch SubmitJob Datagen Global": {
+                    "Batch SubmitJob Setfinder Reach Subset Not Expanded": {
                         "Type": "Task",
                         "Resource": "arn:aws:states:::batch:submitJob.sync",
                         "Parameters": {
-                            "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-datagen",
-                            "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-datagen",
+                            "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-setfinder",
+                            "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-setfinder",
                             "PropagateTags": true,
                             "Tags": {
-                                "job.$": "States.Format('confluence-datagen-{}-{}', $.version, $.context_index)"
+                                "job.$": "States.Format('confluence-setfinder-subset-not-expanded-{}-{}', $.version, $.context_index)"
                             },
                             "ContainerOverrides": {
                                 "Command": [
-                                    "-c",
-                                    "river",
                                     "-i",
                                     "Ref::index",
-                                    "-p",
-                                    "POCLOUD",
-                                    "-s",
-                                    "Ref::collection",
-                                    "-t",
-                                    "Ref::datequery",
-                                    "-d",
+                                    "-a",
+                                    "MetroMan",
+                                    "HiVDI",
+                                    "SIC",
+                                    "NeoBAM",
+                                    "-n",
                                     "/data",
-                                    "-k",
-                                    "${ssm_key_id}",
-                                    "-b",
-                                    "-w",
-                                    "/data/sword_patches_v216.json",
-                                    "-j",
-                                    "continent-datagen.json"
+                                    "-o", 
+                                    "/data",
+                                    "-s",
+                                    "16",
+                                    "-c",
+                                    "continent-setfinder.json"
                                 ]
                             },
-                            "JobName.$": "States.Format('confluence-datagen-{}-{}', $.version, $.context_index)",
+                            "JobName.$": "States.Format('confluence-setfinder-subset-not-expanded-{}-{}', $.version, $.context_index)",
                             "Parameters": {
-                                "collection.$": "$.collection",
-                                "datequery.$": "States.Format('{},{}', $.start_time, $.end_time)",
                                 "index.$": "States.Format('{}', $.context_index)"
                             }
                         },
@@ -193,23 +197,119 @@
                 },
                 "Parameters": {
                     "Bucket": "${prefix}-json",
-                    "Key": "continent-datagen.json"
+                    "Key": "continent-setfinder.json" 
                 }
             },
-            "Label": "datagen_global",
-            "Next": "Combine Data"
+            "Label": "setfinder_reach_subset_not_expanded",
+            "Next": "Combine Data Global"
         },
-        "Combine Data": {
+        "Setfinder Global": {
+            "Type": "Map",
+            "ToleratedFailurePercentagePath": "$.tolerated_failure_percentage",
+            "ResultPath": null,
+            "ItemSelector": {
+                "context_index.$": "$$.Map.Item.Index",
+                "context_value.$": "$$.Map.Item.Value",
+                "version.$": "$.version"
+            },
+            "ItemProcessor": {
+                "ProcessorConfig": {
+                    "Mode": "DISTRIBUTED",
+                    "ExecutionType": "STANDARD"
+                },
+                "StartAt": "Batch SubmitJob Setfinder Global",
+                "States": {
+                    "Batch SubmitJob Setfinder Global": {
+                        "Type": "Task",
+                        "Resource": "arn:aws:states:::batch:submitJob.sync",
+                        "Parameters": {
+                            "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-setfinder",
+                            "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-setfinder",
+                            "PropagateTags": true,
+                            "Tags": {
+                                "job.$": "States.Format('confluence-setfinder-global-{}-{}', $.version, $.context_index)"
+                            },
+                            "ContainerOverrides": {
+                                "Command": [
+                                    "-i",
+                                    "Ref::index",
+                                    "-a",
+                                    "MetroMan",
+                                    "HiVDI",
+                                    "SIC",
+                                    "NeoBAM",
+                                    "-n",
+                                    "/data",
+                                    "-o", 
+                                    "/data",
+                                    "-s",
+                                    "16",
+                                    "-g",
+                                    "-c",
+                                    "continent-setfinder.json"
+                                ]
+                            },
+                            "JobName.$": "States.Format('confluence-setfinder-global-{}-{}', $.version, $.context_index)",
+                            "Parameters": {
+                                "index.$": "States.Format('{}', $.context_index)"
+                            }
+                        },
+                        "End": true
+                    }
+                }
+            },
+            "ItemReader": {
+                "Resource": "arn:aws:states:::s3:getObject",
+                "ReaderConfig": {
+                    "InputType": "JSON"
+                },
+                "Parameters": {
+                    "Bucket": "${prefix}-json",
+                    "Key": "continent-setfinder.json"
+                }
+            },
+            "Label": "setfinder_global",
+            "Next": "Combine Data Global"
+        },
+        "Combine Data Reach Subset": {
             "Type": "Task",
             "Resource": "arn:aws:states:::batch:submitJob.sync",
             "ResultPath": null,
             "Parameters": {
-                "JobName.$": "States.Format('confluence-combine-data-{}',$.version)",
+                "JobName.$": "States.Format('confluence-combine-data-subset-{}',$.version)",
                 "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-combine-data",
                 "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-combine-data",
                 "PropagateTags": true,
                 "Tags": {
-                    "job.$": "States.Format('confluence-combine-data-{}',$.version)"
+                    "job.$": "States.Format('confluence-combine-data-subset-{}',$.version)"
+                },
+                "ContainerOverrides": {
+                    "Command": [
+                        "-d",
+                        "/data",
+                        "-u",
+                        "${prefix}-json",
+                        "-u",
+                        "${prefix}-json",
+                        "-e",
+                        "-s",
+                        "16"
+                    ]
+                }
+            },
+            "Next": "Input Reach Subset"
+        },
+        "Combine Data Global": {
+            "Type": "Task",
+            "Resource": "arn:aws:states:::batch:submitJob.sync",
+            "ResultPath": null,
+            "Parameters": {
+                "JobName.$": "States.Format('confluence-combine-data-global-{}',$.version)",
+                "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-combine-data",
+                "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-combine-data",
+                "PropagateTags": true,
+                "Tags": {
+                    "job.$": "States.Format('confluence-combine-data-global-{}',$.version)"
                 },
                 "ContainerOverrides": {
                     "Command": [
@@ -218,13 +318,15 @@
                         "-d",
                         "/data",
                         "-u",
-                        "${prefix}-json"
+                        "${prefix}-json",
+                        "-s",
+                        "16"
                     ]
                 }
             },
-            "Next": "Input"
+            "Next": "Combine Data Global Choice"
         },
-        "Input": {
+        "Input Reach Subset": {
             "Type": "Map",
             "ToleratedFailurePercentagePath": "$.tolerated_failure_percentage",
             "ResultPath": null,
@@ -238,9 +340,9 @@
                     "Mode": "DISTRIBUTED",
                     "ExecutionType": "STANDARD"
                 },
-                "StartAt": "Batch SubmitJob Input",
+                "StartAt": "Batch SubmitJob Input Reach Subset",
                 "States": {
-                    "Batch SubmitJob Input": {
+                    "Batch SubmitJob Input Reach Subset": {
                         "Type": "Task",
                         "Resource": "arn:aws:states:::batch:submitJob.sync",
                         "Parameters": {
@@ -248,27 +350,81 @@
                             "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-input",
                             "PropagateTags": true,
                             "Tags": {
-                                "job.$": "States.Format('confluence-input-{}-{}',$.version, $.context_value.reach_id)"
+                                "job.$": "States.Format('confluence-input-subset-{}-{}',$.version, $.context_value.reach_id)"
                             },
                             "ContainerOverrides": {
                                 "Command": [
-                                    "-c",
-                                    "river",
                                     "-i",
                                     "Ref::index",
                                     "-r",
-                                    "/mnt/data/reach_node.json",
-                                    "-p",
-                                    "/mnt/data/cycle_passes.json",
+                                    "/mnt/data/expanded_reaches_of_interest.json",
+                                    "-o",
+                                    "/mnt/data/swot",
                                     "-s",
-                                    "/mnt/data/s3_list.json",
-                                    "-e",
-                                    "/mnt/data/s3_reach.json",
-                                    "-d",
-                                    "/mnt/data/swot"
+                                    "/mnt/data/sword"
                                 ]
                             },
-                            "JobName.$": "States.Format('confluence-input-{}-{}',$.version, $.context_value.reach_id)",
+                            "JobName.$": "States.Format('confluence-input-subset-{}-{}',$.version, $.context_value.reach_id)",
+                            "Parameters": {
+                                "index.$": "States.Format('{}',$.context_index)"
+                            }
+                        },
+                        "End": true
+                    }
+                }
+            },
+            "ItemReader": {
+                "Resource": "arn:aws:states:::s3:getObject",
+                "ReaderConfig": {
+                    "InputType": "JSON"
+                },
+                "Parameters": {
+                    "Bucket": "${prefix}-json",
+                    "Key": "expanded_reaches_of_interest.json"
+                }
+            },
+            "Label": "input_reach_subset",
+            "Next": "Setfinder Subset Not Expanded"
+        },
+        "Input Global": {
+            "Type": "Map",
+            "ToleratedFailurePercentagePath": "$.tolerated_failure_percentage",
+            "ResultPath": null,
+            "ItemSelector": {
+                "context_index.$": "$$.Map.Item.Index",
+                "context_value.$": "$$.Map.Item.Value",
+                "version.$": "$.version"
+            },
+            "ItemProcessor": {
+                "ProcessorConfig": {
+                    "Mode": "DISTRIBUTED",
+                    "ExecutionType": "STANDARD"
+                },
+                "StartAt": "Batch SubmitJob Input Global",
+                "States": {
+                    "Batch SubmitJob Input Global": {
+                        "Type": "Task",
+                        "Resource": "arn:aws:states:::batch:submitJob.sync",
+                        "Parameters": {
+                            "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-input",
+                            "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-input",
+                            "PropagateTags": true,
+                            "Tags": {
+                                "job.$": "States.Format('confluence-input-global-{}-{}',$.version, $.context_value.reach_id)"
+                            },
+                            "ContainerOverrides": {
+                                "Command": [
+                                    "-i",
+                                    "Ref::index",
+                                    "-r",
+                                    "/mnt/data/reaches.json",
+                                    "-o",
+                                    "/mnt/data/swot",
+                                    "-s",
+                                    "/mnt/data/sword"
+                                ]
+                            },
+                            "JobName.$": "States.Format('confluence-input-global-{}-{}',$.version, $.context_value.reach_id)",
                             "Parameters": {
                                 "index.$": "States.Format('{}',$.context_index)"
                             }
@@ -287,32 +443,23 @@
                     "Key": "reaches.json"
                 }
             },
-            "Label": "input",
-            "Next": "Disable Renew"
-        },
-        "Disable Renew": {
-            "Type": "Task",
-            "Resource": "arn:aws:states:::batch:submitJob.sync",
-            "ResultPath": null,
-            "Parameters": {
-                "JobName.$": "States.Format('confluence-disable-renew-{}', $.version)",
-                "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-disable-renew",
-                "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-disable-renew",
-                "PropagateTags": true,
-                "Tags": {
-                    "job.$": "States.Format('confluence-disable-renew-{}', $.version)"
-                },
-                "ContainerOverrides": {
-                    "Command": [
-                        "-p",
-                        "Ref::prefix"
-                    ]
-                },
-                "Parameters": {
-                    "prefix": "${prefix}"
-                }
-            },
+            "Label": "input_global",
             "Next": "Prediagnostics"
+        },
+        "Combine Data Global Choice": {
+            "Type": "Choice",
+            "Choices": [
+                {
+                    "Variable": "$.reach_subset_file",
+                    "IsPresent": true,
+                    "Next": "Prediagnostics"
+                },
+                {
+                    "Variable": "$.reach_subset_file",
+                    "IsPresent": false,
+                    "Next": "Input Global"
+                }
+            ]
         },
         "Prediagnostics": {
             "Type": "Map",
