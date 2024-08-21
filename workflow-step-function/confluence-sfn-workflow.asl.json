@@ -733,7 +733,8 @@
                             "ItemSelector": {
                                 "context_index.$": "$$.Map.Item.Index",
                                 "context_value.$": "$$.Map.Item.Value",
-                                "version.$": "$.version"
+                                "version.$": "$.version",
+                                "run_type.$": "$.run_type"
                             },
                             "ItemProcessor": {
                                 "ProcessorConfig": {
@@ -754,14 +755,19 @@
                                             },
                                             "ContainerOverrides": {
                                                 "Command": [
-                                                    "metrosets.json",
+                                                    "-i",
                                                     "Ref::index",
-                                                    "-v"
+                                                    "-r",
+                                                    "metrosets.json",
+                                                    "-v",
+                                                    "-s",
+                                                    "Ref::bucket_key"
                                                 ]
                                             },
                                             "JobName.$": "States.Format('confluence-metroman-{}-{}',$.version, $.context_value[0].reach_id)",
                                             "Parameters": {
-                                                "index.$": "States.Format('{}',$.context_index)"
+                                                "index.$": "States.Format('{}',$.context_index)",
+                                                "bucket_key.$": "States.Format('${prefix}-sos/{}/{}', $.run_type, $.version)"
                                             }
                                         },
                                         "End": true
@@ -793,7 +799,8 @@
                             "ItemSelector": {
                                 "context_index.$": "$$.Map.Item.Index",
                                 "context_value.$": "$$.Map.Item.Value",
-                                "version.$": "$.version"
+                                "version.$": "$.version",
+                                "run_type.$": "$.run_type"
                             },
                             "ItemProcessor": {
                                 "ProcessorConfig": {
@@ -814,13 +821,20 @@
                                             },
                                             "ContainerOverrides": {
                                                 "Command": [
+                                                    "-r",
+                                                    "/mnt/data/input/reaches.json",
+                                                    "-i",
                                                     "Ref::index",
-                                                    "reaches.json"
+                                                    "-m",
+                                                    "3",
+                                                    "-b",
+                                                    "Ref::bucket_key"
                                                 ]
                                             },
                                             "JobName.$": "States.Format('confluence-momma-{}-{}',$.version, $.context_value.reach_id)",
                                             "Parameters": {
-                                                "index.$": "States.Format('{}',$.context_index)"
+                                                "index.$": "States.Format('{}',$.context_index)",
+                                                "bucket_key.$": "States.Format('${prefix}-sos/{}/{}', $.run_type, $.version)"
                                             }
                                         },
                                         "End": true
@@ -852,7 +866,8 @@
                             "ItemSelector": {
                                 "context_index.$": "$$.Map.Item.Index",
                                 "context_value.$": "$$.Map.Item.Value",
-                                "version.$": "$.version"
+                                "version.$": "$.version",
+                                "run_type.$": "$.run_type"
                             },
                             "ItemProcessor": {
                                 "ProcessorConfig": {
@@ -873,13 +888,18 @@
                                             },
                                             "ContainerOverrides": {
                                                 "Command": [
+                                                    "-r",
+                                                    "reaches.json",
+                                                    "-i",
                                                     "Ref::index",
-                                                    "reaches.json"
+                                                    "-b",
+                                                    "Ref::bucket_key"
                                                 ]
                                             },
                                             "JobName.$": "States.Format('confluence-neobam-{}-{}',$.version, $.context_value.reach_id)",
                                             "Parameters": {
-                                                "index.$": "States.Format('{}',$.context_index)"
+                                                "index.$": "States.Format('{}',$.context_index)",
+                                                "bucket_key.$": "States.Format('${prefix}-sos/{}/{}', $.run_type, $.version)"
                                             }
                                         },
                                         "End": true
@@ -911,7 +931,8 @@
                             "ItemSelector": {
                                 "context_index.$": "$$.Map.Item.Index",
                                 "context_value.$": "$$.Map.Item.Value",
-                                "version.$": "$.version"
+                                "version.$": "$.version",
+                                "run_type.$": "$.run_type"
                             },
                             "ItemProcessor": {
                                 "ProcessorConfig": {
@@ -932,13 +953,18 @@
                                             },
                                             "ContainerOverrides": {
                                                 "Command": [
+                                                    "-r",
+                                                    "reaches.json",
+                                                    "-i",
                                                     "Ref::index",
-                                                    "reaches.json"
+                                                    "-b",
+                                                    "Ref::bucket_key"
                                                 ]
                                             },
                                             "JobName.$": "States.Format('confluence-sad-{}-{}',$.version, $.context_value.reach_id)",
                                             "Parameters": {
-                                                "index.$": "States.Format('{}',$.context_index)"
+                                                "index.$": "States.Format('{}',$.context_index)",
+                                                "bucket_key.$": "States.Format('${prefix}-sos/{}/{}', $.run_type, $.version)"
                                             }
                                         },
                                         "End": true
@@ -970,7 +996,8 @@
                             "ItemSelector": {
                                 "context_index.$": "$$.Map.Item.Index",
                                 "context_value.$": "$$.Map.Item.Value",
-                                "version.$": "$.version"
+                                "version.$": "$.version",
+                                "run_type.$": "$.run_type"
                             },
                             "ItemProcessor": {
                                 "ProcessorConfig": {
@@ -994,13 +1021,16 @@
                                                     "--flag_specific_index",
                                                     "--reach_index",
                                                     "Ref::index",
+                                                    "--sos_bucket",
+                                                    "Ref::bucket_key",
                                                     "--filename",
                                                     "reaches.json"
                                                 ]
                                             },
                                             "JobName.$": "States.Format('confluence-sic4dvar-{}-{}',$.version, $.context_value[0].reach_id)",
                                             "Parameters": {
-                                                "index.$": "States.Format('{}',$.context_index)"
+                                                "index.$": "States.Format('{}',$.context_index)",
+                                                "bucket_key.$": "States.Format('${prefix}-sos/{}/{}', $.run_type, $.version)"
                                             }
                                         },
                                         "End": true
@@ -1032,7 +1062,8 @@
             "ItemSelector": {
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
-                "version.$": "$.version"
+                "version.$": "$.version",
+                "run_type.$": "$.run_type"
             },
             "ItemProcessor": {
                 "ProcessorConfig": {
@@ -1053,16 +1084,25 @@
                             },
                             "ContainerOverrides": {
                                 "Command": [
-                                    "0.25",
+                                    "-i",
                                     "Ref::index",
+                                    "-t",
+                                    "0.25",
+                                    "-b",
+                                    "Ref::current_bucket",
+                                    "-r",
                                     "reaches.json",
-                                    "Ref::sos_bucket"
+                                    "-l",
+                                    "FALSE",
+                                    "-p",
+                                    "Ref::previous_bucket"
                                 ]
                             },
                             "JobName.$": "States.Format('confluence-postdiagnostics-flpe-{}-{}',$.version, $.context_value.reach_id)",
                             "Parameters": {
                                 "index.$": "States.Format('{}',$.context_index)",
-                                "sos_bucket": "${prefix}-sos"
+                                "previous_bucket": "${prefix}-sos",
+                                "current_bucket.$": "States.Format('${prefix}-sos/{}/{}', $.run_type, $.version)"
                             }
                         },
                         "End": true
@@ -1104,7 +1144,8 @@
             "ItemSelector": {
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
-                "version.$": "$.version"
+                "version.$": "$.version",
+                "run_type.$": "$.run_type"
             },
             "ItemProcessor": {
                 "ProcessorConfig": {
@@ -1125,15 +1166,21 @@
                             },
                             "ContainerOverrides": {
                                 "Command": [
+                                    "-i",
+                                    "Ref::index",
+                                    "-j",
                                     "basin.json",
                                     "-v",
+                                    "-b",
                                     "constrained",
-                                    "Ref::index"
+                                    "-s",
+                                    "Ref::bucket_key"
                                 ]
                             },
                             "JobName.$": "States.Format('confluence-moi-{}-{}',$.version, $.context_value.basin_id)",
                             "Parameters": {
-                                "index.$": "States.Format('{}',$.context_index)"
+                                "index.$": "States.Format('{}',$.context_index)",
+                                "bucket_key.$": "States.Format('${prefix}-sos/{}/{}', $.run_type, $.version)"
                             }
                         },
                         "End": true
@@ -1160,7 +1207,8 @@
             "ItemSelector": {
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
-                "version.$": "$.version"
+                "version.$": "$.version",
+                "run_type.$": "$.run_type"
             },
             "ItemProcessor": {
                 "ProcessorConfig": {
@@ -1181,15 +1229,21 @@
                             },
                             "ContainerOverrides": {
                                 "Command": [
+                                    "-i",
+                                    "Ref::index",
+                                    "-j",
                                     "basin.json",
                                     "-v",
+                                    "-b",
                                     "unconstrained",
-                                    "Ref::index"
+                                    "-s",
+                                    "Ref::bucket_key"
                                 ]
                             },
                             "JobName.$": "States.Format('confluence-moi-{}-{}',$.version, $.context_value.basin_id)",
                             "Parameters": {
-                                "index.$": "States.Format('{}',$.context_index)"
+                                "index.$": "States.Format('{}',$.context_index)",
+                                "bucket_key.$": "States.Format('${prefix}-sos/{}/{}', $.run_type, $.version)"
                             }
                         },
                         "End": true
@@ -1216,7 +1270,8 @@
             "ItemSelector": {
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
-                "version.$": "$.version"
+                "version.$": "$.version",
+                "run_type.$": "$.run_type"
             },
             "ItemProcessor": {
                 "ProcessorConfig": {
@@ -1237,16 +1292,25 @@
                             },
                             "ContainerOverrides": {
                                 "Command": [
-                                    "0.25",
+                                    "-i",
                                     "Ref::index",
-                                    "reaches.json",
-                                    "Ref::sos_bucket"
+                                    "-t",
+                                    "0.25",
+                                    "-b",
+                                    "Ref::current_bucket",
+                                    "-r",
+                                    "reaches_test_1.json",
+                                    "-l",
+                                    "FALSE",
+                                    "-p",
+                                    "Ref::previous_bucket"
                                 ]
                             },
                             "JobName.$": "States.Format('confluence-postdiagnostics-moi-{}-{}',$.version, $.context_value.reach_id)",
                             "Parameters": {
                                 "index.$": "States.Format('{}',$.context_index)",
-                                "sos_bucket": "${prefix}-sos"
+                                "previous_bucket": "${prefix}-sos",
+                                "current_bucket.$": "States.Format('${prefix}-sos/{}/{}', $.run_type, $.version)"
                             }
                         },
                         "End": true
@@ -1417,7 +1481,8 @@
             "ItemSelector": {
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
-                "version.$": "$.version"
+                "version.$": "$.version",
+                "run_type.$": "$.run_type"
             },
             "ItemProcessor": {
                 "ProcessorConfig": {
@@ -1438,14 +1503,20 @@
                             },
                             "ContainerOverrides": {
                                 "Command": [
-                                    "reaches.json",
+                                    "-i",
+                                    "Ref::index",
+                                    "-r",
+                                    "reaches_test.json",
+                                    "-t",
                                     "constrained",
-                                    "Ref::index"
+                                    "-s",
+                                    "Ref::bucket_key"
                                 ]
                             },
                             "JobName.$": "States.Format('confluence-validation-constrained-{}-{}',$.version, $.context_value.reach_id)",
                             "Parameters": {
-                                "index.$": "States.Format('{}',$.context_index)"
+                                "index.$": "States.Format('{}',$.context_index)",
+                                "bucket_key.$": "States.Format('${prefix}-sos/{}/{}', $.run_type, $.version)"
                             }
                         },
                         "End": true
@@ -1472,7 +1543,8 @@
             "ItemSelector": {
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
-                "version.$": "$.version"
+                "version.$": "$.version",
+                "run_type.$": "$.run_type"
             },
             "ItemProcessor": {
                 "ProcessorConfig": {
@@ -1493,14 +1565,20 @@
                             },
                             "ContainerOverrides": {
                                 "Command": [
-                                    "reaches.json",
-                                    "constrained",
-                                    "Ref::index"
+                                    "-i",
+                                    "Ref::index",
+                                    "-r",
+                                    "reaches_test.json",
+                                    "-t",
+                                    "unconstrained",
+                                    "-s",
+                                    "Ref::bucket_key"
                                 ]
                             },
                             "JobName.$": "States.Format('confluence-validation-unconstrained-{}-{}',$.version, $.context_value.reach_id)",
                             "Parameters": {
-                                "index.$": "States.Format('{}',$.context_index)"
+                                "index.$": "States.Format('{}',$.context_index)",
+                                "bucket_key.$": "States.Format('${prefix}-sos/{}/{}', $.run_type, $.version)"
                             }
                         },
                         "End": true
