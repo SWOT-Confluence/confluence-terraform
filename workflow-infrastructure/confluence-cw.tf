@@ -39,6 +39,11 @@ resource "aws_cloudwatch_log_group" "generate_cw_log_group_metroman" {
   retention_in_days = 0
 }
 
+resource "aws_cloudwatch_log_group" "generate_cw_log_group_metroman_consolidation" {
+  name              = "/aws/batch/job/${var.prefix}-metroman-consolidation/"
+  retention_in_days = 0
+}
+
 resource "aws_cloudwatch_log_group" "generate_cw_log_group_momma" {
   name              = "/aws/batch/job/${var.prefix}-momma/"
   retention_in_days = 0
