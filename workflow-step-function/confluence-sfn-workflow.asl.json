@@ -1076,7 +1076,7 @@
                         "Resource": "arn:aws:states:::batch:submitJob.sync",
                         "Parameters": {
                             "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-metroman-consolidation",
-                            "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-metroman-consolidation",
+                            "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-flpe",
                             "PropagateTags": true,
                             "Tags": {
                                 "job.$": "States.Format('confluence-metroman-consolidation-{}-{}',$.version, $.context_index)"
