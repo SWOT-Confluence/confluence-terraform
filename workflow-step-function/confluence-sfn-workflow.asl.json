@@ -884,7 +884,7 @@
                                             "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-flpe",
                                             "PropagateTags": true,
                                             "Tags": {
-                                                "job.$": "States.Format('confluence-neobam-{}-{}',$.version, $.context_value.reach_id)"
+                                                "job.$": "States.Format('confluence-neobam-{}-{}',$.version, $.context_value[0].reach_id)"
                                             },
                                             "ContainerOverrides": {
                                                 "Command": [
@@ -896,7 +896,7 @@
                                                     "Ref::bucket_key"
                                                 ]
                                             },
-                                            "JobName.$": "States.Format('confluence-neobam-{}-{}',$.version, $.context_value.reach_id)",
+                                            "JobName.$": "States.Format('confluence-neobam-{}-{}',$.version, $.context_value[0].reach_id)",
                                             "Parameters": {
                                                 "index.$": "States.Format('{}',$.context_index)",
                                                 "bucket_key.$": "States.Format('${prefix}-sos/{}/{}', $.run_type, $.version)"
