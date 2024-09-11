@@ -1053,6 +1053,60 @@
                     }
                 }
             ],
+            "Next": "Metroman Consolidation"
+        },
+        "Metroman Consolidation": {
+            "Type": "Map",
+            "ToleratedFailurePercentagePath": "$.tolerated_failure_percentage",
+            "ResultPath": null,
+            "ItemSelector": {
+                "context_index.$": "$$.Map.Item.Index",
+                "context_value.$": "$$.Map.Item.Value",
+                "version.$": "$.version"
+            },
+            "ItemProcessor": {
+                "ProcessorConfig": {
+                    "Mode": "DISTRIBUTED",
+                    "ExecutionType": "STANDARD"
+                },
+                "StartAt": "Batch SubmitJob Metroman Consolidation",
+                "States": {
+                    "Batch SubmitJob Metroman Consolidation": {
+                        "Type": "Task",
+                        "Resource": "arn:aws:states:::batch:submitJob.sync",
+                        "Parameters": {
+                            "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-metroman-consolidation",
+                            "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-metroman-consolidation",
+                            "PropagateTags": true,
+                            "Tags": {
+                                "job.$": "States.Format('confluence-metroman-consolidation-{}-{}',$.version, $.context_index)"
+                            },
+                            "ContainerOverrides": {
+                                "Command": [
+                                    "-i",
+                                    "Ref::index"
+                                ]
+                            },
+                            "JobName.$": "States.Format('confluence-metroman-consolidation-{}-{}',$.version, $.context_index)",
+                            "Parameters": {
+                                "index.$": "States.Format('{}',$.context_index)"
+                            }
+                        },
+                        "End": true
+                    }
+                }
+            },
+            "ItemReader": {
+                "Resource": "arn:aws:states:::s3:getObject",
+                "ReaderConfig": {
+                    "InputType": "JSON"
+                },
+                "Parameters": {
+                    "Bucket": "${prefix}-json",
+                    "Key": "continent.json"
+                }
+            },
+            "Label": "metromanConsolidation",
             "Next": "Postdiagnostics FLPE"
         },
         "Postdiagnostics FLPE": {
