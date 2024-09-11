@@ -822,7 +822,7 @@
                                             "ContainerOverrides": {
                                                 "Command": [
                                                     "-r",
-                                                    "/mnt/data/input/reaches.json",
+                                                    "reaches.json",
                                                     "-i",
                                                     "Ref::index",
                                                     "-m",
