@@ -94,7 +94,14 @@ resource "aws_cloudwatch_log_group" "generate_cw_log_group_output" {
   retention_in_days = 0
 }
 
+# init workflow
 resource "aws_cloudwatch_log_group" "generate_cw_log_group_init" {
   name              = "/aws/batch/job/${var.prefix}-init-workflow/"
+  retention_in_days = 0
+}
+
+# restart
+resource "aws_cloudwatch_log_group" "generate_cw_log_group_restart" {
+  name              = "/aws/batch/job/${var.prefix}-restart/"
   retention_in_days = 0
 }
