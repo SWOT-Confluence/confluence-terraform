@@ -131,29 +131,6 @@ resource "aws_iam_policy" "sfn_batch" {
   })
 }
 
-# # Lambda
-resource "aws_iam_role_policy_attachment" "sfn_role_policy_attach_5" {
-  role       = aws_iam_role.step_function_role.name
-  policy_arn = aws_iam_policy.sfn_lambda.arn
-}
-
-resource "aws_iam_policy" "sfn_lambda" {
-  name        = "${var.prefix}-sfn-lambda-policy"
-  description = "Step Function policy for Lambda Functions"
-  policy = jsonencode({
-    "Version" : "2012-10-17",
-    "Statement" : [
-      {
-        "Effect" : "Allow",
-        "Action" : [
-          "lambda:InvokeFunction"
-        ],
-        "Resource" : "arn:aws:lambda:${var.aws_region}:${local.account_id}:function:${var.prefix}-enable-renew:$LATEST"
-      }
-    ]
-  })
-}
-
 # # S3
 resource "aws_iam_role_policy_attachment" "sfn_role_policy_attach_6" {
   role       = aws_iam_role.step_function_role.name
@@ -180,7 +157,8 @@ resource "aws_iam_policy" "sfn_s3" {
           "s3:ListBucketVersions"
         ],
         "Resource" : [
-          "${data.aws_s3_bucket.s3_json.arn}"
+          "${data.aws_s3_bucket.s3_json.arn}",
+          "${data.aws_s3_bucket.s3_map.arn}"
         ]
       },
       {
@@ -192,7 +170,18 @@ resource "aws_iam_policy" "sfn_s3" {
           "s3:GetObjectAttributes",
         ],
         "Resource" : [
-          "${data.aws_s3_bucket.s3_json.arn}/*"
+          "${data.aws_s3_bucket.s3_json.arn}/*",
+          "${data.aws_s3_bucket.s3_map.arn}/*"
+        ]
+      },
+      {
+        "Sid" : "AllPutObjects",
+        "Effect" : "Allow",
+        "Action" : [
+          "s3:PutObject"
+        ],
+        "Resource" : [
+          "${data.aws_s3_bucket.s3_map.arn}/*"
         ]
       }
     ]

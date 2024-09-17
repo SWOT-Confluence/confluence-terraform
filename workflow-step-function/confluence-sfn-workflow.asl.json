@@ -102,7 +102,7 @@
                                     "NeoBAM",
                                     "-n",
                                     "/data",
-                                    "-o", 
+                                    "-o",
                                     "/data",
                                     "-s",
                                     "16",
@@ -130,7 +130,14 @@
                 },
                 "Parameters": {
                     "Bucket": "${prefix}-json",
-                    "Key": "continent-setfinder.json" 
+                    "Key": "continent-setfinder.json"
+                }
+            },
+            "ResultWriter": {
+                "Resource": "arn:aws:states:::s3:putObject",
+                "Parameters": {
+                    "Bucket": "${prefix}-map-state",
+                    "Prefix": "setfinder"
                 }
             },
             "Label": "setfinder_reach_subset",
@@ -173,7 +180,7 @@
                                     "NeoBAM",
                                     "-n",
                                     "/data",
-                                    "-o", 
+                                    "-o",
                                     "/data",
                                     "-s",
                                     "16",
@@ -197,7 +204,14 @@
                 },
                 "Parameters": {
                     "Bucket": "${prefix}-json",
-                    "Key": "continent-setfinder.json" 
+                    "Key": "continent-setfinder.json"
+                }
+            },
+            "ResultWriter": {
+                "Resource": "arn:aws:states:::s3:putObject",
+                "Parameters": {
+                    "Bucket": "${prefix}-map-state",
+                    "Prefix": "setfinder"
                 }
             },
             "Label": "setfinder_reach_subset_not_expanded",
@@ -240,7 +254,7 @@
                                     "NeoBAM",
                                     "-n",
                                     "/data",
-                                    "-o", 
+                                    "-o",
                                     "/data",
                                     "-s",
                                     "16",
@@ -266,6 +280,13 @@
                 "Parameters": {
                     "Bucket": "${prefix}-json",
                     "Key": "continent-setfinder.json"
+                }
+            },
+            "ResultWriter": {
+                "Resource": "arn:aws:states:::s3:putObject",
+                "Parameters": {
+                    "Bucket": "${prefix}-map-state",
+                    "Prefix": "setfinder"
                 }
             },
             "Label": "setfinder_global",
@@ -383,8 +404,23 @@
                     "Key": "expanded_reaches_of_interest.json"
                 }
             },
+            "ResultWriter": {
+                "Resource": "arn:aws:states:::s3:putObject",
+                "Parameters": {
+                    "Bucket": "${prefix}-map-state",
+                    "Prefix": "input"
+                }
+            },
             "Label": "input_reach_subset",
-            "Next": "Setfinder Subset Not Expanded"
+            "Next": "Setfinder Subset Not Expanded",
+            "Catch": [
+                {
+                    "ErrorEquals": [
+                        "States.ALL"
+                    ],
+                    "Next": "Restart Subset"
+                }
+            ]
         },
         "Input Global": {
             "Type": "Map",
@@ -443,8 +479,23 @@
                     "Key": "reaches.json"
                 }
             },
+            "ResultWriter": {
+                "Resource": "arn:aws:states:::s3:putObject",
+                "Parameters": {
+                    "Bucket": "${prefix}-map-state",
+                    "Prefix": "input"
+                }
+            },
             "Label": "input_global",
-            "Next": "Prediagnostics"
+            "Next": "Prediagnostics",
+            "Catch": [
+                {
+                    "ErrorEquals": [
+                        "States.ALL"
+                    ],
+                    "Next": "Restart"
+                }
+            ]
         },
         "Combine Data Global Choice": {
             "Type": "Choice",
@@ -512,8 +563,23 @@
                     "Key": "reaches.json"
                 }
             },
+            "ResultWriter": {
+                "Resource": "arn:aws:states:::s3:putObject",
+                "Parameters": {
+                    "Bucket": "${prefix}-map-state",
+                    "Prefix": "prediagnostics"
+                }
+            },
             "Label": "prediagnostics",
-            "Next": "Priors Choice"
+            "Next": "Priors Choice",
+            "Catch": [
+                {
+                    "ErrorEquals": [
+                        "States.ALL"
+                    ],
+                    "Next": "Restart"
+                }
+            ]
         },
         "Priors Choice": {
             "Type": "Choice",
@@ -591,6 +657,13 @@
                     "Key": "continent.json"
                 }
             },
+            "ResultWriter": {
+                "Resource": "arn:aws:states:::s3:putObject",
+                "Parameters": {
+                    "Bucket": "${prefix}-map-state",
+                    "Prefix": "priors"
+                }
+            },
             "Label": "priorsConstrained",
             "Next": "FLPE"
         },
@@ -655,6 +728,13 @@
                     "Key": "continent.json"
                 }
             },
+            "ResultWriter": {
+                "Resource": "arn:aws:states:::s3:putObject",
+                "Parameters": {
+                    "Bucket": "${prefix}-map-state",
+                    "Prefix": "priors"
+                }
+            },
             "Label": "priorsUnconstrained",
             "Next": "FLPE"
         },
@@ -716,6 +796,13 @@
                                 "Parameters": {
                                     "Bucket": "${prefix}-json",
                                     "Key": "hivdisets.json"
+                                }
+                            },
+                            "ResultWriter": {
+                                "Resource": "arn:aws:states:::s3:putObject",
+                                "Parameters": {
+                                    "Bucket": "${prefix}-map-state",
+                                    "Prefix": "hivdi"
                                 }
                             },
                             "Label": "hivdi",
@@ -782,6 +869,13 @@
                                 "Parameters": {
                                     "Bucket": "${prefix}-json",
                                     "Key": "metrosets.json"
+                                }
+                            },
+                            "ResultWriter": {
+                                "Resource": "arn:aws:states:::s3:putObject",
+                                "Parameters": {
+                                    "Bucket": "${prefix}-map-state",
+                                    "Prefix": "metroman"
                                 }
                             },
                             "Label": "metroman",
@@ -851,6 +945,13 @@
                                     "Key": "reaches.json"
                                 }
                             },
+                            "ResultWriter": {
+                                "Resource": "arn:aws:states:::s3:putObject",
+                                "Parameters": {
+                                    "Bucket": "${prefix}-map-state",
+                                    "Prefix": "momma"
+                                }
+                            },
                             "Label": "momma",
                             "End": true
                         }
@@ -916,6 +1017,13 @@
                                     "Key": "reaches.json"
                                 }
                             },
+                            "ResultWriter": {
+                                "Resource": "arn:aws:states:::s3:putObject",
+                                "Parameters": {
+                                    "Bucket": "${prefix}-map-state",
+                                    "Prefix": "neobam"
+                                }
+                            },
                             "Label": "neobam",
                             "End": true
                         }
@@ -979,6 +1087,13 @@
                                 "Parameters": {
                                     "Bucket": "${prefix}-json",
                                     "Key": "reaches.json"
+                                }
+                            },
+                            "ResultWriter": {
+                                "Resource": "arn:aws:states:::s3:putObject",
+                                "Parameters": {
+                                    "Bucket": "${prefix}-map-state",
+                                    "Prefix": "sad"
                                 }
                             },
                             "Label": "sad",
@@ -1047,13 +1162,28 @@
                                     "Key": "sicsets.json"
                                 }
                             },
+                            "ResultWriter": {
+                                "Resource": "arn:aws:states:::s3:putObject",
+                                "Parameters": {
+                                    "Bucket": "${prefix}-map-state",
+                                    "Prefix": "sic4dvar"
+                                }
+                            },
                             "Label": "sic4dvar",
                             "End": true
                         }
                     }
                 }
             ],
-            "Next": "Metroman Consolidation"
+            "Next": "Metroman Consolidation",
+            "Catch": [
+                {
+                    "ErrorEquals": [
+                        "States.ALL"
+                    ],
+                    "Next": "Restart"
+                }
+            ]
         },
         "Metroman Consolidation": {
             "Type": "Map",
@@ -1104,6 +1234,13 @@
                 "Parameters": {
                     "Bucket": "${prefix}-json",
                     "Key": "continent.json"
+                }
+            },
+            "ResultWriter": {
+                "Resource": "arn:aws:states:::s3:putObject",
+                "Parameters": {
+                    "Bucket": "${prefix}-map-state",
+                    "Prefix": "metroman-consolidation"
                 }
             },
             "Label": "metromanConsolidation",
@@ -1173,8 +1310,23 @@
                     "Key": "reaches.json"
                 }
             },
+            "ResultWriter": {
+                "Resource": "arn:aws:states:::s3:putObject",
+                "Parameters": {
+                    "Bucket": "${prefix}-map-state",
+                    "Prefix": "postdiagnostics-flpe"
+                }
+            },
             "Label": "postdiagnostics-flpe",
-            "Next": "Moi Choice"
+            "Next": "Moi Choice",
+            "Catch": [
+                {
+                    "ErrorEquals": [
+                        "States.ALL"
+                    ],
+                    "Next": "Restart"
+                }
+            ]
         },
         "Moi Choice": {
             "Type": "Choice",
@@ -1251,8 +1403,23 @@
                     "Key": "basin.json"
                 }
             },
+            "ResultWriter": {
+                "Resource": "arn:aws:states:::s3:putObject",
+                "Parameters": {
+                    "Bucket": "${prefix}-map-state",
+                    "Prefix": "moi"
+                }
+            },
             "Label": "moi_constrained",
-            "Next": "Postdiagnostics MOI"
+            "Next": "Postdiagnostics MOI",
+            "Catch": [
+                {
+                    "ErrorEquals": [
+                        "States.ALL"
+                    ],
+                    "Next": "Restart"
+                }
+            ]
         },
         "Moi Unconstrained": {
             "Type": "Map",
@@ -1314,8 +1481,23 @@
                     "Key": "basin.json"
                 }
             },
+            "ResultWriter": {
+                "Resource": "arn:aws:states:::s3:putObject",
+                "Parameters": {
+                    "Bucket": "${prefix}-map-state",
+                    "Prefix": "moi"
+                }
+            },
             "Label": "moi_unconstrained",
-            "Next": "Postdiagnostics MOI"
+            "Next": "Postdiagnostics MOI",
+            "Catch": [
+                {
+                    "ErrorEquals": [
+                        "States.ALL"
+                    ],
+                    "Next": "Restart"
+                }
+            ]
         },
         "Postdiagnostics MOI": {
             "Type": "Map",
@@ -1381,8 +1563,23 @@
                     "Key": "reaches.json"
                 }
             },
+            "ResultWriter": {
+                "Resource": "arn:aws:states:::s3:putObject",
+                "Parameters": {
+                    "Bucket": "${prefix}-map-state",
+                    "Prefix": "postdiagnostics-moi"
+                }
+            },
             "Label": "postdiagnostics-moi",
-            "Next": "Offline Choice"
+            "Next": "Offline Choice",
+            "Catch": [
+                {
+                    "ErrorEquals": [
+                        "States.ALL"
+                    ],
+                    "Next": "Restart"
+                }
+            ]
         },
         "Offline Choice": {
             "Type": "Choice",
@@ -1453,8 +1650,23 @@
                     "Key": "reaches.json"
                 }
             },
+            "ResultWriter": {
+                "Resource": "arn:aws:states:::s3:putObject",
+                "Parameters": {
+                    "Bucket": "${prefix}-map-state",
+                    "Prefix": "offline"
+                }
+            },
             "Label": "offlineConstrained",
-            "Next": "Validation Choice"
+            "Next": "Validation Choice",
+            "Catch": [
+                {
+                    "ErrorEquals": [
+                        "States.ALL"
+                    ],
+                    "Next": "Restart"
+                }
+            ]
         },
         "Offline Unconstrained": {
             "Type": "Map",
@@ -1510,8 +1722,23 @@
                     "Key": "reaches.json"
                 }
             },
+            "ResultWriter": {
+                "Resource": "arn:aws:states:::s3:putObject",
+                "Parameters": {
+                    "Bucket": "${prefix}-map-state",
+                    "Prefix": "offline"
+                }
+            },
             "Label": "offlineUnconstrained",
-            "Next": "Validation Choice"
+            "Next": "Validation Choice",
+            "Catch": [
+                {
+                    "ErrorEquals": [
+                        "States.ALL"
+                    ],
+                    "Next": "Restart"
+                }
+            ]
         },
         "Validation Choice": {
             "Type": "Choice",
@@ -1587,8 +1814,23 @@
                     "Key": "reaches.json"
                 }
             },
+            "ResultWriter": {
+                "Resource": "arn:aws:states:::s3:putObject",
+                "Parameters": {
+                    "Bucket": "${prefix}-map-state",
+                    "Prefix": "validation"
+                }
+            },
             "Label": "validationConstrained",
-            "Next": "Output Choice"
+            "Next": "Output Choice",
+            "Catch": [
+                {
+                    "ErrorEquals": [
+                        "States.ALL"
+                    ],
+                    "Next": "Restart"
+                }
+            ]
         },
         "Validation Unconstrained": {
             "Type": "Map",
@@ -1649,8 +1891,23 @@
                     "Key": "reaches.json"
                 }
             },
+            "ResultWriter": {
+                "Resource": "arn:aws:states:::s3:putObject",
+                "Parameters": {
+                    "Bucket": "${prefix}-map-state",
+                    "Prefix": "validation"
+                }
+            },
             "Label": "validationUnconstrained",
-            "Next": "Output Choice"
+            "Next": "Output Choice",
+            "Catch": [
+                {
+                    "ErrorEquals": [
+                        "States.ALL"
+                    ],
+                    "Next": "Restart"
+                }
+            ]
         },
         "Output Choice": {
             "Type": "Choice",
@@ -1739,8 +1996,23 @@
                     "Key": "continent.json"
                 }
             },
+            "ResultWriter": {
+                "Resource": "arn:aws:states:::s3:putObject",
+                "Parameters": {
+                    "Bucket": "${prefix}-map-state",
+                    "Prefix": "output"
+                }
+            },
             "Label": "outputConstrained",
-            "Next": "Successful Run"
+            "Next": "Successful Run",
+            "Catch": [
+                {
+                    "ErrorEquals": [
+                        "States.ALL"
+                    ],
+                    "Next": "Restart"
+                }
+            ]
         },
         "Output Unconstrained": {
             "Type": "Map",
@@ -1814,11 +2086,99 @@
                     "Key": "continent.json"
                 }
             },
+            "ResultWriter": {
+                "Resource": "arn:aws:states:::s3:putObject",
+                "Parameters": {
+                    "Bucket": "${prefix}-map-state",
+                    "Prefix": "output"
+                }
+            },
             "Label": "outputUnconstrained",
-            "Next": "Successful Run"
+            "Next": "Successful Run",
+            "Catch": [
+                {
+                    "ErrorEquals": [
+                        "States.ALL"
+                    ],
+                    "Next": "Restart"
+                }
+            ]
         },
         "Successful Run": {
             "Type": "Succeed"
+        },
+        "Restart": {
+            "Type": "Task",
+            "Resource": "arn:aws:states:::batch:submitJob.sync",
+            "ResultPath": null,
+            "Parameters": {
+                "JobName.$": "States.Format('confluence-restart-{}',$.version)",
+                "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-restart",
+                "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-restart",
+                "PropagateTags": true,
+                "Tags": {
+                    "job.$": "States.Format('confluence-restart-{}',$.version)"
+                },
+                "ContainerOverrides": {
+                    "Command": [
+                        "-d",
+                        "/mnt/input",
+                        "-p",
+                        "${prefix}",
+                        "-v",
+                        "Ref::version",
+                        "-r",
+                        "Ref::run_type",
+                        "-t",
+                        "Ref::failure_threshold"
+                    ]
+                },
+                "Parameters": {
+                    "version.$": "States.Format('{}',$.version)",
+                    "run_type.$": "States.Format('{}',$.run_type)",
+                    "failure_threshold.$": "States.Format('{}',$.tolerated_failure_percentage)"
+                }
+            },
+            "Next": "Failed Run"
+        },
+        "Restart Subset": {
+            "Type": "Task",
+            "Resource": "arn:aws:states:::batch:submitJob.sync",
+            "ResultPath": null,
+            "Parameters": {
+                "JobName.$": "States.Format('confluence-restart-subset-{}',$.version)",
+                "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-restart",
+                "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-restart",
+                "PropagateTags": true,
+                "Tags": {
+                    "job.$": "States.Format('confluence-restart-subset-{}',$.version)"
+                },
+                "ContainerOverrides": {
+                    "Command": [
+                        "-d",
+                        "/mnt/input",
+                        "-p",
+                        "${prefix}",
+                        "-v",
+                        "Ref::version",
+                        "-r",
+                        "Ref::run_type",
+                        "-e",
+                        "-t",
+                        "Ref::failure_threshold",
+                        "-e"
+                    ]
+                },
+                "Parameters": {
+                    "version.$": "States.Format('{}',$.version)",
+                    "run_type.$": "States.Format('{}',$.run_type)",
+                    "failure_threshold.$": "States.Format('{}',$.tolerated_failure_percentage)"
+                }
+            },
+            "Next": "Failed Run"
+        },
+        "Failed Run": {
+            "Type": "Fail"
         }
     }
 }
