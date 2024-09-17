@@ -289,6 +289,12 @@ resource "aws_iam_policy" "batch_job_sfn_policy" {
         "Effect" : "Allow",
         "Action" : "states:StartExecution",
         "Resource" : "arn:aws:states:${var.aws_region}:${local.account_id}:stateMachine:${var.prefix}-workflow"
+      },
+      {
+        "Sid" : "DescribeMapRun",
+        "Effect" : "Allow",
+        "Action" : "states:DescribeMapRun",
+        "Resource" : "arn:aws:states:${var.aws_region}:${local.account_id}:mapRun:${var.prefix}-workflow/*"
       }
     ]
   })
