@@ -418,7 +418,7 @@
                     "ErrorEquals": [
                         "States.ALL"
                     ],
-                    "Next": "Restart Subset",
+                    "Next": "Restart Expanded",
                     "ResultPath": "$.error"
                 }
             ]
@@ -494,7 +494,7 @@
                     "ErrorEquals": [
                         "States.ALL"
                     ],
-                    "Next": "Restart",
+                    "Next": "Restart Choice",
                     "ResultPath": "$.error"
                 }
             ]
@@ -579,7 +579,7 @@
                     "ErrorEquals": [
                         "States.ALL"
                     ],
-                    "Next": "Restart",
+                    "Next": "Restart Choice",
                     "ResultPath": "$.error"
                 }
             ]
@@ -1184,7 +1184,7 @@
                     "ErrorEquals": [
                         "States.ALL"
                     ],
-                    "Next": "Restart",
+                    "Next": "Restart Choice",
                     "ResultPath": "$.error"
                 }
             ]
@@ -1328,7 +1328,7 @@
                     "ErrorEquals": [
                         "States.ALL"
                     ],
-                    "Next": "Restart",
+                    "Next": "Restart Choice",
                     "ResultPath": "$.error"
                 }
             ]
@@ -1422,7 +1422,7 @@
                     "ErrorEquals": [
                         "States.ALL"
                     ],
-                    "Next": "Restart",
+                    "Next": "Restart Choice",
                     "ResultPath": "$.error"
                 }
             ]
@@ -1501,7 +1501,7 @@
                     "ErrorEquals": [
                         "States.ALL"
                     ],
-                    "Next": "Restart",
+                    "Next": "Restart Choice",
                     "ResultPath": "$.error"
                 }
             ]
@@ -1584,7 +1584,7 @@
                     "ErrorEquals": [
                         "States.ALL"
                     ],
-                    "Next": "Restart",
+                    "Next": "Restart Choice",
                     "ResultPath": "$.error"
                 }
             ]
@@ -1672,7 +1672,7 @@
                     "ErrorEquals": [
                         "States.ALL"
                     ],
-                    "Next": "Restart",
+                    "Next": "Restart Choice",
                     "ResultPath": "$.error"
                 }
             ]
@@ -1745,7 +1745,7 @@
                     "ErrorEquals": [
                         "States.ALL"
                     ],
-                    "Next": "Restart",
+                    "Next": "Restart Choice",
                     "ResultPath": "$.error"
                 }
             ]
@@ -1838,7 +1838,7 @@
                     "ErrorEquals": [
                         "States.ALL"
                     ],
-                    "Next": "Restart",
+                    "Next": "Restart Choice",
                     "ResultPath": "$.error"
                 }
             ]
@@ -1916,7 +1916,7 @@
                     "ErrorEquals": [
                         "States.ALL"
                     ],
-                    "Next": "Restart",
+                    "Next": "Restart Choice",
                     "ResultPath": "$.error"
                 }
             ]
@@ -2022,7 +2022,7 @@
                     "ErrorEquals": [
                         "States.ALL"
                     ],
-                    "Next": "Restart",
+                    "Next": "Restart Choice",
                     "ResultPath": "$.error"
                 }
             ]
@@ -2113,13 +2113,28 @@
                     "ErrorEquals": [
                         "States.ALL"
                     ],
-                    "Next": "Restart",
+                    "Next": "Restart Choice",
                     "ResultPath": "$.error"
                 }
             ]
         },
         "Successful Run": {
             "Type": "Succeed"
+        },
+        "Restart Choice": {
+            "Type": "Choice",
+            "Choices": [
+                {
+                    "Variable": "$.reach_subset_file",
+                    "IsPresent": true,
+                    "Next": "Restart Subset"
+                },
+                {
+                    "Variable": "$.reach_subset_file",
+                    "IsPresent": false,
+                    "Next": "Restart"
+                }
+            ]
         },
         "Restart": {
             "Type": "Task",
@@ -2177,7 +2192,45 @@
                         "Ref::version",
                         "-r",
                         "Ref::run_type",
-                        "-e",
+                        "-u",
+                        "Ref::reachsubsetfile",
+                        "-t",
+                        "Ref::failure_threshold"
+                    ]
+                },
+                "Parameters": {
+                    "version.$": "States.Format('{}',$.version)",
+                    "run_type.$": "States.Format('{}',$.run_type)",
+                    "failure_threshold.$": "States.Format('{}',$.tolerated_failure_percentage)",
+                    "reachsubsetfile.$": "$.reach_subset_file"
+                }
+            },
+            "Next": "Failed Run"
+        },
+        "Restart Expanded": {
+            "Type": "Task",
+            "Resource": "arn:aws:states:::batch:submitJob.sync",
+            "ResultPath": null,
+            "Parameters": {
+                "JobName.$": "States.Format('confluence-restart-expanded-{}',$.version)",
+                "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-restart",
+                "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-restart",
+                "PropagateTags": true,
+                "Tags": {
+                    "job.$": "States.Format('confluence-restart-expanded-{}',$.version)"
+                },
+                "ContainerOverrides": {
+                    "Command": [
+                        "-d",
+                        "/mnt/input",
+                        "-p",
+                        "${prefix}",
+                        "-v",
+                        "Ref::version",
+                        "-r",
+                        "Ref::run_type",
+                        "-u",
+                        "Ref::reachsubsetfile",
                         "-t",
                         "Ref::failure_threshold",
                         "-e"
@@ -2186,7 +2239,8 @@
                 "Parameters": {
                     "version.$": "States.Format('{}',$.version)",
                     "run_type.$": "States.Format('{}',$.run_type)",
-                    "failure_threshold.$": "States.Format('{}',$.tolerated_failure_percentage)"
+                    "failure_threshold.$": "States.Format('{}',$.tolerated_failure_percentage)",
+                    "reachsubsetfile.$": "$.reach_subset_file"
                 }
             },
             "Next": "Failed Run"
