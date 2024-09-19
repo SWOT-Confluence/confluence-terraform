@@ -2244,7 +2244,8 @@
                         "-r",
                         "Ref::run_type",
                         "-t",
-                        "Ref::failure_threshold"
+                        "Ref::failure_threshold",
+                        "-o"
                     ]
                 },
                 "Parameters": {
@@ -2280,7 +2281,8 @@
                         "-u",
                         "Ref::reachsubsetfile",
                         "-t",
-                        "Ref::failure_threshold"
+                        "Ref::failure_threshold",
+                        "-o"
                     ]
                 },
                 "Parameters": {
@@ -2318,7 +2320,8 @@
                         "Ref::reachsubsetfile",
                         "-t",
                         "Ref::failure_threshold",
-                        "-e"
+                        "-e",
+                        "-o"
                     ]
                 },
                 "Parameters": {
