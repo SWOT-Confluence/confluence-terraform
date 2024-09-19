@@ -887,9 +887,24 @@
                     }
                 },
                 {
-                    "StartAt": "Momma",
+                    "StartAt": "Momma Choice",
                     "States": {
-                        "Momma": {
+                        "Momma Choice": {
+                            "Type": "Choice",
+                            "Choices": [
+                                {
+                                    "Variable": "$.run_type",
+                                    "StringEquals": "constrained",
+                                    "Next": "Momma Constrained"
+                                },
+                                {
+                                    "Variable": "$.run_type",
+                                    "StringEquals": "unconstrained",
+                                    "Next": "Momma Unconstrained"
+                                }
+                            ]
+                        },
+                        "Momma Constrained": {
                             "Type": "Map",
                             "ToleratedFailurePercentagePath": "$.tolerated_failure_percentage",
                             "ResultPath": null,
@@ -914,7 +929,7 @@
                                             "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-flpe",
                                             "PropagateTags": true,
                                             "Tags": {
-                                                "job.$": "States.Format('confluence-momma-{}-{}',$.version, $.context_value.reach_id)"
+                                                "job.$": "States.Format('confluence-momma-constrained-{}-{}',$.version, $.context_value.reach_id)"
                                             },
                                             "ContainerOverrides": {
                                                 "Command": [
@@ -925,10 +940,11 @@
                                                     "-m",
                                                     "3",
                                                     "-b",
-                                                    "Ref::bucket_key"
+                                                    "Ref::bucket_key",
+                                                    "-c"
                                                 ]
                                             },
-                                            "JobName.$": "States.Format('confluence-momma-{}-{}',$.version, $.context_value.reach_id)",
+                                            "JobName.$": "States.Format('confluence-momma-constrained-{}-{}',$.version, $.context_value.reach_id)",
                                             "Parameters": {
                                                 "index.$": "States.Format('{}',$.context_index)",
                                                 "bucket_key.$": "States.Format('${prefix}-sos/{}/{}', $.run_type, $.version)"
@@ -955,7 +971,76 @@
                                     "Prefix": "momma"
                                 }
                             },
-                            "Label": "momma",
+                            "Label": "mommaConstrained",
+                            "End": true
+                        },
+                        "Momma Unconstrained": {
+                            "Type": "Map",
+                            "ToleratedFailurePercentagePath": "$.tolerated_failure_percentage",
+                            "ResultPath": null,
+                            "ItemSelector": {
+                                "context_index.$": "$$.Map.Item.Index",
+                                "context_value.$": "$$.Map.Item.Value",
+                                "version.$": "$.version",
+                                "run_type.$": "$.run_type"
+                            },
+                            "ItemProcessor": {
+                                "ProcessorConfig": {
+                                    "Mode": "DISTRIBUTED",
+                                    "ExecutionType": "STANDARD"
+                                },
+                                "StartAt": "Batch SubmitJob Momma",
+                                "States": {
+                                    "Batch SubmitJob Momma": {
+                                        "Type": "Task",
+                                        "Resource": "arn:aws:states:::batch:submitJob.sync",
+                                        "Parameters": {
+                                            "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-momma",
+                                            "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-flpe",
+                                            "PropagateTags": true,
+                                            "Tags": {
+                                                "job.$": "States.Format('confluence-momma-unconstrained-{}-{}',$.version, $.context_value.reach_id)"
+                                            },
+                                            "ContainerOverrides": {
+                                                "Command": [
+                                                    "-r",
+                                                    "reaches.json",
+                                                    "-i",
+                                                    "Ref::index",
+                                                    "-m",
+                                                    "3",
+                                                    "-b",
+                                                    "Ref::bucket_key"
+                                                ]
+                                            },
+                                            "JobName.$": "States.Format('confluence-momma-unconstrained-{}-{}',$.version, $.context_value.reach_id)",
+                                            "Parameters": {
+                                                "index.$": "States.Format('{}',$.context_index)",
+                                                "bucket_key.$": "States.Format('${prefix}-sos/{}/{}', $.run_type, $.version)"
+                                            }
+                                        },
+                                        "End": true
+                                    }
+                                }
+                            },
+                            "ItemReader": {
+                                "Resource": "arn:aws:states:::s3:getObject",
+                                "ReaderConfig": {
+                                    "InputType": "JSON"
+                                },
+                                "Parameters": {
+                                    "Bucket": "${prefix}-json",
+                                    "Key": "reaches.json"
+                                }
+                            },
+                            "ResultWriter": {
+                                "Resource": "arn:aws:states:::s3:putObject",
+                                "Parameters": {
+                                    "Bucket": "${prefix}-map-state",
+                                    "Prefix": "momma"
+                                }
+                            },
+                            "Label": "mommaUnconstrained",
                             "End": true
                         }
                     }
