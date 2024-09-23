@@ -220,3 +220,25 @@ resource "aws_batch_job_queue" "jq_init_workflow" {
     compute_environment = aws_batch_compute_environment.ce_data.arn
   }
 }
+
+# # restart
+resource "aws_batch_job_queue" "jq_restart" {
+  name     = "${var.prefix}-restart"
+  state    = "ENABLED"
+  priority = 10
+  compute_environment_order {
+    order               = 1
+    compute_environment = aws_batch_compute_environment.ce_data.arn
+  }
+}
+
+# # clean-up
+resource "aws_batch_job_queue" "jq_clean_up" {
+  name     = "${var.prefix}-clean-up"
+  state    = "ENABLED"
+  priority = 10
+  compute_environment_order {
+    order               = 1
+    compute_environment = aws_batch_compute_environment.ce_data.arn
+  }
+}

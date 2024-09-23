@@ -236,11 +236,12 @@ resource "aws_iam_policy" "batch_job_s3_policy" {
         "Resource" : [
           "${aws_s3_bucket.aws_s3_bucket_sos.arn}",
           "${aws_s3_bucket.aws_s3_bucket_json.arn}",
-          "${aws_s3_bucket.aws_s3_bucket_config.arn}"
+          "${aws_s3_bucket.aws_s3_bucket_config.arn}",
+          "${aws_s3_bucket.aws_s3_bucket_map.arn}"
         ]
       },
       {
-        "Sid" : "AllGetPuObjects",
+        "Sid" : "AllGetPutObjects",
         "Effect" : "Allow",
         "Action" : [
           "s3:PutObject",
@@ -252,8 +253,48 @@ resource "aws_iam_policy" "batch_job_s3_policy" {
         "Resource" : [
           "${aws_s3_bucket.aws_s3_bucket_sos.arn}/*",
           "${aws_s3_bucket.aws_s3_bucket_json.arn}/*",
-          "${aws_s3_bucket.aws_s3_bucket_config.arn}/*"
+          "${aws_s3_bucket.aws_s3_bucket_config.arn}/*",
+          "${aws_s3_bucket.aws_s3_bucket_map.arn}/*"
         ]
+      },
+      {
+        "Sid" : "AllDeleteObjects",
+        "Effect" : "Allow",
+        "Action" : [
+          "s3:DeleteObject"
+        ],
+        "Resource" : [
+          "${aws_s3_bucket.aws_s3_bucket_map.arn}/*"
+        ]
+      }
+    ]
+  })
+}
+
+
+# # Step Functions
+resource "aws_iam_role_policy_attachment" "batch_job_sfn_role_policy" {
+  role       = aws_iam_role.batch_job_role.name
+  policy_arn = aws_iam_policy.batch_job_sfn_policy.arn
+}
+
+resource "aws_iam_policy" "batch_job_sfn_policy" {
+  name        = "${var.prefix}-batch-job-sfn-policy"
+  description = "Amazon Batch job policy for Step Function actions"
+  policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Sid" : "AllowStartExecution",
+        "Effect" : "Allow",
+        "Action" : "states:StartExecution",
+        "Resource" : "arn:aws:states:${var.aws_region}:${local.account_id}:stateMachine:${var.prefix}-workflow"
+      },
+      {
+        "Sid" : "DescribeMapRun",
+        "Effect" : "Allow",
+        "Action" : "states:DescribeMapRun",
+        "Resource" : "arn:aws:states:${var.aws_region}:${local.account_id}:mapRun:${var.prefix}-workflow/*"
       }
     ]
   })

@@ -102,7 +102,7 @@
                                     "NeoBAM",
                                     "-n",
                                     "/data",
-                                    "-o", 
+                                    "-o",
                                     "/data",
                                     "-s",
                                     "16",
@@ -130,7 +130,14 @@
                 },
                 "Parameters": {
                     "Bucket": "${prefix}-json",
-                    "Key": "continent-setfinder.json" 
+                    "Key": "continent-setfinder.json"
+                }
+            },
+            "ResultWriter": {
+                "Resource": "arn:aws:states:::s3:putObject",
+                "Parameters": {
+                    "Bucket": "${prefix}-map-state",
+                    "Prefix": "setfinder"
                 }
             },
             "Label": "setfinder_reach_subset",
@@ -173,7 +180,7 @@
                                     "NeoBAM",
                                     "-n",
                                     "/data",
-                                    "-o", 
+                                    "-o",
                                     "/data",
                                     "-s",
                                     "16",
@@ -197,7 +204,14 @@
                 },
                 "Parameters": {
                     "Bucket": "${prefix}-json",
-                    "Key": "continent-setfinder.json" 
+                    "Key": "continent-setfinder.json"
+                }
+            },
+            "ResultWriter": {
+                "Resource": "arn:aws:states:::s3:putObject",
+                "Parameters": {
+                    "Bucket": "${prefix}-map-state",
+                    "Prefix": "setfinder"
                 }
             },
             "Label": "setfinder_reach_subset_not_expanded",
@@ -240,7 +254,7 @@
                                     "NeoBAM",
                                     "-n",
                                     "/data",
-                                    "-o", 
+                                    "-o",
                                     "/data",
                                     "-s",
                                     "16",
@@ -266,6 +280,13 @@
                 "Parameters": {
                     "Bucket": "${prefix}-json",
                     "Key": "continent-setfinder.json"
+                }
+            },
+            "ResultWriter": {
+                "Resource": "arn:aws:states:::s3:putObject",
+                "Parameters": {
+                    "Bucket": "${prefix}-map-state",
+                    "Prefix": "setfinder"
                 }
             },
             "Label": "setfinder_global",
@@ -383,8 +404,24 @@
                     "Key": "expanded_reaches_of_interest.json"
                 }
             },
+            "ResultWriter": {
+                "Resource": "arn:aws:states:::s3:putObject",
+                "Parameters": {
+                    "Bucket": "${prefix}-map-state",
+                    "Prefix": "input"
+                }
+            },
             "Label": "input_reach_subset",
-            "Next": "Setfinder Subset Not Expanded"
+            "Next": "Setfinder Subset Not Expanded",
+            "Catch": [
+                {
+                    "ErrorEquals": [
+                        "States.ALL"
+                    ],
+                    "Next": "Restart Expanded",
+                    "ResultPath": "$.error"
+                }
+            ]
         },
         "Input Global": {
             "Type": "Map",
@@ -443,8 +480,24 @@
                     "Key": "reaches.json"
                 }
             },
+            "ResultWriter": {
+                "Resource": "arn:aws:states:::s3:putObject",
+                "Parameters": {
+                    "Bucket": "${prefix}-map-state",
+                    "Prefix": "input"
+                }
+            },
             "Label": "input_global",
-            "Next": "Prediagnostics"
+            "Next": "Prediagnostics",
+            "Catch": [
+                {
+                    "ErrorEquals": [
+                        "States.ALL"
+                    ],
+                    "Next": "Restart Choice",
+                    "ResultPath": "$.error"
+                }
+            ]
         },
         "Combine Data Global Choice": {
             "Type": "Choice",
@@ -512,8 +565,24 @@
                     "Key": "reaches.json"
                 }
             },
+            "ResultWriter": {
+                "Resource": "arn:aws:states:::s3:putObject",
+                "Parameters": {
+                    "Bucket": "${prefix}-map-state",
+                    "Prefix": "prediagnostics"
+                }
+            },
             "Label": "prediagnostics",
-            "Next": "Priors Choice"
+            "Next": "Priors Choice",
+            "Catch": [
+                {
+                    "ErrorEquals": [
+                        "States.ALL"
+                    ],
+                    "Next": "Restart Choice",
+                    "ResultPath": "$.error"
+                }
+            ]
         },
         "Priors Choice": {
             "Type": "Choice",
@@ -591,6 +660,13 @@
                     "Key": "continent.json"
                 }
             },
+            "ResultWriter": {
+                "Resource": "arn:aws:states:::s3:putObject",
+                "Parameters": {
+                    "Bucket": "${prefix}-map-state",
+                    "Prefix": "priors"
+                }
+            },
             "Label": "priorsConstrained",
             "Next": "FLPE"
         },
@@ -653,6 +729,13 @@
                 "Parameters": {
                     "Bucket": "${prefix}-json",
                     "Key": "continent.json"
+                }
+            },
+            "ResultWriter": {
+                "Resource": "arn:aws:states:::s3:putObject",
+                "Parameters": {
+                    "Bucket": "${prefix}-map-state",
+                    "Prefix": "priors"
                 }
             },
             "Label": "priorsUnconstrained",
@@ -718,6 +801,13 @@
                                     "Key": "hivdisets.json"
                                 }
                             },
+                            "ResultWriter": {
+                                "Resource": "arn:aws:states:::s3:putObject",
+                                "Parameters": {
+                                    "Bucket": "${prefix}-map-state",
+                                    "Prefix": "hivdi"
+                                }
+                            },
                             "Label": "hivdi",
                             "End": true
                         }
@@ -733,7 +823,8 @@
                             "ItemSelector": {
                                 "context_index.$": "$$.Map.Item.Index",
                                 "context_value.$": "$$.Map.Item.Value",
-                                "version.$": "$.version"
+                                "version.$": "$.version",
+                                "run_type.$": "$.run_type"
                             },
                             "ItemProcessor": {
                                 "ProcessorConfig": {
@@ -754,14 +845,19 @@
                                             },
                                             "ContainerOverrides": {
                                                 "Command": [
-                                                    "metrosets.json",
+                                                    "-i",
                                                     "Ref::index",
-                                                    "-v"
+                                                    "-r",
+                                                    "metrosets.json",
+                                                    "-v",
+                                                    "-s",
+                                                    "Ref::bucket_key"
                                                 ]
                                             },
                                             "JobName.$": "States.Format('confluence-metroman-{}-{}',$.version, $.context_value[0].reach_id)",
                                             "Parameters": {
-                                                "index.$": "States.Format('{}',$.context_index)"
+                                                "index.$": "States.Format('{}',$.context_index)",
+                                                "bucket_key.$": "States.Format('${prefix}-sos/{}/{}', $.run_type, $.version)"
                                             }
                                         },
                                         "End": true
@@ -778,31 +874,54 @@
                                     "Key": "metrosets.json"
                                 }
                             },
+                            "ResultWriter": {
+                                "Resource": "arn:aws:states:::s3:putObject",
+                                "Parameters": {
+                                    "Bucket": "${prefix}-map-state",
+                                    "Prefix": "metroman"
+                                }
+                            },
                             "Label": "metroman",
                             "End": true
                         }
                     }
                 },
                 {
-                    "StartAt": "Momma",
+                    "StartAt": "Momma Choice",
                     "States": {
-                        "Momma": {
+                        "Momma Choice": {
+                            "Type": "Choice",
+                            "Choices": [
+                                {
+                                    "Variable": "$.run_type",
+                                    "StringEquals": "constrained",
+                                    "Next": "Momma Constrained"
+                                },
+                                {
+                                    "Variable": "$.run_type",
+                                    "StringEquals": "unconstrained",
+                                    "Next": "Momma Unconstrained"
+                                }
+                            ]
+                        },
+                        "Momma Constrained": {
                             "Type": "Map",
                             "ToleratedFailurePercentagePath": "$.tolerated_failure_percentage",
                             "ResultPath": null,
                             "ItemSelector": {
                                 "context_index.$": "$$.Map.Item.Index",
                                 "context_value.$": "$$.Map.Item.Value",
-                                "version.$": "$.version"
+                                "version.$": "$.version",
+                                "run_type.$": "$.run_type"
                             },
                             "ItemProcessor": {
                                 "ProcessorConfig": {
                                     "Mode": "DISTRIBUTED",
                                     "ExecutionType": "STANDARD"
                                 },
-                                "StartAt": "Batch SubmitJob Momma",
+                                "StartAt": "Batch SubmitJob Momma Constrained",
                                 "States": {
-                                    "Batch SubmitJob Momma": {
+                                    "Batch SubmitJob Momma Constrained": {
                                         "Type": "Task",
                                         "Resource": "arn:aws:states:::batch:submitJob.sync",
                                         "Parameters": {
@@ -810,17 +929,25 @@
                                             "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-flpe",
                                             "PropagateTags": true,
                                             "Tags": {
-                                                "job.$": "States.Format('confluence-momma-{}-{}',$.version, $.context_value.reach_id)"
+                                                "job.$": "States.Format('confluence-momma-constrained-{}-{}',$.version, $.context_value.reach_id)"
                                             },
                                             "ContainerOverrides": {
                                                 "Command": [
+                                                    "-r",
+                                                    "reaches.json",
+                                                    "-i",
                                                     "Ref::index",
-                                                    "reaches.json"
+                                                    "-m",
+                                                    "3",
+                                                    "-b",
+                                                    "Ref::bucket_key",
+                                                    "-c"
                                                 ]
                                             },
-                                            "JobName.$": "States.Format('confluence-momma-{}-{}',$.version, $.context_value.reach_id)",
+                                            "JobName.$": "States.Format('confluence-momma-constrained-{}-{}',$.version, $.context_value.reach_id)",
                                             "Parameters": {
-                                                "index.$": "States.Format('{}',$.context_index)"
+                                                "index.$": "States.Format('{}',$.context_index)",
+                                                "bucket_key.$": "States.Format('${prefix}-sos/{}/{}', $.run_type, $.version)"
                                             }
                                         },
                                         "End": true
@@ -837,7 +964,83 @@
                                     "Key": "reaches.json"
                                 }
                             },
-                            "Label": "momma",
+                            "ResultWriter": {
+                                "Resource": "arn:aws:states:::s3:putObject",
+                                "Parameters": {
+                                    "Bucket": "${prefix}-map-state",
+                                    "Prefix": "momma"
+                                }
+                            },
+                            "Label": "mommaConstrained",
+                            "End": true
+                        },
+                        "Momma Unconstrained": {
+                            "Type": "Map",
+                            "ToleratedFailurePercentagePath": "$.tolerated_failure_percentage",
+                            "ResultPath": null,
+                            "ItemSelector": {
+                                "context_index.$": "$$.Map.Item.Index",
+                                "context_value.$": "$$.Map.Item.Value",
+                                "version.$": "$.version",
+                                "run_type.$": "$.run_type"
+                            },
+                            "ItemProcessor": {
+                                "ProcessorConfig": {
+                                    "Mode": "DISTRIBUTED",
+                                    "ExecutionType": "STANDARD"
+                                },
+                                "StartAt": "Batch SubmitJob Momma Unconstrained",
+                                "States": {
+                                    "Batch SubmitJob Momma Unconstrained": {
+                                        "Type": "Task",
+                                        "Resource": "arn:aws:states:::batch:submitJob.sync",
+                                        "Parameters": {
+                                            "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-momma",
+                                            "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-flpe",
+                                            "PropagateTags": true,
+                                            "Tags": {
+                                                "job.$": "States.Format('confluence-momma-unconstrained-{}-{}',$.version, $.context_value.reach_id)"
+                                            },
+                                            "ContainerOverrides": {
+                                                "Command": [
+                                                    "-r",
+                                                    "reaches.json",
+                                                    "-i",
+                                                    "Ref::index",
+                                                    "-m",
+                                                    "3",
+                                                    "-b",
+                                                    "Ref::bucket_key"
+                                                ]
+                                            },
+                                            "JobName.$": "States.Format('confluence-momma-unconstrained-{}-{}',$.version, $.context_value.reach_id)",
+                                            "Parameters": {
+                                                "index.$": "States.Format('{}',$.context_index)",
+                                                "bucket_key.$": "States.Format('${prefix}-sos/{}/{}', $.run_type, $.version)"
+                                            }
+                                        },
+                                        "End": true
+                                    }
+                                }
+                            },
+                            "ItemReader": {
+                                "Resource": "arn:aws:states:::s3:getObject",
+                                "ReaderConfig": {
+                                    "InputType": "JSON"
+                                },
+                                "Parameters": {
+                                    "Bucket": "${prefix}-json",
+                                    "Key": "reaches.json"
+                                }
+                            },
+                            "ResultWriter": {
+                                "Resource": "arn:aws:states:::s3:putObject",
+                                "Parameters": {
+                                    "Bucket": "${prefix}-map-state",
+                                    "Prefix": "momma"
+                                }
+                            },
+                            "Label": "mommaUnconstrained",
                             "End": true
                         }
                     }
@@ -852,7 +1055,8 @@
                             "ItemSelector": {
                                 "context_index.$": "$$.Map.Item.Index",
                                 "context_value.$": "$$.Map.Item.Value",
-                                "version.$": "$.version"
+                                "version.$": "$.version",
+                                "run_type.$": "$.run_type"
                             },
                             "ItemProcessor": {
                                 "ProcessorConfig": {
@@ -869,17 +1073,22 @@
                                             "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-flpe",
                                             "PropagateTags": true,
                                             "Tags": {
-                                                "job.$": "States.Format('confluence-neobam-{}-{}',$.version, $.context_value.reach_id)"
+                                                "job.$": "States.Format('confluence-neobam-{}-{}',$.version, $.context_value[0].reach_id)"
                                             },
                                             "ContainerOverrides": {
                                                 "Command": [
+                                                    "-r",
+                                                    "reaches.json",
+                                                    "-i",
                                                     "Ref::index",
-                                                    "reaches.json"
+                                                    "-b",
+                                                    "Ref::bucket_key"
                                                 ]
                                             },
                                             "JobName.$": "States.Format('confluence-neobam-{}-{}',$.version, $.context_value.reach_id)",
                                             "Parameters": {
-                                                "index.$": "States.Format('{}',$.context_index)"
+                                                "index.$": "States.Format('{}',$.context_index)",
+                                                "bucket_key.$": "States.Format('${prefix}-sos/{}/{}', $.run_type, $.version)"
                                             }
                                         },
                                         "End": true
@@ -894,6 +1103,13 @@
                                 "Parameters": {
                                     "Bucket": "${prefix}-json",
                                     "Key": "reaches.json"
+                                }
+                            },
+                            "ResultWriter": {
+                                "Resource": "arn:aws:states:::s3:putObject",
+                                "Parameters": {
+                                    "Bucket": "${prefix}-map-state",
+                                    "Prefix": "neobam"
                                 }
                             },
                             "Label": "neobam",
@@ -911,7 +1127,8 @@
                             "ItemSelector": {
                                 "context_index.$": "$$.Map.Item.Index",
                                 "context_value.$": "$$.Map.Item.Value",
-                                "version.$": "$.version"
+                                "version.$": "$.version",
+                                "run_type.$": "$.run_type"
                             },
                             "ItemProcessor": {
                                 "ProcessorConfig": {
@@ -932,13 +1149,18 @@
                                             },
                                             "ContainerOverrides": {
                                                 "Command": [
+                                                    "-r",
+                                                    "reaches.json",
+                                                    "-i",
                                                     "Ref::index",
-                                                    "reaches.json"
+                                                    "-b",
+                                                    "Ref::bucket_key"
                                                 ]
                                             },
                                             "JobName.$": "States.Format('confluence-sad-{}-{}',$.version, $.context_value.reach_id)",
                                             "Parameters": {
-                                                "index.$": "States.Format('{}',$.context_index)"
+                                                "index.$": "States.Format('{}',$.context_index)",
+                                                "bucket_key.$": "States.Format('${prefix}-sos/{}/{}', $.run_type, $.version)"
                                             }
                                         },
                                         "End": true
@@ -953,6 +1175,13 @@
                                 "Parameters": {
                                     "Bucket": "${prefix}-json",
                                     "Key": "reaches.json"
+                                }
+                            },
+                            "ResultWriter": {
+                                "Resource": "arn:aws:states:::s3:putObject",
+                                "Parameters": {
+                                    "Bucket": "${prefix}-map-state",
+                                    "Prefix": "sad"
                                 }
                             },
                             "Label": "sad",
@@ -970,7 +1199,8 @@
                             "ItemSelector": {
                                 "context_index.$": "$$.Map.Item.Index",
                                 "context_value.$": "$$.Map.Item.Value",
-                                "version.$": "$.version"
+                                "version.$": "$.version",
+                                "run_type.$": "$.run_type"
                             },
                             "ItemProcessor": {
                                 "ProcessorConfig": {
@@ -994,13 +1224,16 @@
                                                     "--flag_specific_index",
                                                     "--reach_index",
                                                     "Ref::index",
+                                                    "--sos_bucket",
+                                                    "Ref::bucket_key",
                                                     "--filename",
                                                     "reaches.json"
                                                 ]
                                             },
                                             "JobName.$": "States.Format('confluence-sic4dvar-{}-{}',$.version, $.context_value[0].reach_id)",
                                             "Parameters": {
-                                                "index.$": "States.Format('{}',$.context_index)"
+                                                "index.$": "States.Format('{}',$.context_index)",
+                                                "bucket_key.$": "States.Format('${prefix}-sos/{}/{}', $.run_type, $.version)"
                                             }
                                         },
                                         "End": true
@@ -1017,12 +1250,89 @@
                                     "Key": "sicsets.json"
                                 }
                             },
+                            "ResultWriter": {
+                                "Resource": "arn:aws:states:::s3:putObject",
+                                "Parameters": {
+                                    "Bucket": "${prefix}-map-state",
+                                    "Prefix": "sic4dvar"
+                                }
+                            },
                             "Label": "sic4dvar",
                             "End": true
                         }
                     }
                 }
             ],
+            "Next": "Metroman Consolidation",
+            "Catch": [
+                {
+                    "ErrorEquals": [
+                        "States.ALL"
+                    ],
+                    "Next": "Restart Choice",
+                    "ResultPath": "$.error"
+                }
+            ]
+        },
+        "Metroman Consolidation": {
+            "Type": "Map",
+            "ToleratedFailurePercentagePath": "$.tolerated_failure_percentage",
+            "ResultPath": null,
+            "ItemSelector": {
+                "context_index.$": "$$.Map.Item.Index",
+                "context_value.$": "$$.Map.Item.Value",
+                "version.$": "$.version"
+            },
+            "ItemProcessor": {
+                "ProcessorConfig": {
+                    "Mode": "DISTRIBUTED",
+                    "ExecutionType": "STANDARD"
+                },
+                "StartAt": "Batch SubmitJob Metroman Consolidation",
+                "States": {
+                    "Batch SubmitJob Metroman Consolidation": {
+                        "Type": "Task",
+                        "Resource": "arn:aws:states:::batch:submitJob.sync",
+                        "Parameters": {
+                            "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-metroman-consolidation",
+                            "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-flpe",
+                            "PropagateTags": true,
+                            "Tags": {
+                                "job.$": "States.Format('confluence-metroman-consolidation-{}-{}',$.version, $.context_index)"
+                            },
+                            "ContainerOverrides": {
+                                "Command": [
+                                    "-i",
+                                    "Ref::index"
+                                ]
+                            },
+                            "JobName.$": "States.Format('confluence-metroman-consolidation-{}-{}',$.version, $.context_index)",
+                            "Parameters": {
+                                "index.$": "States.Format('{}',$.context_index)"
+                            }
+                        },
+                        "End": true
+                    }
+                }
+            },
+            "ItemReader": {
+                "Resource": "arn:aws:states:::s3:getObject",
+                "ReaderConfig": {
+                    "InputType": "JSON"
+                },
+                "Parameters": {
+                    "Bucket": "${prefix}-json",
+                    "Key": "continent.json"
+                }
+            },
+            "ResultWriter": {
+                "Resource": "arn:aws:states:::s3:putObject",
+                "Parameters": {
+                    "Bucket": "${prefix}-map-state",
+                    "Prefix": "metroman-consolidation"
+                }
+            },
+            "Label": "metromanConsolidation",
             "Next": "Postdiagnostics FLPE"
         },
         "Postdiagnostics FLPE": {
@@ -1032,7 +1342,8 @@
             "ItemSelector": {
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
-                "version.$": "$.version"
+                "version.$": "$.version",
+                "run_type.$": "$.run_type"
             },
             "ItemProcessor": {
                 "ProcessorConfig": {
@@ -1053,16 +1364,25 @@
                             },
                             "ContainerOverrides": {
                                 "Command": [
-                                    "0.25",
+                                    "-i",
                                     "Ref::index",
+                                    "-t",
+                                    "0.25",
+                                    "-b",
+                                    "Ref::current_bucket",
+                                    "-r",
                                     "reaches.json",
-                                    "Ref::sos_bucket"
+                                    "-l",
+                                    "FALSE",
+                                    "-p",
+                                    "Ref::previous_bucket"
                                 ]
                             },
                             "JobName.$": "States.Format('confluence-postdiagnostics-flpe-{}-{}',$.version, $.context_value.reach_id)",
                             "Parameters": {
                                 "index.$": "States.Format('{}',$.context_index)",
-                                "sos_bucket": "${prefix}-sos"
+                                "previous_bucket": "${prefix}-sos",
+                                "current_bucket.$": "States.Format('${prefix}-sos/{}/{}', $.run_type, $.version)"
                             }
                         },
                         "End": true
@@ -1079,8 +1399,24 @@
                     "Key": "reaches.json"
                 }
             },
+            "ResultWriter": {
+                "Resource": "arn:aws:states:::s3:putObject",
+                "Parameters": {
+                    "Bucket": "${prefix}-map-state",
+                    "Prefix": "postdiagnostics-flpe"
+                }
+            },
             "Label": "postdiagnostics-flpe",
-            "Next": "Moi Choice"
+            "Next": "Moi Choice",
+            "Catch": [
+                {
+                    "ErrorEquals": [
+                        "States.ALL"
+                    ],
+                    "Next": "Restart Choice",
+                    "ResultPath": "$.error"
+                }
+            ]
         },
         "Moi Choice": {
             "Type": "Choice",
@@ -1104,7 +1440,8 @@
             "ItemSelector": {
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
-                "version.$": "$.version"
+                "version.$": "$.version",
+                "run_type.$": "$.run_type"
             },
             "ItemProcessor": {
                 "ProcessorConfig": {
@@ -1125,15 +1462,21 @@
                             },
                             "ContainerOverrides": {
                                 "Command": [
+                                    "-i",
+                                    "Ref::index",
+                                    "-j",
                                     "basin.json",
                                     "-v",
+                                    "-b",
                                     "constrained",
-                                    "Ref::index"
+                                    "-s",
+                                    "Ref::bucket_key"
                                 ]
                             },
                             "JobName.$": "States.Format('confluence-moi-{}-{}',$.version, $.context_value.basin_id)",
                             "Parameters": {
-                                "index.$": "States.Format('{}',$.context_index)"
+                                "index.$": "States.Format('{}',$.context_index)",
+                                "bucket_key.$": "States.Format('${prefix}-sos/{}/{}', $.run_type, $.version)"
                             }
                         },
                         "End": true
@@ -1150,8 +1493,24 @@
                     "Key": "basin.json"
                 }
             },
+            "ResultWriter": {
+                "Resource": "arn:aws:states:::s3:putObject",
+                "Parameters": {
+                    "Bucket": "${prefix}-map-state",
+                    "Prefix": "moi"
+                }
+            },
             "Label": "moi_constrained",
-            "Next": "Postdiagnostics MOI"
+            "Next": "Postdiagnostics MOI",
+            "Catch": [
+                {
+                    "ErrorEquals": [
+                        "States.ALL"
+                    ],
+                    "Next": "Restart Choice",
+                    "ResultPath": "$.error"
+                }
+            ]
         },
         "Moi Unconstrained": {
             "Type": "Map",
@@ -1160,7 +1519,8 @@
             "ItemSelector": {
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
-                "version.$": "$.version"
+                "version.$": "$.version",
+                "run_type.$": "$.run_type"
             },
             "ItemProcessor": {
                 "ProcessorConfig": {
@@ -1181,15 +1541,21 @@
                             },
                             "ContainerOverrides": {
                                 "Command": [
+                                    "-i",
+                                    "Ref::index",
+                                    "-j",
                                     "basin.json",
                                     "-v",
+                                    "-b",
                                     "unconstrained",
-                                    "Ref::index"
+                                    "-s",
+                                    "Ref::bucket_key"
                                 ]
                             },
                             "JobName.$": "States.Format('confluence-moi-{}-{}',$.version, $.context_value.basin_id)",
                             "Parameters": {
-                                "index.$": "States.Format('{}',$.context_index)"
+                                "index.$": "States.Format('{}',$.context_index)",
+                                "bucket_key.$": "States.Format('${prefix}-sos/{}/{}', $.run_type, $.version)"
                             }
                         },
                         "End": true
@@ -1206,8 +1572,24 @@
                     "Key": "basin.json"
                 }
             },
+            "ResultWriter": {
+                "Resource": "arn:aws:states:::s3:putObject",
+                "Parameters": {
+                    "Bucket": "${prefix}-map-state",
+                    "Prefix": "moi"
+                }
+            },
             "Label": "moi_unconstrained",
-            "Next": "Postdiagnostics MOI"
+            "Next": "Postdiagnostics MOI",
+            "Catch": [
+                {
+                    "ErrorEquals": [
+                        "States.ALL"
+                    ],
+                    "Next": "Restart Choice",
+                    "ResultPath": "$.error"
+                }
+            ]
         },
         "Postdiagnostics MOI": {
             "Type": "Map",
@@ -1216,7 +1598,8 @@
             "ItemSelector": {
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
-                "version.$": "$.version"
+                "version.$": "$.version",
+                "run_type.$": "$.run_type"
             },
             "ItemProcessor": {
                 "ProcessorConfig": {
@@ -1237,16 +1620,25 @@
                             },
                             "ContainerOverrides": {
                                 "Command": [
-                                    "0.25",
+                                    "-i",
                                     "Ref::index",
-                                    "reaches.json",
-                                    "Ref::sos_bucket"
+                                    "-t",
+                                    "0.25",
+                                    "-b",
+                                    "Ref::current_bucket",
+                                    "-r",
+                                    "reaches_test_1.json",
+                                    "-l",
+                                    "FALSE",
+                                    "-p",
+                                    "Ref::previous_bucket"
                                 ]
                             },
                             "JobName.$": "States.Format('confluence-postdiagnostics-moi-{}-{}',$.version, $.context_value.reach_id)",
                             "Parameters": {
                                 "index.$": "States.Format('{}',$.context_index)",
-                                "sos_bucket": "${prefix}-sos"
+                                "previous_bucket": "${prefix}-sos",
+                                "current_bucket.$": "States.Format('${prefix}-sos/{}/{}', $.run_type, $.version)"
                             }
                         },
                         "End": true
@@ -1263,8 +1655,24 @@
                     "Key": "reaches.json"
                 }
             },
+            "ResultWriter": {
+                "Resource": "arn:aws:states:::s3:putObject",
+                "Parameters": {
+                    "Bucket": "${prefix}-map-state",
+                    "Prefix": "postdiagnostics-moi"
+                }
+            },
             "Label": "postdiagnostics-moi",
-            "Next": "Offline Choice"
+            "Next": "Offline Choice",
+            "Catch": [
+                {
+                    "ErrorEquals": [
+                        "States.ALL"
+                    ],
+                    "Next": "Restart Choice",
+                    "ResultPath": "$.error"
+                }
+            ]
         },
         "Offline Choice": {
             "Type": "Choice",
@@ -1335,8 +1743,24 @@
                     "Key": "reaches.json"
                 }
             },
+            "ResultWriter": {
+                "Resource": "arn:aws:states:::s3:putObject",
+                "Parameters": {
+                    "Bucket": "${prefix}-map-state",
+                    "Prefix": "offline"
+                }
+            },
             "Label": "offlineConstrained",
-            "Next": "Validation Choice"
+            "Next": "Validation Choice",
+            "Catch": [
+                {
+                    "ErrorEquals": [
+                        "States.ALL"
+                    ],
+                    "Next": "Restart Choice",
+                    "ResultPath": "$.error"
+                }
+            ]
         },
         "Offline Unconstrained": {
             "Type": "Map",
@@ -1392,8 +1816,24 @@
                     "Key": "reaches.json"
                 }
             },
+            "ResultWriter": {
+                "Resource": "arn:aws:states:::s3:putObject",
+                "Parameters": {
+                    "Bucket": "${prefix}-map-state",
+                    "Prefix": "offline"
+                }
+            },
             "Label": "offlineUnconstrained",
-            "Next": "Validation Choice"
+            "Next": "Validation Choice",
+            "Catch": [
+                {
+                    "ErrorEquals": [
+                        "States.ALL"
+                    ],
+                    "Next": "Restart Choice",
+                    "ResultPath": "$.error"
+                }
+            ]
         },
         "Validation Choice": {
             "Type": "Choice",
@@ -1417,7 +1857,8 @@
             "ItemSelector": {
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
-                "version.$": "$.version"
+                "version.$": "$.version",
+                "run_type.$": "$.run_type"
             },
             "ItemProcessor": {
                 "ProcessorConfig": {
@@ -1438,14 +1879,20 @@
                             },
                             "ContainerOverrides": {
                                 "Command": [
-                                    "reaches.json",
+                                    "-i",
+                                    "Ref::index",
+                                    "-r",
+                                    "reaches_test.json",
+                                    "-t",
                                     "constrained",
-                                    "Ref::index"
+                                    "-s",
+                                    "Ref::bucket_key"
                                 ]
                             },
                             "JobName.$": "States.Format('confluence-validation-constrained-{}-{}',$.version, $.context_value.reach_id)",
                             "Parameters": {
-                                "index.$": "States.Format('{}',$.context_index)"
+                                "index.$": "States.Format('{}',$.context_index)",
+                                "bucket_key.$": "States.Format('${prefix}-sos/{}/{}', $.run_type, $.version)"
                             }
                         },
                         "End": true
@@ -1462,8 +1909,24 @@
                     "Key": "reaches.json"
                 }
             },
+            "ResultWriter": {
+                "Resource": "arn:aws:states:::s3:putObject",
+                "Parameters": {
+                    "Bucket": "${prefix}-map-state",
+                    "Prefix": "validation"
+                }
+            },
             "Label": "validationConstrained",
-            "Next": "Output Choice"
+            "Next": "Output Choice",
+            "Catch": [
+                {
+                    "ErrorEquals": [
+                        "States.ALL"
+                    ],
+                    "Next": "Restart Choice",
+                    "ResultPath": "$.error"
+                }
+            ]
         },
         "Validation Unconstrained": {
             "Type": "Map",
@@ -1472,7 +1935,8 @@
             "ItemSelector": {
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
-                "version.$": "$.version"
+                "version.$": "$.version",
+                "run_type.$": "$.run_type"
             },
             "ItemProcessor": {
                 "ProcessorConfig": {
@@ -1493,14 +1957,20 @@
                             },
                             "ContainerOverrides": {
                                 "Command": [
-                                    "reaches.json",
-                                    "constrained",
-                                    "Ref::index"
+                                    "-i",
+                                    "Ref::index",
+                                    "-r",
+                                    "reaches_test.json",
+                                    "-t",
+                                    "unconstrained",
+                                    "-s",
+                                    "Ref::bucket_key"
                                 ]
                             },
                             "JobName.$": "States.Format('confluence-validation-unconstrained-{}-{}',$.version, $.context_value.reach_id)",
                             "Parameters": {
-                                "index.$": "States.Format('{}',$.context_index)"
+                                "index.$": "States.Format('{}',$.context_index)",
+                                "bucket_key.$": "States.Format('${prefix}-sos/{}/{}', $.run_type, $.version)"
                             }
                         },
                         "End": true
@@ -1517,8 +1987,24 @@
                     "Key": "reaches.json"
                 }
             },
+            "ResultWriter": {
+                "Resource": "arn:aws:states:::s3:putObject",
+                "Parameters": {
+                    "Bucket": "${prefix}-map-state",
+                    "Prefix": "validation"
+                }
+            },
             "Label": "validationUnconstrained",
-            "Next": "Output Choice"
+            "Next": "Output Choice",
+            "Catch": [
+                {
+                    "ErrorEquals": [
+                        "States.ALL"
+                    ],
+                    "Next": "Restart Choice",
+                    "ResultPath": "$.error"
+                }
+            ]
         },
         "Output Choice": {
             "Type": "Choice",
@@ -1607,8 +2093,24 @@
                     "Key": "continent.json"
                 }
             },
+            "ResultWriter": {
+                "Resource": "arn:aws:states:::s3:putObject",
+                "Parameters": {
+                    "Bucket": "${prefix}-map-state",
+                    "Prefix": "output"
+                }
+            },
             "Label": "outputConstrained",
-            "Next": "Successful Run"
+            "Next": "Successful Run",
+            "Catch": [
+                {
+                    "ErrorEquals": [
+                        "States.ALL"
+                    ],
+                    "Next": "Restart Choice",
+                    "ResultPath": "$.error"
+                }
+            ]
         },
         "Output Unconstrained": {
             "Type": "Map",
@@ -1682,11 +2184,157 @@
                     "Key": "continent.json"
                 }
             },
+            "ResultWriter": {
+                "Resource": "arn:aws:states:::s3:putObject",
+                "Parameters": {
+                    "Bucket": "${prefix}-map-state",
+                    "Prefix": "output"
+                }
+            },
             "Label": "outputUnconstrained",
-            "Next": "Successful Run"
+            "Next": "Successful Run",
+            "Catch": [
+                {
+                    "ErrorEquals": [
+                        "States.ALL"
+                    ],
+                    "Next": "Restart Choice",
+                    "ResultPath": "$.error"
+                }
+            ]
         },
         "Successful Run": {
             "Type": "Succeed"
+        },
+        "Restart Choice": {
+            "Type": "Choice",
+            "Choices": [
+                {
+                    "Variable": "$.reach_subset_file",
+                    "IsPresent": true,
+                    "Next": "Restart Subset"
+                },
+                {
+                    "Variable": "$.reach_subset_file",
+                    "IsPresent": false,
+                    "Next": "Restart"
+                }
+            ]
+        },
+        "Restart": {
+            "Type": "Task",
+            "Resource": "arn:aws:states:::batch:submitJob.sync",
+            "ResultPath": null,
+            "Parameters": {
+                "JobName.$": "States.Format('confluence-restart-{}',$.version)",
+                "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-restart",
+                "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-restart",
+                "PropagateTags": true,
+                "Tags": {
+                    "job.$": "States.Format('confluence-restart-{}',$.version)"
+                },
+                "ContainerOverrides": {
+                    "Command": [
+                        "-d",
+                        "/mnt/input",
+                        "-p",
+                        "${prefix}",
+                        "-v",
+                        "Ref::version",
+                        "-r",
+                        "Ref::run_type",
+                        "-t",
+                        "Ref::failure_threshold",
+                        "-o"
+                    ]
+                },
+                "Parameters": {
+                    "version.$": "States.Format('{}',$.version)",
+                    "run_type.$": "States.Format('{}',$.run_type)",
+                    "failure_threshold.$": "States.Format('{}',$.tolerated_failure_percentage)"
+                }
+            },
+            "Next": "Failed Run"
+        },
+        "Restart Subset": {
+            "Type": "Task",
+            "Resource": "arn:aws:states:::batch:submitJob.sync",
+            "ResultPath": null,
+            "Parameters": {
+                "JobName.$": "States.Format('confluence-restart-subset-{}',$.version)",
+                "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-restart",
+                "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-restart",
+                "PropagateTags": true,
+                "Tags": {
+                    "job.$": "States.Format('confluence-restart-subset-{}',$.version)"
+                },
+                "ContainerOverrides": {
+                    "Command": [
+                        "-d",
+                        "/mnt/input",
+                        "-p",
+                        "${prefix}",
+                        "-v",
+                        "Ref::version",
+                        "-r",
+                        "Ref::run_type",
+                        "-u",
+                        "Ref::reachsubsetfile",
+                        "-t",
+                        "Ref::failure_threshold",
+                        "-o"
+                    ]
+                },
+                "Parameters": {
+                    "version.$": "States.Format('{}',$.version)",
+                    "run_type.$": "States.Format('{}',$.run_type)",
+                    "failure_threshold.$": "States.Format('{}',$.tolerated_failure_percentage)",
+                    "reachsubsetfile.$": "$.reach_subset_file"
+                }
+            },
+            "Next": "Failed Run"
+        },
+        "Restart Expanded": {
+            "Type": "Task",
+            "Resource": "arn:aws:states:::batch:submitJob.sync",
+            "ResultPath": null,
+            "Parameters": {
+                "JobName.$": "States.Format('confluence-restart-expanded-{}',$.version)",
+                "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-restart",
+                "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-restart",
+                "PropagateTags": true,
+                "Tags": {
+                    "job.$": "States.Format('confluence-restart-expanded-{}',$.version)"
+                },
+                "ContainerOverrides": {
+                    "Command": [
+                        "-d",
+                        "/mnt/input",
+                        "-p",
+                        "${prefix}",
+                        "-v",
+                        "Ref::version",
+                        "-r",
+                        "Ref::run_type",
+                        "-u",
+                        "Ref::reachsubsetfile",
+                        "-t",
+                        "Ref::failure_threshold",
+                        "-e",
+                        "-o"
+                    ]
+                },
+                "Parameters": {
+                    "version.$": "States.Format('{}',$.version)",
+                    "run_type.$": "States.Format('{}',$.run_type)",
+                    "failure_threshold.$": "States.Format('{}',$.tolerated_failure_percentage)",
+                    "reachsubsetfile.$": "$.reach_subset_file"
+                }
+            },
+            "Next": "Failed Run"
+        },
+        "Failed Run": {
+            "Type": "Fail"
         }
     }
 }
