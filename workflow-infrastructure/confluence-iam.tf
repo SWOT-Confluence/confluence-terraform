@@ -299,3 +299,35 @@ resource "aws_iam_policy" "batch_job_sfn_policy" {
     ]
   })
 }
+
+# # SSM Parameters
+resource "aws_iam_role_policy_attachment" "batch_job_ssm_role_policy" {
+  role       = aws_iam_role.batch_job_role.name
+  policy_arn = aws_iam_policy.batch_job_ssm_policy.arn
+}
+
+resource "aws_iam_policy" "batch_job_ssm_policy" {
+  name        = "${var.prefix}-batch-job-ssm-policy"
+  description = "Amazon Batch job policy to access SSM parameters"
+  policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Sid" : "AllowDescribeParameters",
+        "Effect" : "Allow",
+        "Action" : "ssm:DescribeParameters",
+        "Resource" : "arn:aws:ssm:${var.aws_region}:${local.account_id}:parameter/${var.prefix}-hydrocron-key"
+      },
+      {
+        "Sid" : "AllowGetParameter",
+        "Effect" : "Allow",
+        "Action" : [
+          "ssm:GetParameter",
+          "ssm:GetParameters",
+          "ssm:GetParametersByPath"
+        ],
+        "Resource" : "arn:aws:ssm:${var.aws_region}:${local.account_id}:parameter/${var.prefix}-hydrocron-key"
+      }
+    ]
+  })
+}
