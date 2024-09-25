@@ -382,12 +382,15 @@
                                     "-o",
                                     "/mnt/data/swot",
                                     "-s",
-                                    "/mnt/data/sword"
+                                    "/mnt/data/sword",
+                                    "-p",
+                                    "Ref::prefix"
                                 ]
                             },
                             "JobName.$": "States.Format('confluence-input-subset-{}-{}',$.version, $.context_value.reach_id)",
                             "Parameters": {
-                                "index.$": "States.Format('{}',$.context_index)"
+                                "index.$": "States.Format('{}',$.context_index)",
+                                "prefix": "${prefix}"
                             }
                         },
                         "End": true
@@ -458,12 +461,15 @@
                                     "-o",
                                     "/mnt/data/swot",
                                     "-s",
-                                    "/mnt/data/sword"
+                                    "/mnt/data/sword",
+                                    "-p",
+                                    "Ref::prefix"
                                 ]
                             },
                             "JobName.$": "States.Format('confluence-input-global-{}-{}',$.version, $.context_value.reach_id)",
                             "Parameters": {
-                                "index.$": "States.Format('{}',$.context_index)"
+                                "index.$": "States.Format('{}',$.context_index)",
+                                "prefix": "${prefix}"
                             }
                         },
                         "End": true
