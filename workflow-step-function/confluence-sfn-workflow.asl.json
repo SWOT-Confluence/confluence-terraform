@@ -1241,7 +1241,22 @@
                 }
             },
             "Label": "metromanConsolidation",
-            "Next": "Postdiagnostics FLPE"
+            "Next": "Postdiagnostics FLPE Choice"
+        },
+        "Postdiagnostics FLPE Choice": {
+            "Type": "Choice",
+            "Choices": [
+                {
+                    "Variable": "$.run_postdiagnostics",
+                    "IsPresent": true,
+                    "Next": "Postdiagnostics FLPE"
+                },
+                {
+                    "Variable": "$.run_postdiagnostics",
+                    "IsPresent": false,
+                    "Next": "Moi"
+                }
+            ]
         },
         "Postdiagnostics FLPE": {
             "Type": "Map",
@@ -1395,7 +1410,7 @@
                 }
             },
             "Label": "moi",
-            "Next": "Postdiagnostics MOI",
+            "Next": "Postdiagnostics MOI Choice",
             "Catch": [
                 {
                     "ErrorEquals": [
@@ -1403,6 +1418,21 @@
                     ],
                     "Next": "Restart Choice",
                     "ResultPath": "$.error"
+                }
+            ]
+        },
+        "Postdiagnostics MOI Choice": {
+            "Type": "Choice",
+            "Choices": [
+                {
+                    "Variable": "$.run_postdiagnostics",
+                    "IsPresent": true,
+                    "Next": "Postdiagnostics MOI"
+                },
+                {
+                    "Variable": "$.run_postdiagnostics",
+                    "IsPresent": false,
+                    "Next": "Offline"
                 }
             ]
         },
