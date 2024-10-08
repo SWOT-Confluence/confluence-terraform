@@ -579,7 +579,7 @@
                 }
             },
             "Label": "prediagnostics",
-            "Next": "Priors Choice",
+            "Next": "Priors",
             "Catch": [
                 {
                     "ErrorEquals": [
@@ -590,28 +590,14 @@
                 }
             ]
         },
-        "Priors Choice": {
-            "Type": "Choice",
-            "Choices": [
-                {
-                    "Variable": "$.run_type",
-                    "StringEquals": "constrained",
-                    "Next": "Priors Constrained"
-                },
-                {
-                    "Variable": "$.run_type",
-                    "StringEquals": "unconstrained",
-                    "Next": "Priors Unconstrained"
-                }
-            ]
-        },
-        "Priors Constrained": {
+        "Priors": {
             "Type": "Map",
             "ToleratedFailurePercentagePath": "$.tolerated_failure_percentage",
             "ResultPath": null,
             "ItemSelector": {
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
+                "run_type.$": "$.run_type",
                 "version.$": "$.version"
             },
             "ItemProcessor": {
@@ -619,9 +605,9 @@
                     "Mode": "DISTRIBUTED",
                     "ExecutionType": "STANDARD"
                 },
-                "StartAt": "Batch SubmitJob Priors Constrained",
+                "StartAt": "Batch SubmitJob Priors",
                 "States": {
-                    "Batch SubmitJob Priors Constrained": {
+                    "Batch SubmitJob Priors": {
                         "Type": "Task",
                         "Resource": "arn:aws:states:::batch:submitJob.sync",
                         "Parameters": {
@@ -629,14 +615,14 @@
                             "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-priors",
                             "PropagateTags": true,
                             "Tags": {
-                                "job.$": "States.Format('confluence-priors-constrained-{}-{}',$.version, $.context_index)"
+                                "job.$": "States.Format('confluence-priors-{}-{}-{}', $.run_type, $.version, $.context_index)"
                             },
                             "ContainerOverrides": {
                                 "Command": [
                                     "-i",
                                     "Ref::index",
                                     "-r",
-                                    "constrained",
+                                    "Ref::run_type",
                                     "-p",
                                     "usgs",
                                     "riggs",
@@ -648,7 +634,8 @@
                             },
                             "JobName.$": "States.Format('confluence-priors-constrained-{}-{}',$.version, $.context_index)",
                             "Parameters": {
-                                "index.$": "States.Format('{}',$.context_index)",
+                                "index.$": "States.Format('{}', $.context_index)",
+                                "run_type.$": "States.Format('{}', $.run_type)",
                                 "sos_bucket": "${prefix}-sos"
                             }
                         },
@@ -666,71 +653,7 @@
                     "Key": "continent.json"
                 }
             },
-            "Label": "priorsConstrained",
-            "Next": "FLPE"
-        },
-        "Priors Unconstrained": {
-            "Type": "Map",
-            "ToleratedFailurePercentagePath": "$.tolerated_failure_percentage",
-            "ResultPath": null,
-            "ItemSelector": {
-                "context_index.$": "$$.Map.Item.Index",
-                "context_value.$": "$$.Map.Item.Value",
-                "version.$": "$.version"
-            },
-            "ItemProcessor": {
-                "ProcessorConfig": {
-                    "Mode": "DISTRIBUTED",
-                    "ExecutionType": "STANDARD"
-                },
-                "StartAt": "Batch SubmitJob Priors Unconstrained",
-                "States": {
-                    "Batch SubmitJob Priors Unconstrained": {
-                        "Type": "Task",
-                        "Resource": "arn:aws:states:::batch:submitJob.sync",
-                        "Parameters": {
-                            "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-priors",
-                            "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-priors",
-                            "PropagateTags": true,
-                            "Tags": {
-                                "job.$": "States.Format('confluence-priors-unconstrained-{}-{}',$.version, $.context_index)"
-                            },
-                            "ContainerOverrides": {
-                                "Command": [
-                                    "-i",
-                                    "Ref::index",
-                                    "-r",
-                                    "unconstrained",
-                                    "-p",
-                                    "usgs",
-                                    "riggs",
-                                    "gbpriors",
-                                    "-g",
-                                    "-s",
-                                    "Ref::sos_bucket"
-                                ]
-                            },
-                            "JobName.$": "States.Format('confluence-priors-unconstrained-{}-{}',$.version, $.context_index)",
-                            "Parameters": {
-                                "index.$": "States.Format('{}',$.context_index)",
-                                "sos_bucket": "${prefix}-sos"
-                            }
-                        },
-                        "End": true
-                    }
-                }
-            },
-            "ItemReader": {
-                "Resource": "arn:aws:states:::s3:getObject",
-                "ReaderConfig": {
-                    "InputType": "JSON"
-                },
-                "Parameters": {
-                    "Bucket": "${prefix}-json",
-                    "Key": "continent.json"
-                }
-            },
-            "Label": "priorsUnconstrained",
+            "Label": "priors",
             "Next": "FLPE"
         },
         "FLPE": {
@@ -1392,7 +1315,7 @@
                 }
             },
             "Label": "postdiagnostics-flpe",
-            "Next": "Moi Choice",
+            "Next": "Moi",
             "Catch": [
                 {
                     "ErrorEquals": [
@@ -1403,39 +1326,24 @@
                 }
             ]
         },
-        "Moi Choice": {
-            "Type": "Choice",
-            "Choices": [
-                {
-                    "Variable": "$.run_type",
-                    "StringEquals": "constrained",
-                    "Next": "Moi Constrained"
-                },
-                {
-                    "Variable": "$.run_type",
-                    "StringEquals": "unconstrained",
-                    "Next": "Moi Unconstrained"
-                }
-            ]
-        },
-        "Moi Constrained": {
+        "Moi": {
             "Type": "Map",
             "ToleratedFailurePercentagePath": "$.tolerated_failure_percentage",
             "ResultPath": null,
             "ItemSelector": {
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
-                "version.$": "$.version",
-                "run_type.$": "$.run_type"
+                "run_type.$": "$.run_type",
+                "version.$": "$.version"
             },
             "ItemProcessor": {
                 "ProcessorConfig": {
                     "Mode": "DISTRIBUTED",
                     "ExecutionType": "STANDARD"
                 },
-                "StartAt": "Batch SubmitJob Moi Constrained",
+                "StartAt": "Batch SubmitJob Moi",
                 "States": {
-                    "Batch SubmitJob Moi Constrained": {
+                    "Batch SubmitJob Moi": {
                         "Type": "Task",
                         "Resource": "arn:aws:states:::batch:submitJob.sync",
                         "Parameters": {
@@ -1443,7 +1351,7 @@
                             "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-moi",
                             "PropagateTags": true,
                             "Tags": {
-                                "job.$": "States.Format('confluence-moi-{}-{}',$.version, $.context_value.basin_id)"
+                                "job.$": "States.Format('confluence-moi-{}-{}-{}',$.run_type, $.version, $.context_value.basin_id)"
                             },
                             "ContainerOverrides": {
                                 "Command": [
@@ -1453,15 +1361,16 @@
                                     "basin.json",
                                     "-v",
                                     "-b",
-                                    "constrained",
+                                    "Ref::run_type",
                                     "-s",
                                     "Ref::bucket_key"
                                 ]
                             },
-                            "JobName.$": "States.Format('confluence-moi-{}-{}',$.version, $.context_value.basin_id)",
+                            "JobName.$": "States.Format('confluence-moi-{}-{}-{}',$.run_type, $.version, $.context_value.basin_id)",
                             "Parameters": {
+                                "bucket_key.$": "States.Format('${prefix}-sos/{}/{}', $.run_type, $.version)",
                                 "index.$": "States.Format('{}',$.context_index)",
-                                "bucket_key.$": "States.Format('${prefix}-sos/{}/{}', $.run_type, $.version)"
+                                "run_type.$": "States.Format('{}', $.run_type)"
                             }
                         },
                         "End": true
@@ -1485,86 +1394,7 @@
                     "Prefix": "moi"
                 }
             },
-            "Label": "moi_constrained",
-            "Next": "Postdiagnostics MOI",
-            "Catch": [
-                {
-                    "ErrorEquals": [
-                        "States.ALL"
-                    ],
-                    "Next": "Restart Choice",
-                    "ResultPath": "$.error"
-                }
-            ]
-        },
-        "Moi Unconstrained": {
-            "Type": "Map",
-            "ToleratedFailurePercentagePath": "$.tolerated_failure_percentage",
-            "ResultPath": null,
-            "ItemSelector": {
-                "context_index.$": "$$.Map.Item.Index",
-                "context_value.$": "$$.Map.Item.Value",
-                "version.$": "$.version",
-                "run_type.$": "$.run_type"
-            },
-            "ItemProcessor": {
-                "ProcessorConfig": {
-                    "Mode": "DISTRIBUTED",
-                    "ExecutionType": "STANDARD"
-                },
-                "StartAt": "Batch SubmitJob Moi Unconstrained",
-                "States": {
-                    "Batch SubmitJob Moi Unconstrained": {
-                        "Type": "Task",
-                        "Resource": "arn:aws:states:::batch:submitJob.sync",
-                        "Parameters": {
-                            "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-moi",
-                            "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-moi",
-                            "PropagateTags": true,
-                            "Tags": {
-                                "job.$": "States.Format('confluence-moi-{}-{}',$.version, $.context_value.basin_id)"
-                            },
-                            "ContainerOverrides": {
-                                "Command": [
-                                    "-i",
-                                    "Ref::index",
-                                    "-j",
-                                    "basin.json",
-                                    "-v",
-                                    "-b",
-                                    "unconstrained",
-                                    "-s",
-                                    "Ref::bucket_key"
-                                ]
-                            },
-                            "JobName.$": "States.Format('confluence-moi-{}-{}',$.version, $.context_value.basin_id)",
-                            "Parameters": {
-                                "index.$": "States.Format('{}',$.context_index)",
-                                "bucket_key.$": "States.Format('${prefix}-sos/{}/{}', $.run_type, $.version)"
-                            }
-                        },
-                        "End": true
-                    }
-                }
-            },
-            "ItemReader": {
-                "Resource": "arn:aws:states:::s3:getObject",
-                "ReaderConfig": {
-                    "InputType": "JSON"
-                },
-                "Parameters": {
-                    "Bucket": "${prefix}-json",
-                    "Key": "basin.json"
-                }
-            },
-            "ResultWriter": {
-                "Resource": "arn:aws:states:::s3:putObject",
-                "Parameters": {
-                    "Bucket": "${prefix}-map-state",
-                    "Prefix": "moi"
-                }
-            },
-            "Label": "moi_unconstrained",
+            "Label": "moi",
             "Next": "Postdiagnostics MOI",
             "Catch": [
                 {
@@ -1648,7 +1478,7 @@
                 }
             },
             "Label": "postdiagnostics-moi",
-            "Next": "Offline Choice",
+            "Next": "Offline",
             "Catch": [
                 {
                     "ErrorEquals": [
@@ -1659,28 +1489,14 @@
                 }
             ]
         },
-        "Offline Choice": {
-            "Type": "Choice",
-            "Choices": [
-                {
-                    "Variable": "$.run_type",
-                    "StringEquals": "constrained",
-                    "Next": "Offline Constrained"
-                },
-                {
-                    "Variable": "$.run_type",
-                    "StringEquals": "unconstrained",
-                    "Next": "Offline Unconstrained"
-                }
-            ]
-        },
-        "Offline Constrained": {
+        "Offline": {
             "Type": "Map",
             "ToleratedFailurePercentagePath": "$.tolerated_failure_percentage",
             "ResultPath": null,
             "ItemSelector": {
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
+                "run_type.$": "$.run_type",
                 "version.$": "$.version"
             },
             "ItemProcessor": {
@@ -1688,9 +1504,9 @@
                     "Mode": "DISTRIBUTED",
                     "ExecutionType": "STANDARD"
                 },
-                "StartAt": "Batch SubmitJob Offline Constrained",
+                "StartAt": "Batch SubmitJob Offline",
                 "States": {
-                    "Batch SubmitJob Offline Constrained": {
+                    "Batch SubmitJob Offline": {
                         "Type": "Task",
                         "Resource": "arn:aws:states:::batch:submitJob.sync",
                         "Parameters": {
@@ -1698,20 +1514,21 @@
                             "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-offline",
                             "PropagateTags": true,
                             "Tags": {
-                                "job.$": "States.Format('confluence-offline-constrained-{}-{}',$.version, $.context_value.reach_id)"
+                                "job.$": "States.Format('confluence-offline-{}-{}-{}', $.run_type, $.version, $.context_value.reach_id)"
                             },
                             "ContainerOverrides": {
                                 "Command": [
-                                    "constrained",
+                                    "Ref::run_type",
                                     "timeseries",
                                     "integrator",
                                     "reaches.json",
                                     "Ref::index"
                                 ]
                             },
-                            "JobName.$": "States.Format('confluence-offline-constrained-{}-{}',$.version, $.context_value.reach_id)",
+                            "JobName.$": "States.Format('confluence-offline-{}-{}-{}', $.run_type, $.version, $.context_value.reach_id)",
                             "Parameters": {
-                                "index.$": "States.Format('{}',$.context_index)"
+                                "index.$": "States.Format('{}',$.context_index)",
+                                "run_type.$": "States.Format('{}', $.run_type)"
                             }
                         },
                         "End": true
@@ -1735,8 +1552,8 @@
                     "Prefix": "offline"
                 }
             },
-            "Label": "offlineConstrained",
-            "Next": "Validation Choice",
+            "Label": "offline",
+            "Next": "Validation",
             "Catch": [
                 {
                     "ErrorEquals": [
@@ -1747,13 +1564,14 @@
                 }
             ]
         },
-        "Offline Unconstrained": {
+        "Validation": {
             "Type": "Map",
             "ToleratedFailurePercentagePath": "$.tolerated_failure_percentage",
             "ResultPath": null,
             "ItemSelector": {
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
+                "run_type.$": "$.run_type",
                 "version.$": "$.version"
             },
             "ItemProcessor": {
@@ -1761,98 +1579,9 @@
                     "Mode": "DISTRIBUTED",
                     "ExecutionType": "STANDARD"
                 },
-                "StartAt": "Batch SubmitJob Offline Unconstrained",
+                "StartAt": "Batch SubmitJob Validation",
                 "States": {
-                    "Batch SubmitJob Offline Unconstrained": {
-                        "Type": "Task",
-                        "Resource": "arn:aws:states:::batch:submitJob.sync",
-                        "Parameters": {
-                            "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-offline",
-                            "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-offline",
-                            "PropagateTags": true,
-                            "Tags": {
-                                "job.$": "States.Format('confluence-offline-unconstrained-{}-{}',$.version, $.context_value.reach_id)"
-                            },
-                            "ContainerOverrides": {
-                                "Command": [
-                                    "unconstrained",
-                                    "timeseries",
-                                    "integrator",
-                                    "reaches.json",
-                                    "Ref::index"
-                                ]
-                            },
-                            "JobName.$": "States.Format('confluence-offline-unconstrained-{}-{}',$.version, $.context_value.reach_id)",
-                            "Parameters": {
-                                "index.$": "States.Format('{}',$.context_index)"
-                            }
-                        },
-                        "End": true
-                    }
-                }
-            },
-            "ItemReader": {
-                "Resource": "arn:aws:states:::s3:getObject",
-                "ReaderConfig": {
-                    "InputType": "JSON"
-                },
-                "Parameters": {
-                    "Bucket": "${prefix}-json",
-                    "Key": "reaches.json"
-                }
-            },
-            "ResultWriter": {
-                "Resource": "arn:aws:states:::s3:putObject",
-                "Parameters": {
-                    "Bucket": "${prefix}-map-state",
-                    "Prefix": "offline"
-                }
-            },
-            "Label": "offlineUnconstrained",
-            "Next": "Validation Choice",
-            "Catch": [
-                {
-                    "ErrorEquals": [
-                        "States.ALL"
-                    ],
-                    "Next": "Restart Choice",
-                    "ResultPath": "$.error"
-                }
-            ]
-        },
-        "Validation Choice": {
-            "Type": "Choice",
-            "Choices": [
-                {
-                    "Variable": "$.run_type",
-                    "StringEquals": "constrained",
-                    "Next": "Validation Constrained"
-                },
-                {
-                    "Variable": "$.run_type",
-                    "StringEquals": "unconstrained",
-                    "Next": "Validation Unconstrained"
-                }
-            ]
-        },
-        "Validation Constrained": {
-            "Type": "Map",
-            "ToleratedFailurePercentagePath": "$.tolerated_failure_percentage",
-            "ResultPath": null,
-            "ItemSelector": {
-                "context_index.$": "$$.Map.Item.Index",
-                "context_value.$": "$$.Map.Item.Value",
-                "version.$": "$.version",
-                "run_type.$": "$.run_type"
-            },
-            "ItemProcessor": {
-                "ProcessorConfig": {
-                    "Mode": "DISTRIBUTED",
-                    "ExecutionType": "STANDARD"
-                },
-                "StartAt": "Batch SubmitJob Validation Constrained",
-                "States": {
-                    "Batch SubmitJob Validation Constrained": {
+                    "Batch SubmitJob Validation": {
                         "Type": "Task",
                         "Resource": "arn:aws:states:::batch:submitJob.sync",
                         "Parameters": {
@@ -1860,7 +1589,7 @@
                             "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-validation",
                             "PropagateTags": true,
                             "Tags": {
-                                "job.$": "States.Format('confluence-validation-constrained-{}-{}',$.version, $.context_value.reach_id)"
+                                "job.$": "States.Format('confluence-validation-{}-{}-{}',$.run_type, $.version, $.context_value.reach_id)"
                             },
                             "ContainerOverrides": {
                                 "Command": [
@@ -1869,15 +1598,16 @@
                                     "-r",
                                     "reaches.json",
                                     "-t",
-                                    "constrained",
+                                    "Ref::run_type",
                                     "-s",
                                     "Ref::bucket_key"
                                 ]
                             },
-                            "JobName.$": "States.Format('confluence-validation-constrained-{}-{}',$.version, $.context_value.reach_id)",
+                            "JobName.$": "States.Format('confluence-validation-{}-{}-{}',$.run_type, $.version, $.context_value.reach_id)",
                             "Parameters": {
+                                "bucket_key.$": "States.Format('${prefix}-sos/{}/{}', $.run_type, $.version)",
                                 "index.$": "States.Format('{}',$.context_index)",
-                                "bucket_key.$": "States.Format('${prefix}-sos/{}/{}', $.run_type, $.version)"
+                                "run_type.$": "States.Format('{}', $.run_type)"
                             }
                         },
                         "End": true
@@ -1901,8 +1631,8 @@
                     "Prefix": "validation"
                 }
             },
-            "Label": "validationConstrained",
-            "Next": "Output Choice",
+            "Label": "validation",
+            "Next": "Output",
             "Catch": [
                 {
                     "ErrorEquals": [
@@ -1913,106 +1643,14 @@
                 }
             ]
         },
-        "Validation Unconstrained": {
+        "Output": {
             "Type": "Map",
             "ToleratedFailurePercentagePath": "$.tolerated_failure_percentage",
             "ResultPath": null,
             "ItemSelector": {
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
-                "version.$": "$.version",
-                "run_type.$": "$.run_type"
-            },
-            "ItemProcessor": {
-                "ProcessorConfig": {
-                    "Mode": "DISTRIBUTED",
-                    "ExecutionType": "STANDARD"
-                },
-                "StartAt": "Batch SubmitJob Validation Unconstrained",
-                "States": {
-                    "Batch SubmitJob Validation Unconstrained": {
-                        "Type": "Task",
-                        "Resource": "arn:aws:states:::batch:submitJob.sync",
-                        "Parameters": {
-                            "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-validation",
-                            "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-validation",
-                            "PropagateTags": true,
-                            "Tags": {
-                                "job.$": "States.Format('confluence-validation-unconstrained-{}-{}',$.version, $.context_value.reach_id)"
-                            },
-                            "ContainerOverrides": {
-                                "Command": [
-                                    "-i",
-                                    "Ref::index",
-                                    "-r",
-                                    "reaches.json",
-                                    "-t",
-                                    "unconstrained",
-                                    "-s",
-                                    "Ref::bucket_key"
-                                ]
-                            },
-                            "JobName.$": "States.Format('confluence-validation-unconstrained-{}-{}',$.version, $.context_value.reach_id)",
-                            "Parameters": {
-                                "index.$": "States.Format('{}',$.context_index)",
-                                "bucket_key.$": "States.Format('${prefix}-sos/{}/{}', $.run_type, $.version)"
-                            }
-                        },
-                        "End": true
-                    }
-                }
-            },
-            "ItemReader": {
-                "Resource": "arn:aws:states:::s3:getObject",
-                "ReaderConfig": {
-                    "InputType": "JSON"
-                },
-                "Parameters": {
-                    "Bucket": "${prefix}-json",
-                    "Key": "reaches.json"
-                }
-            },
-            "ResultWriter": {
-                "Resource": "arn:aws:states:::s3:putObject",
-                "Parameters": {
-                    "Bucket": "${prefix}-map-state",
-                    "Prefix": "validation"
-                }
-            },
-            "Label": "validationUnconstrained",
-            "Next": "Output Choice",
-            "Catch": [
-                {
-                    "ErrorEquals": [
-                        "States.ALL"
-                    ],
-                    "Next": "Restart Choice",
-                    "ResultPath": "$.error"
-                }
-            ]
-        },
-        "Output Choice": {
-            "Type": "Choice",
-            "Choices": [
-                {
-                    "Variable": "$.run_type",
-                    "StringEquals": "constrained",
-                    "Next": "Output Constrained"
-                },
-                {
-                    "Variable": "$.run_type",
-                    "StringEquals": "unconstrained",
-                    "Next": "Output Unconstrained"
-                }
-            ]
-        },
-        "Output Constrained": {
-            "Type": "Map",
-            "ToleratedFailurePercentagePath": "$.tolerated_failure_percentage",
-            "ResultPath": null,
-            "ItemSelector": {
-                "context_index.$": "$$.Map.Item.Index",
-                "context_value.$": "$$.Map.Item.Value",
+                "run_type.$": "$.run_type",
                 "version.$": "$.version"
             },
             "ItemProcessor": {
@@ -2020,9 +1658,9 @@
                     "Mode": "DISTRIBUTED",
                     "ExecutionType": "STANDARD"
                 },
-                "StartAt": "Batch SubmitJob Output Constrained",
+                "StartAt": "Batch SubmitJob Output",
                 "States": {
-                    "Batch SubmitJob Output Constrained": {
+                    "Batch SubmitJob Output": {
                         "Type": "Task",
                         "Resource": "arn:aws:states:::batch:submitJob.sync",
                         "Parameters": {
@@ -2030,7 +1668,7 @@
                             "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-output",
                             "PropagateTags": true,
                             "Tags": {
-                                "job.$": "States.Format('confluence-output-constrained-{}-{}',$.version, $.context_index)"
+                                "job.$": "States.Format('confluence-output-{}-{}-{}',$.run_type, $.version, $.context_index)"
                             },
                             "ContainerOverrides": {
                                 "Command": [
@@ -2039,7 +1677,7 @@
                                     "-c",
                                     "continent.json",
                                     "-r",
-                                    "constrained",
+                                    "Ref::run_type",
                                     "-s",
                                     "Ref::sos_bucket",
                                     "-m",
@@ -2058,9 +1696,10 @@
                                     "validation"
                                 ]
                             },
-                            "JobName.$": "States.Format('confluence-output-constrained-{}-{}',$.version, $.context_index)",
+                            "JobName.$": "States.Format('confluence-output-{}-{}-{}',$.run_type, $.version, $.context_index)",
                             "Parameters": {
                                 "index.$": "States.Format('{}',$.context_index)",
+                                "run_type.$": "$.run_type",
                                 "sos_bucket": "${prefix}-sos"
                             }
                         },
@@ -2078,91 +1717,7 @@
                     "Key": "continent.json"
                 }
             },
-            "Label": "outputConstrained",
-            "Next": "Successful Run",
-            "Catch": [
-                {
-                    "ErrorEquals": [
-                        "States.ALL"
-                    ],
-                    "Next": "Restart Choice",
-                    "ResultPath": "$.error"
-                }
-            ]
-        },
-        "Output Unconstrained": {
-            "Type": "Map",
-            "ToleratedFailurePercentagePath": "$.tolerated_failure_percentage",
-            "ResultPath": null,
-            "ItemSelector": {
-                "context_index.$": "$$.Map.Item.Index",
-                "context_value.$": "$$.Map.Item.Value",
-                "version.$": "$.version"
-            },
-            "ItemProcessor": {
-                "ProcessorConfig": {
-                    "Mode": "DISTRIBUTED",
-                    "ExecutionType": "STANDARD"
-                },
-                "StartAt": "Batch SubmitJob Output Unconstrained",
-                "States": {
-                    "Batch SubmitJob Output Unconstrained": {
-                        "Type": "Task",
-                        "Resource": "arn:aws:states:::batch:submitJob.sync",
-                        "Parameters": {
-                            "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-output",
-                            "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-output",
-                            "PropagateTags": true,
-                            "Tags": {
-                                "job.$": "States.Format('confluence-output-unconstrained-{}-{}',$.version, $.context_index)"
-                            },
-                            "ContainerOverrides": {
-                                "Command": [
-                                    "-i",
-                                    "Ref::index",
-                                    "-c",
-                                    "continent.json",
-                                    "-r",
-                                    "constrained",
-                                    "-s",
-                                    "Ref::sos_bucket",
-                                    "-m",
-                                    "priors",
-                                    "hivdi",
-                                    "metroman",
-                                    "moi",
-                                    "momma",
-                                    "neobam",
-                                    "offline",
-                                    "postdiagnostics",
-                                    "prediagnostics",
-                                    "sad",
-                                    "sic4dvar",
-                                    "swot",
-                                    "validation"
-                                ]
-                            },
-                            "JobName.$": "States.Format('confluence-output-unconstrained-{}-{}',$.version, $.context_index)",
-                            "Parameters": {
-                                "index.$": "States.Format('{}',$.context_index)",
-                                "sos_bucket": "${prefix}-sos"
-                            }
-                        },
-                        "End": true
-                    }
-                }
-            },
-            "ItemReader": {
-                "Resource": "arn:aws:states:::s3:getObject",
-                "ReaderConfig": {
-                    "InputType": "JSON"
-                },
-                "Parameters": {
-                    "Bucket": "${prefix}-json",
-                    "Key": "continent.json"
-                }
-            },
-            "Label": "outputUnconstrained",
+            "Label": "output",
             "Next": "Successful Run",
             "Catch": [
                 {
@@ -2221,7 +1776,7 @@
                 },
                 "Parameters": {
                     "version.$": "States.Format('{}',$.version)",
-                    "run_type.$": "States.Format('{}',$.run_type)",
+                    "run_type.$": "States.Format('{}', $.run_type)",
                     "failure_threshold.$": "States.Format('{}',$.tolerated_failure_percentage)"
                 }
             },
@@ -2258,7 +1813,7 @@
                 },
                 "Parameters": {
                     "version.$": "States.Format('{}',$.version)",
-                    "run_type.$": "States.Format('{}',$.run_type)",
+                    "run_type.$": "States.Format('{}', $.run_type)",
                     "failure_threshold.$": "States.Format('{}',$.tolerated_failure_percentage)",
                     "reachsubsetfile.$": "$.reach_subset_file"
                 }
@@ -2297,7 +1852,7 @@
                 },
                 "Parameters": {
                     "version.$": "States.Format('{}',$.version)",
-                    "run_type.$": "States.Format('{}',$.run_type)",
+                    "run_type.$": "States.Format('{}', $.run_type)",
                     "failure_threshold.$": "States.Format('{}',$.tolerated_failure_percentage)",
                     "reachsubsetfile.$": "$.reach_subset_file"
                 }
