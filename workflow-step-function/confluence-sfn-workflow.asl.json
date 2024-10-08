@@ -666,13 +666,6 @@
                     "Key": "continent.json"
                 }
             },
-            "ResultWriter": {
-                "Resource": "arn:aws:states:::s3:putObject",
-                "Parameters": {
-                    "Bucket": "${prefix}-map-state",
-                    "Prefix": "priors"
-                }
-            },
             "Label": "priorsConstrained",
             "Next": "FLPE"
         },
@@ -735,13 +728,6 @@
                 "Parameters": {
                     "Bucket": "${prefix}-json",
                     "Key": "continent.json"
-                }
-            },
-            "ResultWriter": {
-                "Resource": "arn:aws:states:::s3:putObject",
-                "Parameters": {
-                    "Bucket": "${prefix}-map-state",
-                    "Prefix": "priors"
                 }
             },
             "Label": "priorsUnconstrained",
@@ -1329,13 +1315,6 @@
                 "Parameters": {
                     "Bucket": "${prefix}-json",
                     "Key": "continent.json"
-                }
-            },
-            "ResultWriter": {
-                "Resource": "arn:aws:states:::s3:putObject",
-                "Parameters": {
-                    "Bucket": "${prefix}-map-state",
-                    "Prefix": "metroman-consolidation"
                 }
             },
             "Label": "metromanConsolidation",
@@ -2099,13 +2078,6 @@
                     "Key": "continent.json"
                 }
             },
-            "ResultWriter": {
-                "Resource": "arn:aws:states:::s3:putObject",
-                "Parameters": {
-                    "Bucket": "${prefix}-map-state",
-                    "Prefix": "output"
-                }
-            },
             "Label": "outputConstrained",
             "Next": "Successful Run",
             "Catch": [
@@ -2188,13 +2160,6 @@
                 "Parameters": {
                     "Bucket": "${prefix}-json",
                     "Key": "continent.json"
-                }
-            },
-            "ResultWriter": {
-                "Resource": "arn:aws:states:::s3:putObject",
-                "Parameters": {
-                    "Bucket": "${prefix}-map-state",
-                    "Prefix": "output"
                 }
             },
             "Label": "outputUnconstrained",
