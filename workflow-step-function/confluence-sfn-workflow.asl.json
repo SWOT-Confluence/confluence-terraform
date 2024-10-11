@@ -32,12 +32,13 @@
                 "ContainerOverrides": {
                     "Command": [
                         "-p",
-                        "confluence-dev1",
+                        "Ref::prefix",
                         "-r",
                         "Ref::reachsubsetfile"
                     ]
                 },
                 "Parameters": {
+                    "prefix": "${prefix}",
                     "reachsubsetfile.$": "$.reach_subset_file"
                 }
             },
@@ -58,8 +59,11 @@
                 "ContainerOverrides": {
                     "Command": [
                         "-p",
-                        "confluence-dev1"
+                        "Ref::prefix"
                     ]
+                },
+                "Parameters": {
+                    "prefix": "${prefix}"
                 }
             },
             "Next": "Setfinder Global"
