@@ -34,7 +34,8 @@
                         "-p",
                         "Ref::prefix",
                         "-r",
-                        "Ref::reachsubsetfile"
+                        "Ref::reachsubsetfile",
+                        "-d"
                     ]
                 },
                 "Parameters": {
@@ -59,7 +60,8 @@
                 "ContainerOverrides": {
                     "Command": [
                         "-p",
-                        "Ref::prefix"
+                        "Ref::prefix",
+                        "-d"
                     ]
                 },
                 "Parameters": {
