@@ -137,13 +137,6 @@
                     "Key": "continent-setfinder.json"
                 }
             },
-            "ResultWriter": {
-                "Resource": "arn:aws:states:::s3:putObject",
-                "Parameters": {
-                    "Bucket": "${prefix}-map-state",
-                    "Prefix": "setfinder"
-                }
-            },
             "Label": "setfinder_reach_subset",
             "Next": "Combine Data Reach Subset"
         },
@@ -209,13 +202,6 @@
                 "Parameters": {
                     "Bucket": "${prefix}-json",
                     "Key": "continent-setfinder.json"
-                }
-            },
-            "ResultWriter": {
-                "Resource": "arn:aws:states:::s3:putObject",
-                "Parameters": {
-                    "Bucket": "${prefix}-map-state",
-                    "Prefix": "setfinder"
                 }
             },
             "Label": "setfinder_reach_subset_not_expanded",
@@ -284,13 +270,6 @@
                 "Parameters": {
                     "Bucket": "${prefix}-json",
                     "Key": "continent-setfinder.json"
-                }
-            },
-            "ResultWriter": {
-                "Resource": "arn:aws:states:::s3:putObject",
-                "Parameters": {
-                    "Bucket": "${prefix}-map-state",
-                    "Prefix": "setfinder"
                 }
             },
             "Label": "setfinder_global",
@@ -1752,16 +1731,7 @@
                 }
             },
             "Label": "output",
-            "Next": "Successful Run",
-            "Catch": [
-                {
-                    "ErrorEquals": [
-                        "States.ALL"
-                    ],
-                    "Next": "Restart Choice",
-                    "ResultPath": "$.error"
-                }
-            ]
+            "Next": "Successful Run"
         },
         "Successful Run": {
             "Type": "Succeed"
