@@ -382,7 +382,8 @@
                         "Retry": [
                             {
                                 "ErrorEquals": [
-                                    "Batch.AWSBatchException"
+                                    "Batch.AWSBatchException",
+                                    "States.TaskFailed"
                                 ],
                                 "BackoffRate": 2,
                                 "MaxAttempts": 5,
@@ -473,7 +474,8 @@
                         "Retry": [
                             {
                                 "ErrorEquals": [
-                                    "Batch.AWSBatchException"
+                                    "Batch.AWSBatchException",
+                                    "States.TaskFailed"
                                 ],
                                 "BackoffRate": 2,
                                 "MaxAttempts": 5,
@@ -570,7 +572,8 @@
                         "Retry": [
                             {
                                 "ErrorEquals": [
-                                    "Batch.AWSBatchException"
+                                    "Batch.AWSBatchException",
+                                    "States.TaskFailed"
                                 ],
                                 "BackoffRate": 2,
                                 "MaxAttempts": 5,
@@ -727,7 +730,8 @@
                                         "Retry": [
                                             {
                                                 "ErrorEquals": [
-                                                    "Batch.AWSBatchException"
+                                                    "Batch.AWSBatchException",
+                                                    "States.TaskFailed"
                                                 ],
                                                 "BackoffRate": 2,
                                                 "MaxAttempts": 5,
@@ -812,7 +816,8 @@
                                         "Retry": [
                                             {
                                                 "ErrorEquals": [
-                                                    "Batch.AWSBatchException"
+                                                    "Batch.AWSBatchException",
+                                                    "States.TaskFailed"
                                                 ],
                                                 "BackoffRate": 2,
                                                 "MaxAttempts": 5,
@@ -914,7 +919,8 @@
                                         "Retry": [
                                             {
                                                 "ErrorEquals": [
-                                                    "Batch.AWSBatchException"
+                                                    "Batch.AWSBatchException",
+                                                    "States.TaskFailed"
                                                 ],
                                                 "BackoffRate": 2,
                                                 "MaxAttempts": 5,
@@ -995,7 +1001,8 @@
                                         "Retry": [
                                             {
                                                 "ErrorEquals": [
-                                                    "Batch.AWSBatchException"
+                                                    "Batch.AWSBatchException",
+                                                    "States.TaskFailed"
                                                 ],
                                                 "BackoffRate": 2,
                                                 "MaxAttempts": 5,
@@ -1079,7 +1086,8 @@
                                         "Retry": [
                                             {
                                                 "ErrorEquals": [
-                                                    "Batch.AWSBatchException"
+                                                    "Batch.AWSBatchException",
+                                                    "States.TaskFailed"
                                                 ],
                                                 "BackoffRate": 2,
                                                 "MaxAttempts": 5,
@@ -1163,7 +1171,8 @@
                                         "Retry": [
                                             {
                                                 "ErrorEquals": [
-                                                    "Batch.AWSBatchException"
+                                                    "Batch.AWSBatchException",
+                                                    "States.TaskFailed"
                                                 ],
                                                 "BackoffRate": 2,
                                                 "MaxAttempts": 5,
@@ -1248,7 +1257,8 @@
                                         "Retry": [
                                             {
                                                 "ErrorEquals": [
-                                                    "Batch.AWSBatchException"
+                                                    "Batch.AWSBatchException",
+                                                    "States.TaskFailed"
                                                 ],
                                                 "BackoffRate": 2,
                                                 "MaxAttempts": 5,
@@ -1417,7 +1427,8 @@
                         "Retry": [
                             {
                                 "ErrorEquals": [
-                                    "Batch.AWSBatchException"
+                                    "Batch.AWSBatchException",
+                                    "States.TaskFailed"
                                 ],
                                 "BackoffRate": 2,
                                 "MaxAttempts": 5,
@@ -1509,7 +1520,8 @@
                         "Retry": [
                             {
                                 "ErrorEquals": [
-                                    "Batch.AWSBatchException"
+                                    "Batch.AWSBatchException",
+                                    "States.TaskFailed"
                                 ],
                                 "BackoffRate": 2,
                                 "MaxAttempts": 5,
@@ -1619,7 +1631,8 @@
                         "Retry": [
                             {
                                 "ErrorEquals": [
-                                    "Batch.AWSBatchException"
+                                    "Batch.AWSBatchException",
+                                    "States.TaskFailed"
                                 ],
                                 "BackoffRate": 2,
                                 "MaxAttempts": 5,
@@ -1706,7 +1719,8 @@
                         "Retry": [
                             {
                                 "ErrorEquals": [
-                                    "Batch.AWSBatchException"
+                                    "Batch.AWSBatchException",
+                                    "States.TaskFailed"
                                 ],
                                 "BackoffRate": 2,
                                 "MaxAttempts": 5,
@@ -1797,7 +1811,8 @@
                         "Retry": [
                             {
                                 "ErrorEquals": [
-                                    "Batch.AWSBatchException"
+                                    "Batch.AWSBatchException",
+                                    "States.TaskFailed"
                                 ],
                                 "BackoffRate": 2,
                                 "MaxAttempts": 5,
@@ -1902,7 +1917,8 @@
                         "Retry": [
                             {
                                 "ErrorEquals": [
-                                    "Batch.AWSBatchException"
+                                    "Batch.AWSBatchException",
+                                    "States.TaskFailed"
                                 ],
                                 "BackoffRate": 2,
                                 "MaxAttempts": 5,
