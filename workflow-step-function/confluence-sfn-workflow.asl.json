@@ -378,7 +378,19 @@
                                 "prefix": "${prefix}"
                             }
                         },
-                        "End": true
+                        "End": true,
+                        "Retry": [
+                            {
+                                "ErrorEquals": [
+                                    "Batch.AWSBatchException"
+                                ],
+                                "BackoffRate": 2,
+                                "MaxAttempts": 5,
+                                "IntervalSeconds": 60,
+                                "JitterStrategy": "FULL",
+                                "MaxDelaySeconds": 900
+                            }
+                        ]
                     }
                 }
             },
@@ -457,7 +469,19 @@
                                 "prefix": "${prefix}"
                             }
                         },
-                        "End": true
+                        "End": true,
+                        "Retry": [
+                            {
+                                "ErrorEquals": [
+                                    "Batch.AWSBatchException"
+                                ],
+                                "BackoffRate": 2,
+                                "MaxAttempts": 5,
+                                "IntervalSeconds": 60,
+                                "JitterStrategy": "FULL",
+                                "MaxDelaySeconds": 900
+                            }
+                        ]
                     }
                 }
             },
@@ -542,7 +566,19 @@
                                 "index.$": "States.Format('{}',$.context_index)"
                             }
                         },
-                        "End": true
+                        "End": true,
+                        "Retry": [
+                            {
+                                "ErrorEquals": [
+                                    "Batch.AWSBatchException"
+                                ],
+                                "BackoffRate": 2,
+                                "MaxAttempts": 5,
+                                "IntervalSeconds": 60,
+                                "JitterStrategy": "FULL",
+                                "MaxDelaySeconds": 900
+                            }
+                        ]
                     }
                 }
             },
@@ -687,7 +723,19 @@
                                                 "index.$": "States.Format('{}',$.context_index)"
                                             }
                                         },
-                                        "End": true
+                                        "End": true,
+                                        "Retry": [
+                                            {
+                                                "ErrorEquals": [
+                                                    "Batch.AWSBatchException"
+                                                ],
+                                                "BackoffRate": 2,
+                                                "MaxAttempts": 5,
+                                                "IntervalSeconds": 60,
+                                                "JitterStrategy": "FULL",
+                                                "MaxDelaySeconds": 900
+                                            }
+                                        ]
                                     }
                                 }
                             },
@@ -760,7 +808,19 @@
                                                 "bucket_key.$": "States.Format('${prefix}-sos/{}/{}', $.run_type, $.version)"
                                             }
                                         },
-                                        "End": true
+                                        "End": true,
+                                        "Retry": [
+                                            {
+                                                "ErrorEquals": [
+                                                    "Batch.AWSBatchException"
+                                                ],
+                                                "BackoffRate": 2,
+                                                "MaxAttempts": 5,
+                                                "IntervalSeconds": 60,
+                                                "JitterStrategy": "FULL",
+                                                "MaxDelaySeconds": 900
+                                            }
+                                        ]
                                     }
                                 }
                             },
@@ -850,7 +910,19 @@
                                                 "bucket_key.$": "States.Format('${prefix}-sos/{}/{}', $.run_type, $.version)"
                                             }
                                         },
-                                        "End": true
+                                        "End": true,
+                                        "Retry": [
+                                            {
+                                                "ErrorEquals": [
+                                                    "Batch.AWSBatchException"
+                                                ],
+                                                "BackoffRate": 2,
+                                                "MaxAttempts": 5,
+                                                "IntervalSeconds": 60,
+                                                "JitterStrategy": "FULL",
+                                                "MaxDelaySeconds": 900
+                                            }
+                                        ]
                                     }
                                 }
                             },
@@ -919,7 +991,19 @@
                                                 "bucket_key.$": "States.Format('${prefix}-sos/{}/{}', $.run_type, $.version)"
                                             }
                                         },
-                                        "End": true
+                                        "End": true,
+                                        "Retry": [
+                                            {
+                                                "ErrorEquals": [
+                                                    "Batch.AWSBatchException"
+                                                ],
+                                                "BackoffRate": 2,
+                                                "MaxAttempts": 5,
+                                                "IntervalSeconds": 60,
+                                                "JitterStrategy": "FULL",
+                                                "MaxDelaySeconds": 900
+                                            }
+                                        ]
                                     }
                                 }
                             },
@@ -991,7 +1075,19 @@
                                                 "bucket_key.$": "States.Format('${prefix}-sos/{}/{}', $.run_type, $.version)"
                                             }
                                         },
-                                        "End": true
+                                        "End": true,
+                                        "Retry": [
+                                            {
+                                                "ErrorEquals": [
+                                                    "Batch.AWSBatchException"
+                                                ],
+                                                "BackoffRate": 2,
+                                                "MaxAttempts": 5,
+                                                "IntervalSeconds": 60,
+                                                "JitterStrategy": "FULL",
+                                                "MaxDelaySeconds": 900
+                                            }
+                                        ]
                                     }
                                 }
                             },
@@ -1063,7 +1159,19 @@
                                                 "bucket_key.$": "States.Format('${prefix}-sos/{}/{}', $.run_type, $.version)"
                                             }
                                         },
-                                        "End": true
+                                        "End": true,
+                                        "Retry": [
+                                            {
+                                                "ErrorEquals": [
+                                                    "Batch.AWSBatchException"
+                                                ],
+                                                "BackoffRate": 2,
+                                                "MaxAttempts": 5,
+                                                "IntervalSeconds": 60,
+                                                "JitterStrategy": "FULL",
+                                                "MaxDelaySeconds": 900
+                                            }
+                                        ]
                                     }
                                 }
                             },
@@ -1136,7 +1244,19 @@
                                                 "bucket_key.$": "States.Format('${prefix}-sos/{}/{}', $.run_type, $.version)"
                                             }
                                         },
-                                        "End": true
+                                        "End": true,
+                                        "Retry": [
+                                            {
+                                                "ErrorEquals": [
+                                                    "Batch.AWSBatchException"
+                                                ],
+                                                "BackoffRate": 2,
+                                                "MaxAttempts": 5,
+                                                "IntervalSeconds": 60,
+                                                "JitterStrategy": "FULL",
+                                                "MaxDelaySeconds": 900
+                                            }
+                                        ]
                                     }
                                 }
                             },
@@ -1293,7 +1413,19 @@
                                 "current_bucket.$": "States.Format('${prefix}-sos/{}/{}', $.run_type, $.version)"
                             }
                         },
-                        "End": true
+                        "End": true,
+                        "Retry": [
+                            {
+                                "ErrorEquals": [
+                                    "Batch.AWSBatchException"
+                                ],
+                                "BackoffRate": 2,
+                                "MaxAttempts": 5,
+                                "IntervalSeconds": 60,
+                                "JitterStrategy": "FULL",
+                                "MaxDelaySeconds": 900
+                            }
+                        ]
                     }
                 }
             },
@@ -1373,7 +1505,19 @@
                                 "run_type.$": "States.Format('{}', $.run_type)"
                             }
                         },
-                        "End": true
+                        "End": true,
+                        "Retry": [
+                            {
+                                "ErrorEquals": [
+                                    "Batch.AWSBatchException"
+                                ],
+                                "BackoffRate": 2,
+                                "MaxAttempts": 5,
+                                "IntervalSeconds": 60,
+                                "JitterStrategy": "FULL",
+                                "MaxDelaySeconds": 900
+                            }
+                        ]
                     }
                 }
             },
@@ -1471,7 +1615,19 @@
                                 "current_bucket.$": "States.Format('${prefix}-sos/{}/{}', $.run_type, $.version)"
                             }
                         },
-                        "End": true
+                        "End": true,
+                        "Retry": [
+                            {
+                                "ErrorEquals": [
+                                    "Batch.AWSBatchException"
+                                ],
+                                "BackoffRate": 2,
+                                "MaxAttempts": 5,
+                                "IntervalSeconds": 60,
+                                "JitterStrategy": "FULL",
+                                "MaxDelaySeconds": 900
+                            }
+                        ]
                     }
                 }
             },
@@ -1546,7 +1702,19 @@
                                 "run_type.$": "States.Format('{}', $.run_type)"
                             }
                         },
-                        "End": true
+                        "End": true,
+                        "Retry": [
+                            {
+                                "ErrorEquals": [
+                                    "Batch.AWSBatchException"
+                                ],
+                                "BackoffRate": 2,
+                                "MaxAttempts": 5,
+                                "IntervalSeconds": 60,
+                                "JitterStrategy": "FULL",
+                                "MaxDelaySeconds": 900
+                            }
+                        ]
                     }
                 }
             },
@@ -1625,7 +1793,19 @@
                                 "run_type.$": "States.Format('{}', $.run_type)"
                             }
                         },
-                        "End": true
+                        "End": true,
+                        "Retry": [
+                            {
+                                "ErrorEquals": [
+                                    "Batch.AWSBatchException"
+                                ],
+                                "BackoffRate": 2,
+                                "MaxAttempts": 5,
+                                "IntervalSeconds": 60,
+                                "JitterStrategy": "FULL",
+                                "MaxDelaySeconds": 900
+                            }
+                        ]
                     }
                 }
             },
@@ -1718,7 +1898,19 @@
                                 "sos_bucket": "${prefix}-sos"
                             }
                         },
-                        "End": true
+                        "End": true,
+                        "Retry": [
+                            {
+                                "ErrorEquals": [
+                                    "Batch.AWSBatchException"
+                                ],
+                                "BackoffRate": 2,
+                                "MaxAttempts": 5,
+                                "IntervalSeconds": 60,
+                                "JitterStrategy": "FULL",
+                                "MaxDelaySeconds": 900
+                            }
+                        ]
                     }
                 }
             },
