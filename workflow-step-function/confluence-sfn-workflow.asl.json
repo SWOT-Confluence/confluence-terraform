@@ -664,6 +664,17 @@
                             }
                         },
                         "TimeoutSecondsPath": "$.priors_timeout_seconds",
+                        "Retry": [
+                            {
+                                "ErrorEquals": [
+                                    "States.Timeout"
+                                ],
+                                "BackoffRate": 2,
+                                "IntervalSeconds": 1,
+                                "MaxAttempts": 3,
+                                "JitterStrategy": "FULL"
+                            }
+                        ],
                         "End": true
                     }
                 }
