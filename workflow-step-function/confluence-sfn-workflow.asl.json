@@ -663,6 +663,7 @@
                                 "sos_bucket": "${prefix}-sos"
                             }
                         },
+                        "TimeoutSecondsPath": "$.priors_timeout_seconds",
                         "End": true
                     }
                 }
