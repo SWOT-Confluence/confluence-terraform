@@ -622,7 +622,8 @@
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
                 "run_type.$": "$.run_type",
-                "version.$": "$.version"
+                "version.$": "$.version",
+                "priors_timeout_seconds.$": "$.priors_timeout_seconds"
             },
             "ItemProcessor": {
                 "ProcessorConfig": {
