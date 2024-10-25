@@ -654,14 +654,17 @@
                                     "gbpriors",
                                     "-g",
                                     "-s",
-                                    "Ref::sos_bucket"
+                                    "Ref::sos_bucket",
+                                    "-o",
+                                    "Ref::version"
                                 ]
                             },
                             "JobName.$": "States.Format('confluence-priors-constrained-{}-{}',$.version, $.context_index)",
                             "Parameters": {
                                 "index.$": "States.Format('{}', $.context_index)",
                                 "run_type.$": "States.Format('{}', $.run_type)",
-                                "sos_bucket": "${prefix}-sos"
+                                "sos_bucket": "${prefix}-sos",
+                                "version.$": "States.Format('{}', $.version)"
                             }
                         },
                         "TimeoutSecondsPath": "$.priors_timeout_seconds",
