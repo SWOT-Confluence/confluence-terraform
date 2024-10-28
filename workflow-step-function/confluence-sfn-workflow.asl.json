@@ -189,7 +189,7 @@
                                     "continent-setfinder.json"
                                 ]
                             },
-                            "JobName.$": "States.Format('confluence-setfinder-subset-not-expanded-{}-{}', $.version, $.counter, $.context_index)",
+                            "JobName.$": "States.Format('confluence-setfinder-subset-not-expanded-{}-{}-{}', $.version, $.counter, $.context_index)",
                             "Parameters": {
                                 "index.$": "States.Format('{}', $.context_index)"
                             }
