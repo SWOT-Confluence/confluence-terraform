@@ -27,7 +27,8 @@
                 "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-init-workflow",
                 "PropagateTags": true,
                 "Tags": {
-                    "job.$": "States.Format('confluence-init-workflow-subset-{}-{}', $.version, $.counter)"
+                    "job.$": "States.Format('confluence-init-workflow-subset-{}-{}', $.version, $.counter)",
+                    "job_definition.$": "States.Format('confluence-init-workflow-subset-{}-{}', $.version, $.counter)"
                 },
                 "ContainerOverrides": {
                     "Command": [
@@ -55,7 +56,8 @@
                 "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-init-workflow",
                 "PropagateTags": true,
                 "Tags": {
-                    "job.$": "States.Format('confluence-init-workflow-global-{}-{}', $.version, $.counter)"
+                    "job.$": "States.Format('confluence-init-workflow-global-{}-{}', $.version, $.counter)",
+                    "job_definition.$": "States.Format('confluence-init-workflow-global-{}-{}', $.version, $.counter)"
                 },
                 "ContainerOverrides": {
                     "Command": [
@@ -96,7 +98,8 @@
                             "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-setfinder",
                             "PropagateTags": true,
                             "Tags": {
-                                "job.$": "States.Format('confluence-setfinder-subset-{}-{}-{}', $.version, $.counter, $.context_index)"
+                                "job.$": "States.Format('confluence-setfinder-subset-{}-{}-{}', $.version, $.counter, $.context_index)",
+                                "job_definition.$": "States.Format('confluence-setfinder-subset-{}-{}', $.version, $.counter)"
                             },
                             "ContainerOverrides": {
                                 "Command": [
@@ -168,7 +171,8 @@
                             "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-setfinder",
                             "PropagateTags": true,
                             "Tags": {
-                                "job.$": "States.Format('confluence-setfinder-subset-not-expanded-{}-{}-{}', $.version, $.counter, $.context_index)"
+                                "job.$": "States.Format('confluence-setfinder-subset-not-expanded-{}-{}-{}', $.version, $.counter, $.context_index)",
+                                "job_definition.$": "States.Format('confluence-setfinder-subset-{}-{}', $.version, $.counter)"
                             },
                             "ContainerOverrides": {
                                 "Command": [
@@ -236,7 +240,8 @@
                             "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-setfinder",
                             "PropagateTags": true,
                             "Tags": {
-                                "job.$": "States.Format('confluence-setfinder-global-{}-{}-{}', $.version, $.counter, $.context_index)"
+                                "job.$": "States.Format('confluence-setfinder-global-{}-{}-{}', $.version, $.counter, $.context_index)",
+                                "job_definition.$": "States.Format('confluence-setfinder-global-{}-{}', $.version, $.counter)"
                             },
                             "ContainerOverrides": {
                                 "Command": [
@@ -290,7 +295,8 @@
                 "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-combine-data",
                 "PropagateTags": true,
                 "Tags": {
-                    "job.$": "States.Format('confluence-combine-data-subset-{}-{}', $.version, $.counter)"
+                    "job.$": "States.Format('confluence-combine-data-subset-{}-{}', $.version, $.counter)",
+                    "job_definition.$": "States.Format('confluence-combine-data-subset-{}-{}', $.version, $.counter)"
                 },
                 "ContainerOverrides": {
                     "Command": [
@@ -318,7 +324,8 @@
                 "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-combine-data",
                 "PropagateTags": true,
                 "Tags": {
-                    "job.$": "States.Format('confluence-combine-data-global-{}-{}', $.version, $.counter)"
+                    "job.$": "States.Format('confluence-combine-data-global-{}-{}', $.version, $.counter)",
+                    "job_definition.$": "States.Format('confluence-combine-data-global-{}-{}', $.version, $.counter)"
                 },
                 "ContainerOverrides": {
                     "Command": [
@@ -360,7 +367,8 @@
                             "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-input",
                             "PropagateTags": true,
                             "Tags": {
-                                "job.$": "States.Format('confluence-input-subset-{}-{}-{}', $.version, $.counter, $.context_value.reach_id)"
+                                "job.$": "States.Format('confluence-input-subset-{}-{}-{}', $.version, $.counter, $.context_value.reach_id)",
+                                "job_definition.$": "States.Format('confluence-input-subset-{}-{}', $.version, $.counter)"
                             },
                             "ContainerOverrides": {
                                 "Command": [
@@ -453,7 +461,8 @@
                             "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-input",
                             "PropagateTags": true,
                             "Tags": {
-                                "job.$": "States.Format('confluence-input-global-{}-{}-{}', $.version, $.counter, $.context_value.reach_id)"
+                                "job.$": "States.Format('confluence-input-global-{}-{}-{}', $.version, $.counter, $.context_value.reach_id)",
+                                "job_definition.$": "States.Format('confluence-input-global-{}-{}', $.version, $.counter)"
                             },
                             "ContainerOverrides": {
                                 "Command": [
@@ -561,7 +570,8 @@
                             "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-prediagnostics",
                             "PropagateTags": true,
                             "Tags": {
-                                "job.$": "States.Format('confluence-prediagnostics-{}-{}-{}', $.version, $.counter, $.context_value.reach_id)"
+                                "job.$": "States.Format('confluence-prediagnostics-{}-{}-{}', $.version, $.counter, $.context_value.reach_id)",
+                                "job_definition.$": "States.Format('confluence-prediagnostics-{}-{}', $.version, $.counter)"
                             },
                             "ContainerOverrides": {
                                 "Command": [
@@ -647,7 +657,8 @@
                             "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-priors",
                             "PropagateTags": true,
                             "Tags": {
-                                "job.$": "States.Format('confluence-priors-{}-{}-{}-{}', $.run_type, $.version, $.counter, $.context_index)"
+                                "job.$": "States.Format('confluence-priors-{}-{}-{}-{}', $.run_type, $.version, $.counter, $.context_index)",
+                                "job_definition.$": "States.Format('confluence-priors-{}-{}-{}', $.run_type, $.version, $.counter)"
                             },
                             "ContainerOverrides": {
                                 "Command": [
@@ -735,7 +746,8 @@
                                             "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-flpe",
                                             "PropagateTags": true,
                                             "Tags": {
-                                                "job.$": "States.Format('confluence-hivdi-{}-{}-{}', $.version, $.counter, $.context_value[0].reach_id)"
+                                                "job.$": "States.Format('confluence-hivdi-{}-{}-{}', $.version, $.counter, $.context_value[0].reach_id)",
+                                                "job_definition.$": "States.Format('confluence-hivdi-{}-{}', $.version, $.counter)"
                                             },
                                             "ContainerOverrides": {
                                                 "Command": [
@@ -818,7 +830,8 @@
                                             "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-flpe",
                                             "PropagateTags": true,
                                             "Tags": {
-                                                "job.$": "States.Format('confluence-metroman-{}-{}-{}', $.version, $.counter, $.context_value[0].reach_id)"
+                                                "job.$": "States.Format('confluence-metroman-{}-{}-{}', $.version, $.counter, $.context_value[0].reach_id)",
+                                                "job_definition.$": "States.Format('confluence-metroman-{}-{}', $.version, $.counter)"
                                             },
                                             "ContainerOverrides": {
                                                 "Command": [
@@ -920,7 +933,8 @@
                                             "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-flpe",
                                             "PropagateTags": true,
                                             "Tags": {
-                                                "job.$": "States.Format('confluence-momma-constrained-{}-{}-{}', $.version, $.counter, $.context_value.reach_id)"
+                                                "job.$": "States.Format('confluence-momma-constrained-{}-{}-{}', $.version, $.counter, $.context_value.reach_id)",
+                                                "job_definition.$": "States.Format('confluence-momma-constrained-{}-{}', $.version, $.counter)"
                                             },
                                             "ContainerOverrides": {
                                                 "Command": [
@@ -1004,7 +1018,8 @@
                                             "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-flpe",
                                             "PropagateTags": true,
                                             "Tags": {
-                                                "job.$": "States.Format('confluence-momma-unconstrained-{}-{}-{}', $.version, $.counter, $.context_value.reach_id)"
+                                                "job.$": "States.Format('confluence-momma-unconstrained-{}-{}-{}', $.version, $.counter, $.context_value.reach_id)",
+                                                "job_definition.$": "States.Format('confluence-momma-unconstrained-{}-{}', $.version, $.counter)"
                                             },
                                             "ContainerOverrides": {
                                                 "Command": [
@@ -1092,7 +1107,8 @@
                                             "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-flpe",
                                             "PropagateTags": true,
                                             "Tags": {
-                                                "job.$": "States.Format('confluence-neobam-{}-{}-{}', $.version, $.counter, $.context_value.reach_id)"
+                                                "job.$": "States.Format('confluence-neobam-{}-{}-{}', $.version, $.counter, $.context_value.reach_id)",
+                                                "job_definition.$": "States.Format('confluence-neobam-{}-{}', $.version, $.counter)"
                                             },
                                             "ContainerOverrides": {
                                                 "Command": [
@@ -1178,7 +1194,8 @@
                                             "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-flpe",
                                             "PropagateTags": true,
                                             "Tags": {
-                                                "job.$": "States.Format('confluence-sad-{}-{}-{}', $.version, $.counter, $.context_value.reach_id)"
+                                                "job.$": "States.Format('confluence-sad-{}-{}-{}', $.version, $.counter, $.context_value.reach_id)",
+                                                "job_definition.$": "States.Format('confluence-sad-{}-{}', $.version, $.counter)"
                                             },
                                             "ContainerOverrides": {
                                                 "Command": [
@@ -1264,7 +1281,8 @@
                                             "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-flpe",
                                             "PropagateTags": true,
                                             "Tags": {
-                                                "job.$": "States.Format('confluence-sic4dvar-{}-{}-{}', $.version, $.counter, $.context_value[0].reach_id)"
+                                                "job.$": "States.Format('confluence-sic4dvar-{}-{}-{}', $.version, $.counter, $.context_value[0].reach_id)",
+                                                "job_definition.$": "States.Format('confluence-sic4dvar-{}-{}', $.version, $.counter)"
                                             },
                                             "ContainerOverrides": {
                                                 "Command": [
@@ -1359,7 +1377,8 @@
                             "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-flpe",
                             "PropagateTags": true,
                             "Tags": {
-                                "job.$": "States.Format('confluence-metroman-consolidation-{}-{}-{}', $.version, $.counter, $.context_index)"
+                                "job.$": "States.Format('confluence-metroman-consolidation-{}-{}-{}', $.version, $.counter, $.context_index)",
+                                "job_definition.$": "States.Format('confluence-metroman-consolidation-{}-{}', $.version, $.counter)"
                             },
                             "ContainerOverrides": {
                                 "Command": [
@@ -1430,7 +1449,8 @@
                             "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-postdiagnostics-flpe",
                             "PropagateTags": true,
                             "Tags": {
-                                "job.$": "States.Format('confluence-postdiagnostics-flpe-{}-{}-{}', $.version, $.counter, $.context_value.reach_id)"
+                                "job.$": "States.Format('confluence-postdiagnostics-flpe-{}-{}-{}', $.version, $.counter, $.context_value.reach_id)",
+                                "job_definition.$": "States.Format('confluence-postdiagnostics-flpe-{}-{}', $.version, $.counter)"
                             },
                             "ContainerOverrides": {
                                 "Command": [
@@ -1527,7 +1547,8 @@
                             "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-moi",
                             "PropagateTags": true,
                             "Tags": {
-                                "job.$": "States.Format('confluence-moi-{}-{}-{}-{}',$.run_type, $.version, $.counter, $.context_value.basin_id)"
+                                "job.$": "States.Format('confluence-moi-{}-{}-{}-{}',$.run_type, $.version, $.counter, $.context_value.basin_id)",
+                                "job_definition.$": "States.Format('confluence-moi-{}-{}-{}',$.run_type, $.version, $.counter)"
                             },
                             "ContainerOverrides": {
                                 "Command": [
@@ -1636,7 +1657,8 @@
                             "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-postdiagnostics-moi",
                             "PropagateTags": true,
                             "Tags": {
-                                "job.$": "States.Format('confluence-postdiagnostics-moi-{}-{}-{}', $.version, $.counter, $.context_value.reach_id)"
+                                "job.$": "States.Format('confluence-postdiagnostics-moi-{}-{}-{}', $.version, $.counter, $.context_value.reach_id)",
+                                "job_definition.$": "States.Format('confluence-postdiagnostics-moi-{}-{}', $.version, $.counter)"
                             },
                             "ContainerOverrides": {
                                 "Command": [
@@ -1733,7 +1755,8 @@
                             "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-offline",
                             "PropagateTags": true,
                             "Tags": {
-                                "job.$": "States.Format('confluence-offline-{}-{}-{}-{}', $.run_type, $.version, $.counter, $.context_value.reach_id)"
+                                "job.$": "States.Format('confluence-offline-{}-{}-{}-{}', $.run_type, $.version, $.counter, $.context_value.reach_id)",
+                                "job_definition.$": "States.Format('confluence-offline-{}-{}-{}', $.run_type, $.version, $.counter)"
                             },
                             "ContainerOverrides": {
                                 "Command": [
@@ -1822,7 +1845,8 @@
                             "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-validation",
                             "PropagateTags": true,
                             "Tags": {
-                                "job.$": "States.Format('confluence-validation-{}-{}-{}-{}',$.run_type, $.version, $.counter, $.context_value.reach_id)"
+                                "job.$": "States.Format('confluence-validation-{}-{}-{}-{}',$.run_type, $.version, $.counter, $.context_value.reach_id)",
+                                "job_definition.$": "States.Format('confluence-validation-{}-{}-{}',$.run_type, $.version, $.counter)"
                             },
                             "ContainerOverrides": {
                                 "Command": [
@@ -1915,7 +1939,8 @@
                             "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-output",
                             "PropagateTags": true,
                             "Tags": {
-                                "job.$": "States.Format('confluence-output-{}-{}-{}-{}',$.run_type, $.version, $.counter, $.context_index)"
+                                "job.$": "States.Format('confluence-output-{}-{}-{}-{}',$.run_type, $.version, $.counter, $.context_index)",
+                                "job_definition.$": "States.Format('confluence-output-{}-{}-{}',$.run_type, $.version, $.counter)"
                             },
                             "ContainerOverrides": {
                                 "Command": [
