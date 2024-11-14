@@ -31,32 +31,12 @@ variable "environment" {
   description = "The environment in which to deploy to"
 }
 
-variable "mgmt_account" {
-  type        = string
-  description = "Name of account allowed to manage KMS key"
-}
-
 variable "prefix" {
   type        = string
   description = "Prefix to add to all AWS resources as a unique identifier"
 }
 
-variable "profile" {
-  type        = string
-  description = "Named profile used for AWS authentication credentials"
-}
-
-variable "ssh_subnet_1" {
-  type        = string
-  description = "CIDR range to allow SSH from to EC2 EFS"
-}
-
-variable "ssh_subnet_2" {
-  type        = string
-  description = "CIDR range to allow SSH from to EC2 EFS"
-}
-
-variable "ssh_subnet_3" {
+variable "ssh_subnet" {
   type        = string
   description = "CIDR range to allow SSH from to EC2 EFS"
 }
