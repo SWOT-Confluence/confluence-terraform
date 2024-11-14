@@ -84,6 +84,7 @@ jobs:
           aws-access-key-id: ${{ secrets[format('AWS_ACCESS_KEY_ID_{0}', env.TARGET_ENV)] }}
           aws-secret-access-key: ${{ secrets[format('AWS_SECRET_ACCESS_KEY_{0}', env.TARGET_ENV)] }}
           aws-region: us-west-2
+          mask-aws-account-id: true
 
       # Set up Terraform
       - name: Setup Terraform
@@ -101,6 +102,7 @@ jobs:
           echo "TF_VAR_subnet_c_cidr=${{ secrets['PRIVATE_SUBNET_C'] }}" >> $GITHUB_ENV
           echo "TF_VAR_subnet_d_cidr=${{ secrets['PRIVATE_SUBNET_D'] }}" >> $GITHUB_ENV
           echo "TF_VAR_vpc_cidr=${{ secrets['VPC_CIDR'] }}" >> $GITHUB_ENV
+          echo "TF_IN_AUTOMATION=true" >> $GITHUB_ENV
 
       - name: Initialize Terraform
         working-directory: workflow-infrastructure/
@@ -169,6 +171,7 @@ jobs:
           aws-access-key-id: ${{ secrets[format('AWS_ACCESS_KEY_ID_{0}', env.TARGET_ENV)] }}
           aws-secret-access-key: ${{ secrets[format('AWS_SECRET_ACCESS_KEY_{0}', env.TARGET_ENV)] }}
           aws-region: us-west-2
+          mask-aws-account-id: true
 
       # Set up Terraform
       - name: Setup Terraform
@@ -178,6 +181,7 @@ jobs:
         run: |
           echo "TF_VAR_environment=$TARGET_ENV" >> $GITHUB_ENV
           echo "TF_VAR_prefix=$PREFIX_ENV" >> $GITHUB_ENV
+          echo "TF_IN_AUTOMATION=true" >> $GITHUB_ENV
 
       - name: Initialize Terraform
         working-directory: workflow-step-function/

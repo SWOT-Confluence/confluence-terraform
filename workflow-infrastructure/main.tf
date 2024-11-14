@@ -31,7 +31,7 @@ data "aws_kms_key" "aws_s3" {
 
 # Local variables
 locals {
-  account_id = data.aws_caller_identity.current.account_id
+  account_id = sensitive(data.aws_caller_identity.current.account_id)
   default_tags = length(var.default_tags) == 0 ? {
     application : var.app_name,
     environment : lower(var.environment),
