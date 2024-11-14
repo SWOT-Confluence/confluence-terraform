@@ -172,7 +172,7 @@
                             "PropagateTags": true,
                             "Tags": {
                                 "job.$": "States.Format('confluence-setfinder-subset-not-expanded-{}-{}-{}', $.version, $.counter, $.context_index)",
-                                "job_definition.$": "States.Format('confluence-setfinder-subset-{}-{}', $.version, $.counter)"
+                                "job_definition.$": "States.Format('confluence-setfinder-not-expanded-{}-{}', $.version, $.counter)"
                             },
                             "ContainerOverrides": {
                                 "Command": [
