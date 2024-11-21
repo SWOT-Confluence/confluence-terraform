@@ -42,9 +42,7 @@ resource "aws_security_group_rule" "ssh_sg_ingress" {
   to_port   = 22
   protocol  = "tcp"
   cidr_blocks = [
-    var.ssh_subnet_1,
-    var.ssh_subnet_2,
-    var.ssh_subnet_3
+    var.ssh_subnet
   ]
   security_group_id = aws_security_group.ssh_sg.id
 }
