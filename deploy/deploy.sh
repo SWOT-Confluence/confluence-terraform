@@ -20,5 +20,5 @@ TF_DIR=$3
 cwd=$PWD
 cd $TF_DIR
 terraform init -reconfigure -backend-config="bucket=$S3_STATE" -backend-config="key=$TF_STATE_KEY" -backend-config="region=us-west-2"
-terraform apply -var-file="conf.tfvars" -auto-approve
+terraform apply -auto-approve
 cd $cwd
