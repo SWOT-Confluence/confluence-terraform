@@ -23,7 +23,7 @@ variable "default_tags" {
 
 variable "ec2_key_pair" {
   type        = string
-  description = "Key pair used to access EC2 IDL license server"
+  description = "Key pair used to access EFS EC2 instances"
 }
 
 variable "environment" {
