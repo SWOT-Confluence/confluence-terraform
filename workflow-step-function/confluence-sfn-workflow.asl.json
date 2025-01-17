@@ -639,13 +639,18 @@
                             },
                             "ContainerOverrides": {
                                 "Command": [
+                                    "-i",
                                     "Ref::index",
+                                    "-b",
+                                    "Ref::config_bucket",
+                                    "-r",
                                     "reaches.json"
                                 ]
                             },
                             "JobName.$": "States.Format('confluence-prediagnostics-{}-{}-{}', $.version, $.counter, $.context_value.reach_id)",
                             "Parameters": {
-                                "index.$": "States.Format('{}',$.context_index)"
+                                "index.$": "States.Format('{}',$.context_index)",
+                                "config_bucket.$": "${prefix}-config/prediagnostics"
                             }
                         },
                         "End": true,
