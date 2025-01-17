@@ -881,7 +881,7 @@
                     "Key": "continent.json"
                 }
             },
-            "Label": "priors",
+            "Label": "priors_gbpriors",
             "Next": "Hivdi"
         },
         "Hivdi": {
