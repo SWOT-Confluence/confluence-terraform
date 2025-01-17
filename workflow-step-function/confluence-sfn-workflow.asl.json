@@ -385,6 +385,7 @@
             "ItemSelector": {
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
+                "temporal_range.$": "$.temporal_range",
                 "counter.$": "$.counter",
                 "version.$": "$.version"
             },
@@ -410,6 +411,8 @@
                                 "Command": [
                                     "-i",
                                     "Ref::index",
+                                    "-t",
+                                    "Ref::temporal_range",
                                     "-r",
                                     "/mnt/data/expanded_reaches_of_interest.json",
                                     "-o",
@@ -423,6 +426,7 @@
                             "JobName.$": "States.Format('confluence-input-subset-{}-{}-{}', $.version, $.counter, $.context_value.reach_id)",
                             "Parameters": {
                                 "index.$": "States.Format('{}',$.context_index)",
+                                "temporal_range.$": "$.temporal_range",
                                 "prefix": "${prefix}"
                             }
                         },
@@ -489,6 +493,7 @@
             "ItemSelector": {
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
+                "temporal_range.$": "$.temporal_range",
                 "counter.$": "$.counter",
                 "version.$": "$.version"
             },
@@ -514,6 +519,8 @@
                                 "Command": [
                                     "-i",
                                     "Ref::index",
+                                    "-t",
+                                    "Ref::temporal_range",
                                     "-r",
                                     "/mnt/data/reaches.json",
                                     "-o",
@@ -527,6 +534,7 @@
                             "JobName.$": "States.Format('confluence-input-global-{}-{}-{}', $.version, $.counter, $.context_value.reach_id)",
                             "Parameters": {
                                 "index.$": "States.Format('{}',$.context_index)",
+                                "temporal_range.$": "$.temporal_range",
                                 "prefix": "${prefix}"
                             }
                         },
