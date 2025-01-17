@@ -817,9 +817,9 @@
                     "Mode": "DISTRIBUTED",
                     "ExecutionType": "STANDARD"
                 },
-                "StartAt": "Batch SubmitJob Priors",
+                "StartAt": "Batch SubmitJob Priors GBPriors",
                 "States": {
-                    "Batch SubmitJob Priors": {
+                    "Batch SubmitJob Priors GBPriors": {
                         "Type": "Task",
                         "Resource": "arn:aws:states:::batch:submitJob.sync",
                         "Parameters": {
