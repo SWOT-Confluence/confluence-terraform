@@ -27,6 +27,7 @@
                 "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-init-workflow",
                 "PropagateTags": true,
                 "Tags": {
+                    "name.$": "States.Format('confluence-{}-{}-{}', $.run_type, $.version, $.counter)",
                     "job.$": "States.Format('confluence-init-workflow-subset-{}-{}', $.version, $.counter)",
                     "job_definition.$": "States.Format('confluence-init-workflow-subset-{}-{}', $.version, $.counter)"
                 },
@@ -56,6 +57,7 @@
                 "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-init-workflow",
                 "PropagateTags": true,
                 "Tags": {
+                    "name.$": "States.Format('confluence-{}-{}-{}', $.run_type, $.version, $.counter)",
                     "job.$": "States.Format('confluence-init-workflow-global-{}-{}', $.version, $.counter)",
                     "job_definition.$": "States.Format('confluence-init-workflow-global-{}-{}', $.version, $.counter)"
                 },
@@ -74,13 +76,13 @@
         },
         "Setfinder Reach Subset": {
             "Type": "Map",
-            "ToleratedFailurePercentagePath": "$.tolerated_failure_percentage",
             "ResultPath": null,
             "ItemSelector": {
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
                 "counter.$": "$.counter",
                 "reach_subset_file.$": "$.reach_subset_file",
+                "run_type.$": "$.run_type",
                 "version.$": "$.version"
             },
             "ItemProcessor": {
@@ -98,6 +100,7 @@
                             "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-setfinder",
                             "PropagateTags": true,
                             "Tags": {
+                                "name.$": "States.Format('confluence-{}-{}-{}', $.run_type, $.version, $.counter)",
                                 "job.$": "States.Format('confluence-setfinder-subset-{}-{}-{}', $.version, $.counter, $.context_index)",
                                 "job_definition.$": "States.Format('confluence-setfinder-subset-{}-{}', $.version, $.counter)"
                             },
@@ -160,12 +163,12 @@
         },
         "Setfinder Subset Not Expanded": {
             "Type": "Map",
-            "ToleratedFailurePercentagePath": "$.tolerated_failure_percentage",
             "ResultPath": null,
             "ItemSelector": {
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
                 "counter.$": "$.counter",
+                "run_type.$": "$.run_type",
                 "version.$": "$.version"
             },
             "ItemProcessor": {
@@ -183,6 +186,7 @@
                             "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-setfinder",
                             "PropagateTags": true,
                             "Tags": {
+                                "name.$": "States.Format('confluence-{}-{}-{}', $.run_type, $.version, $.counter)",
                                 "job.$": "States.Format('confluence-setfinder-subset-not-expanded-{}-{}-{}', $.version, $.counter, $.context_index)",
                                 "job_definition.$": "States.Format('confluence-setfinder-not-expanded-{}-{}', $.version, $.counter)"
                             },
@@ -241,12 +245,12 @@
         },
         "Setfinder Global": {
             "Type": "Map",
-            "ToleratedFailurePercentagePath": "$.tolerated_failure_percentage",
             "ResultPath": null,
             "ItemSelector": {
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
                 "counter.$": "$.counter",
+                "run_type.$": "$.run_type",
                 "version.$": "$.version"
             },
             "ItemProcessor": {
@@ -264,6 +268,7 @@
                             "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-setfinder",
                             "PropagateTags": true,
                             "Tags": {
+                                "name.$": "States.Format('confluence-{}-{}-{}', $.run_type, $.version, $.counter)",
                                 "job.$": "States.Format('confluence-setfinder-global-{}-{}-{}', $.version, $.counter, $.context_index)",
                                 "job_definition.$": "States.Format('confluence-setfinder-global-{}-{}', $.version, $.counter)"
                             },
@@ -331,6 +336,7 @@
                 "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-combine-data",
                 "PropagateTags": true,
                 "Tags": {
+                    "name.$": "States.Format('confluence-{}-{}-{}', $.run_type, $.version, $.counter)",
                     "job.$": "States.Format('confluence-combine-data-subset-{}-{}', $.version, $.counter)",
                     "job_definition.$": "States.Format('confluence-combine-data-subset-{}-{}', $.version, $.counter)"
                 },
@@ -360,6 +366,7 @@
                 "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-combine-data",
                 "PropagateTags": true,
                 "Tags": {
+                    "name.$": "States.Format('confluence-{}-{}-{}', $.run_type, $.version, $.counter)",
                     "job.$": "States.Format('confluence-combine-data-global-{}-{}', $.version, $.counter)",
                     "job_definition.$": "States.Format('confluence-combine-data-global-{}-{}', $.version, $.counter)"
                 },
@@ -386,6 +393,8 @@
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
                 "counter.$": "$.counter",
+                "run_type.$": "$.run_type",
+                "temporal_range.$": "$.temporal_range",
                 "version.$": "$.version"
             },
             "ItemProcessor": {
@@ -403,6 +412,7 @@
                             "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-input",
                             "PropagateTags": true,
                             "Tags": {
+                                "name.$": "States.Format('confluence-{}-{}-{}', $.run_type, $.version, $.counter)",
                                 "job.$": "States.Format('confluence-input-subset-{}-{}-{}', $.version, $.counter, $.context_value.reach_id)",
                                 "job_definition.$": "States.Format('confluence-input-subset-{}-{}', $.version, $.counter)"
                             },
@@ -410,6 +420,8 @@
                                 "Command": [
                                     "-i",
                                     "Ref::index",
+                                    "-t",
+                                    "Ref::temporal_range",
                                     "-r",
                                     "/mnt/data/expanded_reaches_of_interest.json",
                                     "-o",
@@ -423,6 +435,7 @@
                             "JobName.$": "States.Format('confluence-input-subset-{}-{}-{}', $.version, $.counter, $.context_value.reach_id)",
                             "Parameters": {
                                 "index.$": "States.Format('{}',$.context_index)",
+                                "temporal_range.$": "$.temporal_range",
                                 "prefix": "${prefix}"
                             }
                         },
@@ -490,6 +503,8 @@
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
                 "counter.$": "$.counter",
+                "run_type.$": "$.run_type",
+                "temporal_range.$": "$.temporal_range",
                 "version.$": "$.version"
             },
             "ItemProcessor": {
@@ -507,6 +522,7 @@
                             "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-input",
                             "PropagateTags": true,
                             "Tags": {
+                                "name.$": "States.Format('confluence-{}-{}-{}', $.run_type, $.version, $.counter)",
                                 "job.$": "States.Format('confluence-input-global-{}-{}-{}', $.version, $.counter, $.context_value.reach_id)",
                                 "job_definition.$": "States.Format('confluence-input-global-{}-{}', $.version, $.counter)"
                             },
@@ -514,6 +530,8 @@
                                 "Command": [
                                     "-i",
                                     "Ref::index",
+                                    "-t",
+                                    "Ref::temporal_range",
                                     "-r",
                                     "/mnt/data/reaches.json",
                                     "-o",
@@ -527,6 +545,7 @@
                             "JobName.$": "States.Format('confluence-input-global-{}-{}-{}', $.version, $.counter, $.context_value.reach_id)",
                             "Parameters": {
                                 "index.$": "States.Format('{}',$.context_index)",
+                                "temporal_range.$": "$.temporal_range",
                                 "prefix": "${prefix}"
                             }
                         },
@@ -609,6 +628,7 @@
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
                 "counter.$": "$.counter",
+                "run_type.$": "$.run_type",
                 "version.$": "$.version"
             },
             "ItemProcessor": {
@@ -626,18 +646,24 @@
                             "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-prediagnostics",
                             "PropagateTags": true,
                             "Tags": {
+                                "name.$": "States.Format('confluence-{}-{}-{}', $.run_type, $.version, $.counter)",
                                 "job.$": "States.Format('confluence-prediagnostics-{}-{}-{}', $.version, $.counter, $.context_value.reach_id)",
                                 "job_definition.$": "States.Format('confluence-prediagnostics-{}-{}', $.version, $.counter)"
                             },
                             "ContainerOverrides": {
                                 "Command": [
+                                    "-i",
                                     "Ref::index",
+                                    "-b",
+                                    "Ref::config_bucket",
+                                    "-r",
                                     "reaches.json"
                                 ]
                             },
                             "JobName.$": "States.Format('confluence-prediagnostics-{}-{}-{}', $.version, $.counter, $.context_value.reach_id)",
                             "Parameters": {
-                                "index.$": "States.Format('{}',$.context_index)"
+                                "index.$": "States.Format('{}',$.context_index)",
+                                "config_bucket": "${prefix}-config/prediagnostics"
                             }
                         },
                         "End": true,
@@ -685,7 +711,7 @@
                 }
             },
             "Label": "prediagnostics",
-            "Next": "Priors",
+            "Next": "Priors Choice",
             "Catch": [
                 {
                     "ErrorEquals": [
@@ -696,9 +722,23 @@
                 }
             ]
         },
+        "Priors Choice": {
+            "Type": "Choice",
+            "Choices": [
+                {
+                    "Variable": "$.run_gbpriors",
+                    "StringEquals": "false",
+                    "Next": "Priors"
+                },
+                {
+                    "Variable": "$.run_gbpriors",
+                    "StringEquals": "true",
+                    "Next": "Priors GBPriors"
+                }
+            ]
+        },
         "Priors": {
             "Type": "Map",
-            "ToleratedFailurePercentagePath": "$.tolerated_failure_percentage",
             "ResultPath": null,
             "ItemSelector": {
                 "context_index.$": "$$.Map.Item.Index",
@@ -722,6 +762,89 @@
                             "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-priors",
                             "PropagateTags": true,
                             "Tags": {
+                                "name.$": "States.Format('confluence-{}-{}-{}', $.run_type, $.version, $.counter)",
+                                "job.$": "States.Format('confluence-priors-{}-{}-{}-{}', $.run_type, $.version, $.counter, $.context_index)",
+                                "job_definition.$": "States.Format('confluence-priors-{}-{}-{}', $.run_type, $.version, $.counter)"
+                            },
+                            "ContainerOverrides": {
+                                "Command": [
+                                    "-i",
+                                    "Ref::index",
+                                    "-r",
+                                    "Ref::run_type",
+                                    "-p",
+                                    "usgs",
+                                    "riggs",
+                                    "-g",
+                                    "-s",
+                                    "Ref::sos_bucket",
+                                    "-o",
+                                    "Ref::version"
+                                ]
+                            },
+                            "JobName.$": "States.Format('confluence-priors-{}-{}-{}-{}', $.run_type, $.version, $.counter, $.context_index)",
+                            "Parameters": {
+                                "index.$": "States.Format('{}', $.context_index)",
+                                "run_type.$": "States.Format('{}', $.run_type)",
+                                "sos_bucket": "${prefix}-sos",
+                                "version.$": "States.Format('{}', $.version)"
+                            }
+                        },
+                        "End": true,
+                        "TimeoutSeconds": 108000,
+                        "Retry": [
+                            {
+                                "ErrorEquals": [
+                                    "States.Timeout"
+                                ],
+                                "BackoffRate": 2,
+                                "IntervalSeconds": 1,
+                                "MaxAttempts": 3,
+                                "JitterStrategy": "FULL"
+                            }
+                        ]
+                    }
+                }
+            },
+            "ItemReader": {
+                "Resource": "arn:aws:states:::s3:getObject",
+                "ReaderConfig": {
+                    "InputType": "JSON"
+                },
+                "Parameters": {
+                    "Bucket": "${prefix}-json",
+                    "Key": "continent.json"
+                }
+            },
+            "Label": "priors",
+            "Next": "Hivdi"
+        },
+        "Priors GBPriors": {
+            "Type": "Map",
+            "ResultPath": null,
+            "ItemSelector": {
+                "context_index.$": "$$.Map.Item.Index",
+                "context_value.$": "$$.Map.Item.Value",
+                "counter.$": "$.counter",
+                "run_type.$": "$.run_type",
+                "version.$": "$.version"
+            },
+            "ItemProcessor": {
+                "ProcessorConfig": {
+                    "Mode": "DISTRIBUTED",
+                    "ExecutionType": "STANDARD"
+                },
+                "StartAt": "Batch SubmitJob Priors GBPriors",
+                "States": {
+                    "Batch SubmitJob Priors GBPriors": {
+                        "Type": "Task",
+                        "Resource": "arn:aws:states:::batch:submitJob.sync",
+                        "Parameters": {
+                            "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-priors",
+                            "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-priors",
+                            "PropagateTags": true,
+                            "Tags": {
+                                "name.$": "States.Format('confluence-{}-{}-{}', $.run_type, $.version, $.counter)",
                                 "job.$": "States.Format('confluence-priors-{}-{}-{}-{}', $.run_type, $.version, $.counter, $.context_index)",
                                 "job_definition.$": "States.Format('confluence-priors-{}-{}-{}', $.run_type, $.version, $.counter)"
                             },
@@ -776,7 +899,7 @@
                     "Key": "continent.json"
                 }
             },
-            "Label": "priors",
+            "Label": "priors_gbpriors",
             "Next": "Hivdi"
         },
         "Hivdi": {
@@ -787,6 +910,7 @@
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
                 "counter.$": "$.counter",
+                "run_type.$": "$.run_type",
                 "version.$": "$.version"
             },
             "ItemProcessor": {
@@ -804,6 +928,7 @@
                             "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-flpe",
                             "PropagateTags": true,
                             "Tags": {
+                                "name.$": "States.Format('confluence-{}-{}-{}', $.run_type, $.version, $.counter)",
                                 "job.$": "States.Format('confluence-hivdi-{}-{}-{}', $.version, $.counter, $.context_value[0].reach_id)",
                                 "job_definition.$": "States.Format('confluence-hivdi-{}-{}', $.version, $.counter)"
                             },
@@ -884,8 +1009,8 @@
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
                 "counter.$": "$.counter",
-                "version.$": "$.version",
-                "run_type.$": "$.run_type"
+                "run_type.$": "$.run_type",
+                "version.$": "$.version"
             },
             "ItemProcessor": {
                 "ProcessorConfig": {
@@ -902,6 +1027,7 @@
                             "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-flpe",
                             "PropagateTags": true,
                             "Tags": {
+                                "name.$": "States.Format('confluence-{}-{}-{}', $.run_type, $.version, $.counter)",
                                 "job.$": "States.Format('confluence-metroman-{}-{}-{}', $.version, $.counter, $.context_value[0].reach_id)",
                                 "job_definition.$": "States.Format('confluence-metroman-{}-{}', $.version, $.counter)"
                             },
@@ -1001,8 +1127,8 @@
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
                 "counter.$": "$.counter",
-                "version.$": "$.version",
-                "run_type.$": "$.run_type"
+                "run_type.$": "$.run_type",
+                "version.$": "$.version"
             },
             "ItemProcessor": {
                 "ProcessorConfig": {
@@ -1019,6 +1145,7 @@
                             "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-flpe",
                             "PropagateTags": true,
                             "Tags": {
+                                "name.$": "States.Format('confluence-{}-{}-{}', $.run_type, $.version, $.counter)",
                                 "job.$": "States.Format('confluence-momma-constrained-{}-{}-{}', $.version, $.counter, $.context_value.reach_id)",
                                 "job_definition.$": "States.Format('confluence-momma-constrained-{}-{}', $.version, $.counter)"
                             },
@@ -1105,8 +1232,8 @@
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
                 "counter.$": "$.counter",
-                "version.$": "$.version",
-                "run_type.$": "$.run_type"
+                "run_type.$": "$.run_type",
+                "version.$": "$.version"
             },
             "ItemProcessor": {
                 "ProcessorConfig": {
@@ -1123,6 +1250,7 @@
                             "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-flpe",
                             "PropagateTags": true,
                             "Tags": {
+                                "name.$": "States.Format('confluence-{}-{}-{}', $.run_type, $.version, $.counter)",
                                 "job.$": "States.Format('confluence-momma-unconstrained-{}-{}-{}', $.version, $.counter, $.context_value.reach_id)",
                                 "job_definition.$": "States.Format('confluence-momma-unconstrained-{}-{}', $.version, $.counter)"
                             },
@@ -1208,8 +1336,8 @@
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
                 "counter.$": "$.counter",
-                "version.$": "$.version",
-                "run_type.$": "$.run_type"
+                "run_type.$": "$.run_type",
+                "version.$": "$.version"
             },
             "ItemProcessor": {
                 "ProcessorConfig": {
@@ -1226,6 +1354,7 @@
                             "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-flpe",
                             "PropagateTags": true,
                             "Tags": {
+                                "name.$": "States.Format('confluence-{}-{}-{}', $.run_type, $.version, $.counter)",
                                 "job.$": "States.Format('confluence-neobam-{}-{}-{}', $.version, $.counter, $.context_value.reach_id)",
                                 "job_definition.$": "States.Format('confluence-neobam-{}-{}', $.version, $.counter)"
                             },
@@ -1309,8 +1438,8 @@
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
                 "counter.$": "$.counter",
-                "version.$": "$.version",
-                "run_type.$": "$.run_type"
+                "run_type.$": "$.run_type",
+                "version.$": "$.version"
             },
             "ItemProcessor": {
                 "ProcessorConfig": {
@@ -1327,6 +1456,7 @@
                             "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-flpe",
                             "PropagateTags": true,
                             "Tags": {
+                                "name.$": "States.Format('confluence-{}-{}-{}', $.run_type, $.version, $.counter)",
                                 "job.$": "States.Format('confluence-sad-{}-{}-{}', $.version, $.counter, $.context_value.reach_id)",
                                 "job_definition.$": "States.Format('confluence-sad-{}-{}', $.version, $.counter)"
                             },
@@ -1410,8 +1540,8 @@
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
                 "counter.$": "$.counter",
-                "version.$": "$.version",
-                "run_type.$": "$.run_type"
+                "run_type.$": "$.run_type",
+                "version.$": "$.version"
             },
             "ItemProcessor": {
                 "ProcessorConfig": {
@@ -1428,6 +1558,7 @@
                             "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-flpe",
                             "PropagateTags": true,
                             "Tags": {
+                                "name.$": "States.Format('confluence-{}-{}-{}', $.run_type, $.version, $.counter)",
                                 "job.$": "States.Format('confluence-sic4dvar-{}-{}-{}', $.version, $.counter, $.context_value[0].reach_id)",
                                 "job_definition.$": "States.Format('confluence-sic4dvar-{}-{}', $.version, $.counter)"
                             },
@@ -1512,6 +1643,7 @@
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
                 "counter.$": "$.counter",
+                "run_type.$": "$.run_type",
                 "version.$": "$.version"
             },
             "ItemProcessor": {
@@ -1529,6 +1661,7 @@
                             "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-flpe",
                             "PropagateTags": true,
                             "Tags": {
+                                "name.$": "States.Format('confluence-{}-{}-{}', $.run_type, $.version, $.counter)",
                                 "job.$": "States.Format('confluence-metroman-consolidation-{}-{}-{}', $.version, $.counter, $.context_index)",
                                 "job_definition.$": "States.Format('confluence-metroman-consolidation-{}-{}', $.version, $.counter)"
                             },
@@ -1577,12 +1710,12 @@
             "Choices": [
                 {
                     "Variable": "$.run_postdiagnostics",
-                    "IsPresent": true,
+                    "StringEquals": "true",
                     "Next": "Postdiagnostics FLPE"
                 },
                 {
                     "Variable": "$.run_postdiagnostics",
-                    "IsPresent": false,
+                    "StringEquals": "false",
                     "Next": "Moi"
                 }
             ]
@@ -1595,8 +1728,8 @@
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
                 "counter.$": "$.counter",
-                "version.$": "$.version",
-                "run_type.$": "$.run_type"
+                "run_type.$": "$.run_type",
+                "version.$": "$.version"
             },
             "ItemProcessor": {
                 "ProcessorConfig": {
@@ -1613,6 +1746,7 @@
                             "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-postdiagnostics-flpe",
                             "PropagateTags": true,
                             "Tags": {
+                                "name.$": "States.Format('confluence-{}-{}-{}', $.run_type, $.version, $.counter)",
                                 "job.$": "States.Format('confluence-postdiagnostics-flpe-{}-{}-{}', $.version, $.counter, $.context_value.reach_id)",
                                 "job_definition.$": "States.Format('confluence-postdiagnostics-flpe-{}-{}', $.version, $.counter)"
                             },
@@ -1721,6 +1855,7 @@
                             "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-moi",
                             "PropagateTags": true,
                             "Tags": {
+                                "name.$": "States.Format('confluence-{}-{}-{}', $.run_type, $.version, $.counter)",
                                 "job.$": "States.Format('confluence-moi-{}-{}-{}-{}',$.run_type, $.version, $.counter, $.context_value.basin_id)",
                                 "job_definition.$": "States.Format('confluence-moi-{}-{}-{}',$.run_type, $.version, $.counter)"
                             },
@@ -1823,8 +1958,8 @@
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
                 "counter.$": "$.counter",
-                "version.$": "$.version",
-                "run_type.$": "$.run_type"
+                "run_type.$": "$.run_type",
+                "version.$": "$.version"
             },
             "ItemProcessor": {
                 "ProcessorConfig": {
@@ -1841,6 +1976,7 @@
                             "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-postdiagnostics-moi",
                             "PropagateTags": true,
                             "Tags": {
+                                "name.$": "States.Format('confluence-{}-{}-{}', $.run_type, $.version, $.counter)",
                                 "job.$": "States.Format('confluence-postdiagnostics-moi-{}-{}-{}', $.version, $.counter, $.context_value.reach_id)",
                                 "job_definition.$": "States.Format('confluence-postdiagnostics-moi-{}-{}', $.version, $.counter)"
                             },
@@ -1949,6 +2085,7 @@
                             "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-offline",
                             "PropagateTags": true,
                             "Tags": {
+                                "name.$": "States.Format('confluence-{}-{}-{}', $.run_type, $.version, $.counter)",
                                 "job.$": "States.Format('confluence-offline-{}-{}-{}-{}', $.run_type, $.version, $.counter, $.context_value.reach_id)",
                                 "job_definition.$": "States.Format('confluence-offline-{}-{}-{}', $.run_type, $.version, $.counter)"
                             },
@@ -2049,6 +2186,7 @@
                             "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-validation",
                             "PropagateTags": true,
                             "Tags": {
+                                "name.$": "States.Format('confluence-{}-{}-{}', $.run_type, $.version, $.counter)",
                                 "job.$": "States.Format('confluence-validation-{}-{}-{}-{}',$.run_type, $.version, $.counter, $.context_value.reach_id)",
                                 "job_definition.$": "States.Format('confluence-validation-{}-{}-{}',$.run_type, $.version, $.counter)"
                             },
@@ -2129,7 +2267,6 @@
         },
         "Output": {
             "Type": "Map",
-            "ToleratedFailurePercentagePath": "$.tolerated_failure_percentage",
             "ResultPath": null,
             "ItemSelector": {
                 "context_index.$": "$$.Map.Item.Index",
@@ -2153,6 +2290,7 @@
                             "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-output",
                             "PropagateTags": true,
                             "Tags": {
+                                "name.$": "States.Format('confluence-{}-{}-{}', $.run_type, $.version, $.counter)",
                                 "job.$": "States.Format('confluence-output-{}-{}-{}-{}',$.run_type, $.version, $.counter, $.context_index)",
                                 "job_definition.$": "States.Format('confluence-output-{}-{}-{}',$.run_type, $.version, $.counter)"
                             },
@@ -2257,6 +2395,7 @@
                 "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-restart",
                 "PropagateTags": true,
                 "Tags": {
+                    "name.$": "States.Format('confluence-{}-{}-{}', $.run_type, $.version, $.counter)",
                     "job.$": "States.Format('confluence-restart-{}-{}', $.version, $.counter)"
                 },
                 "ContainerOverrides": {
@@ -2292,6 +2431,7 @@
                 "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-restart",
                 "PropagateTags": true,
                 "Tags": {
+                    "name.$": "States.Format('confluence-{}-{}-{}', $.run_type, $.version, $.counter)",
                     "job.$": "States.Format('confluence-restart-subset-{}-{}', $.version, $.counter)"
                 },
                 "ContainerOverrides": {
