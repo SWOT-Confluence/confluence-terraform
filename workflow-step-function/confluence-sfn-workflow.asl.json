@@ -727,12 +727,12 @@
             "Choices": [
                 {
                     "Variable": "$.run_gbpriors",
-                    "IsPresent": false,
+                    "StringEquals": "false",
                     "Next": "Priors"
                 },
                 {
                     "Variable": "$.run_gbpriors",
-                    "IsPresent": true,
+                    "StringEquals": "true",
                     "Next": "Priors GBPriors"
                 }
             ]
@@ -1710,12 +1710,12 @@
             "Choices": [
                 {
                     "Variable": "$.run_postdiagnostics",
-                    "IsPresent": true,
+                    "StringEquals": "true",
                     "Next": "Postdiagnostics FLPE"
                 },
                 {
                     "Variable": "$.run_postdiagnostics",
-                    "IsPresent": false,
+                    "StringEquals": "false",
                     "Next": "Moi"
                 }
             ]
