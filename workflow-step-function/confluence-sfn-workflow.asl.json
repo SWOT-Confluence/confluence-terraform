@@ -82,6 +82,7 @@
                 "context_value.$": "$$.Map.Item.Value",
                 "counter.$": "$.counter",
                 "reach_subset_file.$": "$.reach_subset_file",
+                "run_type.$": "$.run_type",
                 "version.$": "$.version"
             },
             "ItemProcessor": {
@@ -167,6 +168,7 @@
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
                 "counter.$": "$.counter",
+                "run_type.$": "$.run_type",
                 "version.$": "$.version"
             },
             "ItemProcessor": {
@@ -248,6 +250,7 @@
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
                 "counter.$": "$.counter",
+                "run_type.$": "$.run_type",
                 "version.$": "$.version"
             },
             "ItemProcessor": {
@@ -389,8 +392,9 @@
             "ItemSelector": {
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
-                "temporal_range.$": "$.temporal_range",
                 "counter.$": "$.counter",
+                "run_type.$": "$.run_type",
+                "temporal_range.$": "$.temporal_range",
                 "version.$": "$.version"
             },
             "ItemProcessor": {
@@ -498,8 +502,9 @@
             "ItemSelector": {
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
-                "temporal_range.$": "$.temporal_range",
                 "counter.$": "$.counter",
+                "run_type.$": "$.run_type",
+                "temporal_range.$": "$.temporal_range",
                 "version.$": "$.version"
             },
             "ItemProcessor": {
@@ -623,6 +628,7 @@
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
                 "counter.$": "$.counter",
+                "run_type.$": "$.run_type",
                 "version.$": "$.version"
             },
             "ItemProcessor": {
@@ -904,6 +910,7 @@
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
                 "counter.$": "$.counter",
+                "run_type.$": "$.run_type",
                 "version.$": "$.version"
             },
             "ItemProcessor": {
@@ -1002,8 +1009,8 @@
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
                 "counter.$": "$.counter",
-                "version.$": "$.version",
-                "run_type.$": "$.run_type"
+                "run_type.$": "$.run_type",
+                "version.$": "$.version"
             },
             "ItemProcessor": {
                 "ProcessorConfig": {
@@ -1120,8 +1127,8 @@
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
                 "counter.$": "$.counter",
-                "version.$": "$.version",
-                "run_type.$": "$.run_type"
+                "run_type.$": "$.run_type",
+                "version.$": "$.version"
             },
             "ItemProcessor": {
                 "ProcessorConfig": {
@@ -1225,8 +1232,8 @@
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
                 "counter.$": "$.counter",
-                "version.$": "$.version",
-                "run_type.$": "$.run_type"
+                "run_type.$": "$.run_type",
+                "version.$": "$.version"
             },
             "ItemProcessor": {
                 "ProcessorConfig": {
@@ -1329,8 +1336,8 @@
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
                 "counter.$": "$.counter",
-                "version.$": "$.version",
-                "run_type.$": "$.run_type"
+                "run_type.$": "$.run_type",
+                "version.$": "$.version"
             },
             "ItemProcessor": {
                 "ProcessorConfig": {
@@ -1431,8 +1438,8 @@
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
                 "counter.$": "$.counter",
-                "version.$": "$.version",
-                "run_type.$": "$.run_type"
+                "run_type.$": "$.run_type",
+                "version.$": "$.version"
             },
             "ItemProcessor": {
                 "ProcessorConfig": {
@@ -1533,8 +1540,8 @@
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
                 "counter.$": "$.counter",
-                "version.$": "$.version",
-                "run_type.$": "$.run_type"
+                "run_type.$": "$.run_type",
+                "version.$": "$.version"
             },
             "ItemProcessor": {
                 "ProcessorConfig": {
@@ -1636,6 +1643,7 @@
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
                 "counter.$": "$.counter",
+                "run_type.$": "$.run_type",
                 "version.$": "$.version"
             },
             "ItemProcessor": {
@@ -1720,8 +1728,8 @@
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
                 "counter.$": "$.counter",
-                "version.$": "$.version",
-                "run_type.$": "$.run_type"
+                "run_type.$": "$.run_type",
+                "version.$": "$.version"
             },
             "ItemProcessor": {
                 "ProcessorConfig": {
@@ -1950,8 +1958,8 @@
                 "context_index.$": "$$.Map.Item.Index",
                 "context_value.$": "$$.Map.Item.Value",
                 "counter.$": "$.counter",
-                "version.$": "$.version",
-                "run_type.$": "$.run_type"
+                "run_type.$": "$.run_type",
+                "version.$": "$.version"
             },
             "ItemProcessor": {
                 "ProcessorConfig": {
