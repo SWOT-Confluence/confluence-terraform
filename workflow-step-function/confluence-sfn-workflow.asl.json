@@ -74,7 +74,6 @@
         },
         "Setfinder Reach Subset": {
             "Type": "Map",
-            "ToleratedFailurePercentagePath": "$.tolerated_failure_percentage",
             "ResultPath": null,
             "ItemSelector": {
                 "context_index.$": "$$.Map.Item.Index",
@@ -160,7 +159,6 @@
         },
         "Setfinder Subset Not Expanded": {
             "Type": "Map",
-            "ToleratedFailurePercentagePath": "$.tolerated_failure_percentage",
             "ResultPath": null,
             "ItemSelector": {
                 "context_index.$": "$$.Map.Item.Index",
@@ -241,7 +239,6 @@
         },
         "Setfinder Global": {
             "Type": "Map",
-            "ToleratedFailurePercentagePath": "$.tolerated_failure_percentage",
             "ResultPath": null,
             "ItemSelector": {
                 "context_index.$": "$$.Map.Item.Index",
@@ -726,7 +723,6 @@
         },
         "Priors": {
             "Type": "Map",
-            "ToleratedFailurePercentagePath": "$.tolerated_failure_percentage",
             "ResultPath": null,
             "ItemSelector": {
                 "context_index.$": "$$.Map.Item.Index",
@@ -808,7 +804,6 @@
         },
         "Priors GBPriors": {
             "Type": "Map",
-            "ToleratedFailurePercentagePath": "$.tolerated_failure_percentage",
             "ResultPath": null,
             "ItemSelector": {
                 "context_index.$": "$$.Map.Item.Index",
@@ -2239,7 +2234,6 @@
         },
         "Output": {
             "Type": "Map",
-            "ToleratedFailurePercentagePath": "$.tolerated_failure_percentage",
             "ResultPath": null,
             "ItemSelector": {
                 "context_index.$": "$$.Map.Item.Index",
