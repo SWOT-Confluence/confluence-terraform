@@ -56,9 +56,9 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "aws_s3_bucket_jso
   bucket = aws_s3_bucket.aws_s3_bucket_json.bucket
   rule {
     apply_server_side_encryption_by_default {
-      sse_algorithm     = "aws:kms"
-      kms_master_key_id = "aws/s3"
+      sse_algorithm     = "AES256"
     }
+    bucket_key_enabled = true
   }
 }
 
@@ -88,9 +88,9 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "aws_s3_bucket_con
   bucket = aws_s3_bucket.aws_s3_bucket_config.bucket
   rule {
     apply_server_side_encryption_by_default {
-      sse_algorithm     = "aws:kms"
-      kms_master_key_id = "aws/s3"
+      sse_algorithm     = "AES256"
     }
+    bucket_key_enabled = true
   }
 }
 
