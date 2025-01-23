@@ -934,10 +934,9 @@
                             },
                             "ContainerOverrides": {
                                 "Command": [
+                                    "/mnt/data/input/reaches.json",
                                     "-i",
-                                    "Ref::index",
-                                    "-reachjson",
-                                    "reaches.json"
+                                    "Ref::index"
                                 ]
                             },
                             "JobName.$": "States.Format('confluence-hivdi-{}-{}-{}', $.version, $.counter, $.context_value[0].reach_id)",
