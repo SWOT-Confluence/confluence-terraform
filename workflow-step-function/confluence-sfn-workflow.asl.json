@@ -978,7 +978,7 @@
                 },
                 "Parameters": {
                     "Bucket": "${prefix}-json",
-                    "Key": "hivdisets.json"
+                    "Key": "reaches.json"
                 }
             },
             "ResultWriter": {
