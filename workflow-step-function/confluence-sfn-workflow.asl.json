@@ -45,7 +45,16 @@
                     "reachsubsetfile.$": "$.reach_subset_file"
                 }
             },
-            "Next": "Setfinder Reach Subset"
+            "Next": "Setfinder Reach Subset",
+            "Catch": [
+                {
+                    "ErrorEquals": [
+                        "States.ALL"
+                    ],
+                    "Next": "Report Fail",
+                    "ResultPath": "$.error"
+                }
+            ]
         },
         "Init Workflow Global": {
             "Type": "Task",
@@ -72,7 +81,16 @@
                     "prefix": "${prefix}"
                 }
             },
-            "Next": "Setfinder Global"
+            "Next": "Setfinder Global",
+            "Catch": [
+                {
+                    "ErrorEquals": [
+                        "States.ALL"
+                    ],
+                    "Next": "Report Fail",
+                    "ResultPath": "$.error"
+                }
+            ]
         },
         "Setfinder Reach Subset": {
             "Type": "Map",
@@ -159,7 +177,16 @@
                 }
             },
             "Label": "setfinder_reach_subset",
-            "Next": "Combine Data Reach Subset"
+            "Next": "Combine Data Reach Subset",
+            "Catch": [
+                {
+                    "ErrorEquals": [
+                        "States.ALL"
+                    ],
+                    "Next": "Report Fail",
+                    "ResultPath": "$.error"
+                }
+            ]
         },
         "Setfinder Subset Not Expanded": {
             "Type": "Map",
@@ -241,7 +268,16 @@
                 }
             },
             "Label": "setfinder_reach_subset_not_expanded",
-            "Next": "Combine Data Global"
+            "Next": "Combine Data Global",
+            "Catch": [
+                {
+                    "ErrorEquals": [
+                        "States.ALL"
+                    ],
+                    "Next": "Report Fail",
+                    "ResultPath": "$.error"
+                }
+            ]
         },
         "Setfinder Global": {
             "Type": "Map",
@@ -324,7 +360,16 @@
                 }
             },
             "Label": "setfinder_global",
-            "Next": "Combine Data Global"
+            "Next": "Combine Data Global",
+            "Catch": [
+                {
+                    "ErrorEquals": [
+                        "States.ALL"
+                    ],
+                    "Next": "Report Fail",
+                    "ResultPath": "$.error"
+                }
+            ]
         },
         "Combine Data Reach Subset": {
             "Type": "Task",
@@ -354,7 +399,16 @@
                     ]
                 }
             },
-            "Next": "Input Reach Subset"
+            "Next": "Input Reach Subset",
+            "Catch": [
+                {
+                    "ErrorEquals": [
+                        "States.ALL"
+                    ],
+                    "Next": "Report Fail",
+                    "ResultPath": "$.error"
+                }
+            ]
         },
         "Combine Data Global": {
             "Type": "Task",
@@ -383,7 +437,16 @@
                     ]
                 }
             },
-            "Next": "Combine Data Global Choice"
+            "Next": "Combine Data Global Choice",
+            "Catch": [
+                {
+                    "ErrorEquals": [
+                        "States.ALL"
+                    ],
+                    "Next": "Report Fail",
+                    "ResultPath": "$.error"
+                }
+            ]
         },
         "Input Reach Subset": {
             "Type": "Map",
@@ -490,7 +553,7 @@
                     "ErrorEquals": [
                         "States.ALL"
                     ],
-                    "Next": "Restart Expanded",
+                    "Next": "Report Fail",
                     "ResultPath": "$.error"
                 }
             ]
@@ -600,7 +663,7 @@
                     "ErrorEquals": [
                         "States.ALL"
                     ],
-                    "Next": "Restart Choice",
+                    "Next": "Report Fail",
                     "ResultPath": "$.error"
                 }
             ]
@@ -717,7 +780,7 @@
                     "ErrorEquals": [
                         "States.ALL"
                     ],
-                    "Next": "Restart Choice",
+                    "Next": "Report Fail",
                     "ResultPath": "$.error"
                 }
             ]
@@ -817,7 +880,16 @@
                 }
             },
             "Label": "priors",
-            "Next": "Hivdi"
+            "Next": "Hivdi",
+            "Catch": [
+                {
+                    "ErrorEquals": [
+                        "States.ALL"
+                    ],
+                    "Next": "Report Fail",
+                    "ResultPath": "$.error"
+                }
+            ]
         },
         "Priors GBPriors": {
             "Type": "Map",
@@ -900,7 +972,16 @@
                 }
             },
             "Label": "priors_gbpriors",
-            "Next": "Hivdi"
+            "Next": "Hivdi",
+            "Catch": [
+                {
+                    "ErrorEquals": [
+                        "States.ALL"
+                    ],
+                    "Next": "Report Fail",
+                    "ResultPath": "$.error"
+                }
+            ]
         },
         "Hivdi": {
             "Type": "Map",
@@ -995,7 +1076,7 @@
                     "ErrorEquals": [
                         "States.ALL"
                     ],
-                    "Next": "Restart Choice",
+                    "Next": "Report Fail",
                     "ResultPath": "$.error"
                 }
             ]
@@ -1098,7 +1179,7 @@
                     "ErrorEquals": [
                         "States.ALL"
                     ],
-                    "Next": "Restart Choice",
+                    "Next": "Report Fail",
                     "ResultPath": "$.error"
                 }
             ]
@@ -1218,7 +1299,7 @@
                     "ErrorEquals": [
                         "States.ALL"
                     ],
-                    "Next": "Restart Choice",
+                    "Next": "Report Fail",
                     "ResultPath": "$.error"
                 }
             ]
@@ -1322,7 +1403,7 @@
                     "ErrorEquals": [
                         "States.ALL"
                     ],
-                    "Next": "Restart Choice",
+                    "Next": "Report Fail",
                     "ResultPath": "$.error"
                 }
             ]
@@ -1424,7 +1505,7 @@
                     "ErrorEquals": [
                         "States.ALL"
                     ],
-                    "Next": "Restart Choice",
+                    "Next": "Report Fail",
                     "ResultPath": "$.error"
                 }
             ]
@@ -1526,7 +1607,7 @@
                     "ErrorEquals": [
                         "States.ALL"
                     ],
-                    "Next": "Restart Choice",
+                    "Next": "Report Fail",
                     "ResultPath": "$.error"
                 }
             ]
@@ -1629,7 +1710,7 @@
                     "ErrorEquals": [
                         "States.ALL"
                     ],
-                    "Next": "Restart Choice",
+                    "Next": "Report Fail",
                     "ResultPath": "$.error"
                 }
             ]
@@ -1702,7 +1783,16 @@
                 }
             },
             "Label": "metromanConsolidation",
-            "Next": "Postdiagnostics FLPE Choice"
+            "Next": "Postdiagnostics FLPE Choice",
+            "Catch": [
+                {
+                    "ErrorEquals": [
+                        "States.ALL"
+                    ],
+                    "Next": "Report Fail",
+                    "ResultPath": "$.error"
+                }
+            ]
         },
         "Postdiagnostics FLPE Choice": {
             "Type": "Choice",
@@ -1823,7 +1913,7 @@
                     "ErrorEquals": [
                         "States.ALL"
                     ],
-                    "Next": "Restart Choice",
+                    "Next": "Report Fail",
                     "ResultPath": "$.error"
                 }
             ]
@@ -1929,7 +2019,7 @@
                     "ErrorEquals": [
                         "States.ALL"
                     ],
-                    "Next": "Restart Choice",
+                    "Next": "Report Fail",
                     "ResultPath": "$.error"
                 }
             ]
@@ -2053,7 +2143,7 @@
                     "ErrorEquals": [
                         "States.ALL"
                     ],
-                    "Next": "Restart Choice",
+                    "Next": "Report Fail",
                     "ResultPath": "$.error"
                 }
             ]
@@ -2154,7 +2244,7 @@
                     "ErrorEquals": [
                         "States.ALL"
                     ],
-                    "Next": "Restart Choice",
+                    "Next": "Report Fail",
                     "ResultPath": "$.error"
                 }
             ]
@@ -2259,7 +2349,7 @@
                     "ErrorEquals": [
                         "States.ALL"
                     ],
-                    "Next": "Restart Choice",
+                    "Next": "Report Fail",
                     "ResultPath": "$.error"
                 }
             ]
@@ -2364,136 +2454,77 @@
                 }
             },
             "Label": "output",
+            "Next": "Report",
+            "Catch": [
+                {
+                    "ErrorEquals": [
+                        "States.ALL"
+                    ],
+                    "Next": "Report Fail",
+                    "ResultPath": "$.error"
+                }
+            ]
+        },
+        "Report": {
+            "Type": "Task",
+            "Resource": "arn:aws:states:::batch:submitJob.sync",
+            "ResultPath": null,
+            "Parameters": {
+                "JobName.$": "States.Format('confluence-report-{}-{}', $.version, $.counter)",
+                "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-report",
+                "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-report",
+                "PropagateTags": true,
+                "Tags": {
+                    "name.$": "States.Format('confluence-{}-{}-{}', $.run_type, $.version, $.counter)",
+                    "job.$": "States.Format('confluence-report-{}-{}', $.version, $.counter)"
+                },
+                "ContainerOverrides": {
+                    "Command": [
+                        "-e",
+                        "Ref::execution_id",
+                        "-t",
+                        "Ref::temporal_range",
+                        "-d",
+                        "/mnt/input"
+                    ]
+                },
+                "Parameters": {
+                    "execution_id.$": "$$.Execution.Id",
+                    "temporal_range.$": "$.temporal_range"
+                }
+            },
             "Next": "Successful Run"
         },
         "Successful Run": {
             "Type": "Succeed"
         },
-        "Restart Choice": {
-            "Type": "Choice",
-            "Choices": [
-                {
-                    "Variable": "$.reach_subset_file",
-                    "IsPresent": true,
-                    "Next": "Restart Subset"
-                },
-                {
-                    "Variable": "$.reach_subset_file",
-                    "IsPresent": false,
-                    "Next": "Restart"
-                }
-            ]
-        },
-        "Restart": {
+        "Report Fail": {
             "Type": "Task",
             "Resource": "arn:aws:states:::batch:submitJob.sync",
             "ResultPath": null,
             "Parameters": {
-                "JobName.$": "States.Format('confluence-restart-{}-{}', $.version, $.counter)",
-                "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-restart",
-                "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-restart",
+                "JobName.$": "States.Format('confluence-report-fail-{}-{}', $.version, $.counter)",
+                "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-report",
+                "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-report",
                 "PropagateTags": true,
                 "Tags": {
                     "name.$": "States.Format('confluence-{}-{}-{}', $.run_type, $.version, $.counter)",
-                    "job.$": "States.Format('confluence-restart-{}-{}', $.version, $.counter)"
+                    "job.$": "States.Format('confluence-report-fail-{}-{}', $.version, $.counter)"
                 },
                 "ContainerOverrides": {
                     "Command": [
-                        "-d",
-                        "/mnt/input",
-                        "-p",
-                        "${prefix}",
-                        "-v",
-                        "Ref::version",
-                        "-r",
-                        "Ref::run_type",
-                        "-t",
-                        "Ref::failure_threshold",
-                        "-o"
-                    ]
-                },
-                "Parameters": {
-                    "version.$": "States.Format('{}',$.version)",
-                    "run_type.$": "States.Format('{}', $.run_type)",
-                    "failure_threshold.$": "States.Format('{}',$.tolerated_failure_percentage)"
-                }
-            },
-            "Next": "Failed Run"
-        },
-        "Restart Subset": {
-            "Type": "Task",
-            "Resource": "arn:aws:states:::batch:submitJob.sync",
-            "ResultPath": null,
-            "Parameters": {
-                "JobName.$": "States.Format('confluence-restart-subset-{}-{}', $.version, $.counter)",
-                "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-restart",
-                "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-restart",
-                "PropagateTags": true,
-                "Tags": {
-                    "name.$": "States.Format('confluence-{}-{}-{}', $.run_type, $.version, $.counter)",
-                    "job.$": "States.Format('confluence-restart-subset-{}-{}', $.version, $.counter)"
-                },
-                "ContainerOverrides": {
-                    "Command": [
-                        "-d",
-                        "/mnt/input",
-                        "-p",
-                        "${prefix}",
-                        "-v",
-                        "Ref::version",
-                        "-r",
-                        "Ref::run_type",
-                        "-u",
-                        "Ref::reachsubsetfile",
-                        "-t",
-                        "Ref::failure_threshold",
-                        "-o"
-                    ]
-                },
-                "Parameters": {
-                    "version.$": "States.Format('{}',$.version)",
-                    "run_type.$": "States.Format('{}', $.run_type)",
-                    "failure_threshold.$": "States.Format('{}',$.tolerated_failure_percentage)",
-                    "reachsubsetfile.$": "$.reach_subset_file"
-                }
-            },
-            "Next": "Failed Run"
-        },
-        "Restart Expanded": {
-            "Type": "Task",
-            "Resource": "arn:aws:states:::batch:submitJob.sync",
-            "ResultPath": null,
-            "Parameters": {
-                "JobName.$": "States.Format('confluence-restart-expanded-{}-{}', $.version, $.counter)",
-                "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-restart",
-                "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-restart",
-                "PropagateTags": true,
-                "Tags": {
-                    "job.$": "States.Format('confluence-restart-expanded-{}-{}', $.version, $.counter)"
-                },
-                "ContainerOverrides": {
-                    "Command": [
-                        "-d",
-                        "/mnt/input",
-                        "-p",
-                        "${prefix}",
-                        "-v",
-                        "Ref::version",
-                        "-r",
-                        "Ref::run_type",
-                        "-u",
-                        "Ref::reachsubsetfile",
-                        "-t",
-                        "Ref::failure_threshold",
                         "-e",
-                        "-o"
+                        "Ref::execution_id",
+                        "-t",
+                        "Ref::temporal_range",
+                        "-d",
+                        "/mnt/input",
+                        "-f"
                     ]
                 },
                 "Parameters": {
-                    "version.$": "States.Format('{}',$.version)",
-                    "run_type.$": "States.Format('{}', $.run_type)",
-                    "failure_threshold.$": "States.Format('{}',$.tolerated_failure_percentage)",
-                    "reachsubsetfile.$": "$.reach_subset_file"
+                    "execution_id.$": "$$.Execution.Id",
+                    "temporal_range.$": "$.temporal_range"
                 }
             },
             "Next": "Failed Run"
