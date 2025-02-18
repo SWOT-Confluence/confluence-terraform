@@ -345,6 +345,12 @@ resource "aws_iam_policy" "batch_job_sns_policy" {
     "Version" : "2012-10-17",
     "Statement" : [
       {
+        "Sid" : "AllowList",
+        "Effect" : "Allow",
+        "Action" : "sns:ListTopics",
+        "Resource" : "${aws_sns_topic.aws_sns_topic_confluence_reports.arn}"
+      },
+      {
         "Sid" : "AllowPublish",
         "Effect" : "Allow",
         "Action" : "sns:Publish",
