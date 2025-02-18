@@ -1,7 +1,7 @@
 # SNS Topic
 resource "aws_sns_topic" "aws_sns_topic_confluence_reports" {
-  name         = "${var.prefix}-reports"
-  display_name = "${var.prefix}-reports"
+  name         = "confluence-reports"
+  display_name = "confluence-reports"
 }
 
 resource "aws_sns_topic_policy" "aws_sns_topic_policy_confluence_reports" {
