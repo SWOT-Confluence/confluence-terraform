@@ -331,3 +331,25 @@ resource "aws_iam_policy" "batch_job_ssm_policy" {
     ]
   })
 }
+
+# # SNS Topics
+resource "aws_iam_role_policy_attachment" "batch_job_sns_role_policy" {
+  role       = aws_iam_role.batch_job_role.name
+  policy_arn = aws_iam_policy.batch_job_sns_policy.arn
+}
+
+resource "aws_iam_policy" "batch_job_sns_policy" {
+  name        = "${var.prefix}-batch-job-sns-policy"
+  description = "Amazon Batch job policy to access SNS topics"
+  policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Sid" : "AllowPublish",
+        "Effect" : "Allow",
+        "Action" : "sns:Publish",
+        "Resource" : "${aws_sns_topic.aws_sns_topic_confluence_reports.arn}"
+      }
+    ]
+  })
+}
