@@ -2485,12 +2485,15 @@
                         "-t",
                         "Ref::temporal_range",
                         "-d",
-                        "/mnt/input"
+                        "/mnt/input",
+                        "-c",
+                        "Ref::counter"
                     ]
                 },
                 "Parameters": {
                     "execution_id.$": "$$.Execution.Id",
-                    "temporal_range.$": "$.temporal_range"
+                    "temporal_range.$": "$.temporal_range",
+                    "counter.$": "$.counter"
                 }
             },
             "Next": "Successful Run"
@@ -2519,12 +2522,15 @@
                         "Ref::temporal_range",
                         "-d",
                         "/mnt/input",
+                        "-c",
+                        "Ref::counter",
                         "-f"
                     ]
                 },
                 "Parameters": {
                     "execution_id.$": "$$.Execution.Id",
-                    "temporal_range.$": "$.temporal_range"
+                    "temporal_range.$": "$.temporal_range",
+                    "counter.$": "$.counter"
                 }
             },
             "Next": "Failed Run"
