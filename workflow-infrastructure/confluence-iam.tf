@@ -285,15 +285,15 @@ resource "aws_iam_policy" "batch_job_sfn_policy" {
     "Version" : "2012-10-17",
     "Statement" : [
       {
-        "Sid" : "AllowStartExecution",
+        "Sid" : "DescribeGetListMapRun",
         "Effect" : "Allow",
-        "Action" : "states:StartExecution",
-        "Resource" : "arn:aws:states:${var.aws_region}:${local.account_id}:stateMachine:${var.prefix}-workflow"
-      },
-      {
-        "Sid" : "DescribeMapRun",
-        "Effect" : "Allow",
-        "Action" : "states:DescribeMapRun",
+        "Action" : [
+          "states:DescribeExecution",
+          "states:DescribeMapRun",
+          "states:GetExecutionHistory",
+          "states:ListExecutions",
+          "states:ListMapRuns"
+        ],
         "Resource" : "arn:aws:states:${var.aws_region}:${local.account_id}:mapRun:${var.prefix}-workflow/*"
       }
     ]
