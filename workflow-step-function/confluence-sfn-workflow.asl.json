@@ -2484,18 +2484,23 @@
                         "Ref::execution_id",
                         "-t",
                         "Ref::temporal_range",
-                        "-d",
-                        "/mnt/input",
+                        "-s",
+                        "Ref::sos_bucket",
+                        "-r",
+                        "Ref::run_type",
                         "-b",
-                        "Ref::bucket",
-                        "-c",
-                        "Ref::counter"
+                        "Ref::json_bucket",
+                        "-k",
+                        "Ref::json_bucket_key"
                     ]
                 },
                 "Parameters": {
                     "execution_id.$": "$$.Execution.Id",
                     "temporal_range.$": "$.temporal_range",
-                    "bucket": "${prefix}-json",
+                    "sos_bucket": "${prefix}-sos",
+                    "run_type.$":"$.run_type",
+                    "json_bucket": "${prefix}-json",
+                    "json_bucket_key": "States.Format('{}-{}', $$.Execution.StartTime, $.counter)",
                     "counter.$": "$.counter"
                 }
             },
@@ -2523,19 +2528,24 @@
                         "Ref::execution_id",
                         "-t",
                         "Ref::temporal_range",
-                        "-d",
-                        "/mnt/input",
+                        "-s",
+                        "Ref::sos_bucket",
+                        "-r",
+                        "Ref::run_type",
                         "-b",
-                        "Ref::bucket",
-                        "-c",
-                        "Ref::counter",
+                        "Ref::json_bucket",
+                        "-k",
+                        "Ref::json_bucket_key",
                         "-f"
                     ]
                 },
                 "Parameters": {
                     "execution_id.$": "$$.Execution.Id",
                     "temporal_range.$": "$.temporal_range",
-                    "bucket": "${prefix}-json",
+                    "sos_bucket": "${prefix}-sos",
+                    "run_type.$":"$.run_type",
+                    "json_bucket": "${prefix}-json",
+                    "json_bucket_key": "States.Format('{}-{}', $$.Execution.StartTime, $.counter)",
                     "counter.$": "$.counter"
                 }
             },
