@@ -539,13 +539,6 @@
                     "Key": "expanded_reaches_of_interest.json"
                 }
             },
-            "ResultWriter": {
-                "Resource": "arn:aws:states:::s3:putObject",
-                "Parameters": {
-                    "Bucket": "${prefix}-map-state",
-                    "Prefix": "input"
-                }
-            },
             "Label": "input_reach_subset",
             "Next": "Setfinder Subset Not Expanded",
             "Catch": [
@@ -647,13 +640,6 @@
                 "Parameters": {
                     "Bucket": "${prefix}-json",
                     "Key": "reaches.json"
-                }
-            },
-            "ResultWriter": {
-                "Resource": "arn:aws:states:::s3:putObject",
-                "Parameters": {
-                    "Bucket": "${prefix}-map-state",
-                    "Prefix": "input"
                 }
             },
             "Label": "input_global",
@@ -764,13 +750,6 @@
                 "Parameters": {
                     "Bucket": "${prefix}-json",
                     "Key": "reaches.json"
-                }
-            },
-            "ResultWriter": {
-                "Resource": "arn:aws:states:::s3:putObject",
-                "Parameters": {
-                    "Bucket": "${prefix}-map-state",
-                    "Prefix": "prediagnostics"
                 }
             },
             "Label": "prediagnostics",
@@ -1062,13 +1041,6 @@
                     "Key": "reaches.json"
                 }
             },
-            "ResultWriter": {
-                "Resource": "arn:aws:states:::s3:putObject",
-                "Parameters": {
-                    "Bucket": "${prefix}-map-state",
-                    "Prefix": "hivdi"
-                }
-            },
             "Label": "hivdi",
             "Next": "Metroman",
             "Catch": [
@@ -1163,13 +1135,6 @@
                 "Parameters": {
                     "Bucket": "${prefix}-json",
                     "Key": "metrosets.json"
-                }
-            },
-            "ResultWriter": {
-                "Resource": "arn:aws:states:::s3:putObject",
-                "Parameters": {
-                    "Bucket": "${prefix}-map-state",
-                    "Prefix": "metroman"
                 }
             },
             "Label": "metroman",
@@ -1285,13 +1250,6 @@
                     "Key": "reaches.json"
                 }
             },
-            "ResultWriter": {
-                "Resource": "arn:aws:states:::s3:putObject",
-                "Parameters": {
-                    "Bucket": "${prefix}-map-state",
-                    "Prefix": "momma"
-                }
-            },
             "Label": "mommaConstrained",
             "Next": "Neobam",
             "Catch": [
@@ -1389,13 +1347,6 @@
                     "Key": "reaches.json"
                 }
             },
-            "ResultWriter": {
-                "Resource": "arn:aws:states:::s3:putObject",
-                "Parameters": {
-                    "Bucket": "${prefix}-map-state",
-                    "Prefix": "momma"
-                }
-            },
             "Label": "mommaUnconstrained",
             "Next": "Neobam",
             "Catch": [
@@ -1489,13 +1440,6 @@
                 "Parameters": {
                     "Bucket": "${prefix}-json",
                     "Key": "reaches.json"
-                }
-            },
-            "ResultWriter": {
-                "Resource": "arn:aws:states:::s3:putObject",
-                "Parameters": {
-                    "Bucket": "${prefix}-map-state",
-                    "Prefix": "neobam"
                 }
             },
             "Label": "neobam",
@@ -1593,13 +1537,6 @@
                     "Key": "reaches.json"
                 }
             },
-            "ResultWriter": {
-                "Resource": "arn:aws:states:::s3:putObject",
-                "Parameters": {
-                    "Bucket": "${prefix}-map-state",
-                    "Prefix": "sad"
-                }
-            },
             "Label": "sad",
             "Next": "Sic4dvar",
             "Catch": [
@@ -1694,13 +1631,6 @@
                 "Parameters": {
                     "Bucket": "${prefix}-json",
                     "Key": "sicsets.json"
-                }
-            },
-            "ResultWriter": {
-                "Resource": "arn:aws:states:::s3:putObject",
-                "Parameters": {
-                    "Bucket": "${prefix}-map-state",
-                    "Prefix": "sic4dvar"
                 }
             },
             "Label": "sic4dvar",
@@ -1899,13 +1829,6 @@
                     "Key": "reaches.json"
                 }
             },
-            "ResultWriter": {
-                "Resource": "arn:aws:states:::s3:putObject",
-                "Parameters": {
-                    "Bucket": "${prefix}-map-state",
-                    "Prefix": "postdiagnostics-flpe"
-                }
-            },
             "Label": "postdiagnostics-flpe",
             "Next": "Moi",
             "Catch": [
@@ -2003,13 +1926,6 @@
                 "Parameters": {
                     "Bucket": "${prefix}-json",
                     "Key": "basin.json"
-                }
-            },
-            "ResultWriter": {
-                "Resource": "arn:aws:states:::s3:putObject",
-                "Parameters": {
-                    "Bucket": "${prefix}-map-state",
-                    "Prefix": "moi"
                 }
             },
             "Label": "moi",
@@ -2129,13 +2045,6 @@
                     "Key": "reaches.json"
                 }
             },
-            "ResultWriter": {
-                "Resource": "arn:aws:states:::s3:putObject",
-                "Parameters": {
-                    "Bucket": "${prefix}-map-state",
-                    "Prefix": "postdiagnostics-moi"
-                }
-            },
             "Label": "postdiagnostics-moi",
             "Next": "Offline",
             "Catch": [
@@ -2228,13 +2137,6 @@
                 "Parameters": {
                     "Bucket": "${prefix}-json",
                     "Key": "reaches.json"
-                }
-            },
-            "ResultWriter": {
-                "Resource": "arn:aws:states:::s3:putObject",
-                "Parameters": {
-                    "Bucket": "${prefix}-map-state",
-                    "Prefix": "offline"
                 }
             },
             "Label": "offline",
@@ -2333,13 +2235,6 @@
                 "Parameters": {
                     "Bucket": "${prefix}-json",
                     "Key": "reaches.json"
-                }
-            },
-            "ResultWriter": {
-                "Resource": "arn:aws:states:::s3:putObject",
-                "Parameters": {
-                    "Bucket": "${prefix}-map-state",
-                    "Prefix": "validation"
                 }
             },
             "Label": "validation",
@@ -2498,7 +2393,7 @@
                     "execution_id.$": "$$.Execution.Id",
                     "temporal_range.$": "$.temporal_range",
                     "sos_bucket": "${prefix}-sos",
-                    "run_type.$":"$.run_type",
+                    "run_type.$": "$.run_type",
                     "json_bucket": "${prefix}-json",
                     "json_bucket_key": "States.Format('{}-{}', $$.Execution.StartTime, $.counter)",
                     "counter.$": "$.counter"
@@ -2543,7 +2438,7 @@
                     "execution_id.$": "$$.Execution.Id",
                     "temporal_range.$": "$.temporal_range",
                     "sos_bucket": "${prefix}-sos",
-                    "run_type.$":"$.run_type",
+                    "run_type.$": "$.run_type",
                     "json_bucket": "${prefix}-json",
                     "json_bucket_key": "States.Format('{}-{}', $$.Execution.StartTime, $.counter)",
                     "counter.$": "$.counter"

@@ -236,8 +236,7 @@ resource "aws_iam_policy" "batch_job_s3_policy" {
         "Resource" : [
           "${aws_s3_bucket.aws_s3_bucket_sos.arn}",
           "${aws_s3_bucket.aws_s3_bucket_json.arn}",
-          "${aws_s3_bucket.aws_s3_bucket_config.arn}",
-          "${aws_s3_bucket.aws_s3_bucket_map.arn}"
+          "${aws_s3_bucket.aws_s3_bucket_config.arn}"
         ]
       },
       {
@@ -253,18 +252,7 @@ resource "aws_iam_policy" "batch_job_s3_policy" {
         "Resource" : [
           "${aws_s3_bucket.aws_s3_bucket_sos.arn}/*",
           "${aws_s3_bucket.aws_s3_bucket_json.arn}/*",
-          "${aws_s3_bucket.aws_s3_bucket_config.arn}/*",
-          "${aws_s3_bucket.aws_s3_bucket_map.arn}/*"
-        ]
-      },
-      {
-        "Sid" : "AllDeleteObjects",
-        "Effect" : "Allow",
-        "Action" : [
-          "s3:DeleteObject"
-        ],
-        "Resource" : [
-          "${aws_s3_bucket.aws_s3_bucket_map.arn}/*"
+          "${aws_s3_bucket.aws_s3_bucket_config.arn}/*"
         ]
       }
     ]
