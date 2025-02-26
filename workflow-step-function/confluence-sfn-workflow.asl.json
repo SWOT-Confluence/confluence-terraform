@@ -2395,7 +2395,7 @@
                     "sos_bucket": "${prefix}-sos",
                     "run_type.$": "$.run_type",
                     "json_bucket": "${prefix}-json",
-                    "json_bucket_key": "States.Format('{}-{}', $$.Execution.StartTime, $.counter)",
+                    "json_bucket_key.$": "States.Format('{}-{}', $$.Execution.StartTime, $.counter)",
                     "counter.$": "$.counter"
                 }
             },
@@ -2440,7 +2440,7 @@
                     "sos_bucket": "${prefix}-sos",
                     "run_type.$": "$.run_type",
                     "json_bucket": "${prefix}-json",
-                    "json_bucket_key": "States.Format('{}-{}', $$.Execution.StartTime, $.counter)",
+                    "json_bucket_key.$": "States.Format('{}-{}', $$.Execution.StartTime, $.counter)",
                     "counter.$": "$.counter"
                 }
             },
