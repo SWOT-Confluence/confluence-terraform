@@ -283,6 +283,7 @@ resource "aws_iam_policy" "batch_job_sfn_policy" {
           "states:ListMapRuns"
         ],
         "Resource" : [
+          "arn:aws:states:${var.aws_region}:${local.account_id}:execution:${var.prefix}-workflow:*",
           "arn:aws:states:${var.aws_region}:${local.account_id}:mapRun:${var.prefix}-workflow/*",
           "arn:aws:states:${var.aws_region}:${local.account_id}:execution:${var.prefix}-workflow/*"
         ]
