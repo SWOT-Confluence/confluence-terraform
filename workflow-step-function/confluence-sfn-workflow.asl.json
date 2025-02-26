@@ -387,16 +387,21 @@
                 },
                 "ContainerOverrides": {
                     "Command": [
+                        "-c",
+                        "continent.json",
                         "-d",
                         "/data",
                         "-u",
                         "${prefix}-json",
-                        "-u",
-                        "${prefix}-json",
-                        "-e",
                         "-s",
-                        "16"
+                        "16",
+                        "-k",
+                        "Ref::json_bucket_key",
+                        "-e"
                     ]
+                },
+                "Parameters": {
+                    "json_bucket_key.$": "States.Format('{}-{}', $$.Execution.StartTime, $.counter)"
                 }
             },
             "Next": "Input Reach Subset",
@@ -433,8 +438,13 @@
                         "-u",
                         "${prefix}-json",
                         "-s",
-                        "16"
+                        "16",
+                        "-k",
+                        "Ref::json_bucket_key"
                     ]
+                },
+                "Parameters": {
+                    "json_bucket_key.$": "States.Format('{}-{}', $$.Execution.StartTime, $.counter)"
                 }
             },
             "Next": "Combine Data Global Choice",
