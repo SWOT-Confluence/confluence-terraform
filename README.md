@@ -4,7 +4,27 @@
 
 ![Confluence Component Data Flow Diagram](diagrams/confluence-data-flow.png)
 
--
+Confluence module repositories:
+
+- Clean Up: https://github.com/SWOT-Confluence/clean_up
+- Combine Data:https://github.com/SWOT-Confluence/combine_data
+- Init Workflow: https://github.com/SWOT-Confluence/init_workflow
+- Input: https://github.com/SWOT-Confluence/input
+- MetroMan: https://github.com/SWOT-Confluence/metroman
+- MetroMan Consolidation: https://github.com/SWOT-Confluence/metroman_consolidation
+- MOI: https://github.com/SWOT-Confluence/moi
+- MOMMA: https://github.com/SWOT-Confluence/momma
+- neoBAM: https://github.com/SWOT-Confluence/neobam
+- Offline: https://github.com/SWOT-Confluence/offline-discharge-data-product-creation
+- Output: https://github.com/SWOT-Confluence/output
+- Postdiagnostics: https://github.com/SWOT-Confluence/postdiagnostics
+- Prediagnostics: https://github.com/SWOT-Confluence/prediagnostics
+- Priors: https://github.com/SWOT-Confluence/priors
+- Report: https://github.com/SWOT-Confluence/report
+- SAD: https://github.com/SWOT-Confluence/sad
+- Setfinder: https://github.com/SWOT-Confluence/setfinder
+- SoS Read: https://github.com/SWOT-Confluence/sos_read
+- Validation: https://github.com/SWOT-Confluence/validation
 
 ## aws infrastructure
 
@@ -19,7 +39,7 @@ The Confluence workflow includes the following AWS service in the `workflow-infr
 - AWS S3 SoS Bucket.
 - AWS Security Groups and VPC definition.
 - AWS System Manager Parameter Store and Key Management Service.
--
+
 
 ### stepfunction-infrastructure
 
@@ -28,7 +48,7 @@ The Confluence workflow includes the following AWS service in the `stepfunction-
 - AWS EventBridge rule.
 - AWS Step Function state machine.
 - AWS IAM Roles & Policies.
--
+
 
 ## terraform
 
