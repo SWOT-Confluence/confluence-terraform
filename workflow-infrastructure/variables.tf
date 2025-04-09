@@ -41,12 +41,6 @@ variable "prefix" {
   description = "Prefix to add to all AWS resources as a unique identifier"
 }
 
-variable "ssh_subnet" {
-  type        = string
-  description = "CIDR range to allow SSH from to EC2 EFS"
-  sensitive = true
-}
-
 variable "vpc_id" {
   type = string
   description = "Default VPC identifier"
