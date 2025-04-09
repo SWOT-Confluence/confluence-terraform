@@ -1,0 +1,155 @@
+data.aws_caller_identity.current: Reading...
+aws_vpc.vpc: Refreshing state... [id=vpc-0a31b4e54035aee0c]
+aws_eip.eip_nat: Refreshing state... [id=eipalloc-09171dfcba545f98a]
+data.aws_caller_identity.current: Read complete after 0s [id=994104301068]
+aws_internet_gateway.igw: Refreshing state... [id=igw-05140620a150bc859]
+aws_route_table.rt_nat: Refreshing state... [id=rtb-0331e17d238b7516c]
+aws_subnet.subnet_a_private: Refreshing state... [id=subnet-0f8031926dca3f771]
+aws_subnet.subnet_c: Refreshing state... [id=subnet-083588fb55ab42d61]
+aws_vpc_endpoint.vpc_endpoint_ecr_api: Refreshing state... [id=vpce-0efb5ad673ede2148]
+aws_vpc_endpoint.vpc_endpoint_ecr_dkr: Refreshing state... [id=vpce-0dfb32a51c9a40a63]
+aws_vpc_endpoint.vpc_endpoint_cw: Refreshing state... [id=vpce-06fe5d8bcbaec2786]
+aws_subnet.subnet_d: Refreshing state... [id=subnet-0301e78a9bd25a4a6]
+aws_subnet.subnet_a_public: Refreshing state... [id=subnet-0743353884fbe3447]
+aws_subnet.subnet_b: Refreshing state... [id=subnet-08d2d87bc3357237a]
+aws_route_table.rt_igw: Refreshing state... [id=rtb-0bb1e722875ca7339]
+aws_route_table_association.rt_subnet_a: Refreshing state... [id=rtbassoc-0f93d53ee739bfb6c]
+aws_route_table_association.rt_subnet_c: Refreshing state... [id=rtbassoc-0cc4646d5078ff4ff]
+aws_vpc_endpoint.vpc_endpoint_s3: Refreshing state... [id=vpce-0808ff10276325110]
+aws_route.route_igw: Refreshing state... [id=r-rtb-0bb1e722875ca73391080289494]
+aws_route_table_association.rt_subnet_d: Refreshing state... [id=rtbassoc-06e938814b0dc8170]
+aws_route_table_association.rt_subnet_b: Refreshing state... [id=rtbassoc-0fabf287b48beeb36]
+aws_route_table_association.rt_igw_assoc: Refreshing state... [id=rtbassoc-0aa036d9de9a0c1c7]
+aws_nat_gateway.nat: Refreshing state... [id=nat-02cb2737290edfbe7]
+aws_route.route_nat: Refreshing state... [id=r-rtb-0331e17d238b7516c1080289494]
+
+Terraform used the selected providers to generate the following execution
+plan. Resource actions are indicated with the following symbols:
+  ~ update in-place
+
+Terraform will perform the following actions:
+
+  # aws_subnet.subnet_a_private will be updated in-place
+  ~ resource "aws_subnet" "subnet_a_private" {
+      # Warning: this attribute value will be marked as sensitive and will not
+      # display in UI output after applying this change. The value is unchanged.
+      ~ cidr_block                                     = (sensitive value)
+        id                                             = "subnet-0f8031926dca3f771"
+        tags                                           = {
+            "Name" = "confluence-ops-subnet-a-private"
+        }
+        # (19 unchanged attributes hidden)
+    }
+
+  # aws_subnet.subnet_a_public will be updated in-place
+  ~ resource "aws_subnet" "subnet_a_public" {
+      # Warning: this attribute value will be marked as sensitive and will not
+      # display in UI output after applying this change. The value is unchanged.
+      ~ cidr_block                                     = (sensitive value)
+        id                                             = "subnet-0743353884fbe3447"
+        tags                                           = {
+            "Name" = "confluence-ops-subnet-a-public"
+        }
+        # (19 unchanged attributes hidden)
+    }
+
+  # aws_subnet.subnet_b will be updated in-place
+  ~ resource "aws_subnet" "subnet_b" {
+      # Warning: this attribute value will be marked as sensitive and will not
+      # display in UI output after applying this change. The value is unchanged.
+      ~ cidr_block                                     = (sensitive value)
+        id                                             = "subnet-08d2d87bc3357237a"
+        tags                                           = {
+            "Name" = "confluence-ops-subnet-b"
+        }
+        # (19 unchanged attributes hidden)
+    }
+
+  # aws_subnet.subnet_c will be updated in-place
+  ~ resource "aws_subnet" "subnet_c" {
+      # Warning: this attribute value will be marked as sensitive and will not
+      # display in UI output after applying this change. The value is unchanged.
+      ~ cidr_block                                     = (sensitive value)
+        id                                             = "subnet-083588fb55ab42d61"
+        tags                                           = {
+            "Name" = "confluence-ops-subnet-c"
+        }
+        # (19 unchanged attributes hidden)
+    }
+
+  # aws_subnet.subnet_d will be updated in-place
+  ~ resource "aws_subnet" "subnet_d" {
+      # Warning: this attribute value will be marked as sensitive and will not
+      # display in UI output after applying this change. The value is unchanged.
+      ~ cidr_block                                     = (sensitive value)
+        id                                             = "subnet-0301e78a9bd25a4a6"
+        tags                                           = {
+            "Name" = "confluence-ops-subnet-d"
+        }
+        # (19 unchanged attributes hidden)
+    }
+
+  # aws_vpc.vpc will be updated in-place
+  ~ resource "aws_vpc" "vpc" {
+      # Warning: this attribute value will be marked as sensitive and will not
+      # display in UI output after applying this change. The value is unchanged.
+      ~ cidr_block                           = (sensitive value)
+        id                                   = "vpc-0a31b4e54035aee0c"
+        tags                                 = {
+            "Name" = "confluence-ops"
+        }
+        # (18 unchanged attributes hidden)
+    }
+
+  # aws_vpc_endpoint.vpc_endpoint_cw will be updated in-place
+  ~ resource "aws_vpc_endpoint" "vpc_endpoint_cw" {
+      + auto_accept                = true
+        id                         = "vpce-06fe5d8bcbaec2786"
+        tags                       = {
+            "Name" = "confluence-ops-endpoint-cw"
+        }
+        # (20 unchanged attributes hidden)
+
+        # (1 unchanged block hidden)
+    }
+
+  # aws_vpc_endpoint.vpc_endpoint_ecr_api will be updated in-place
+  ~ resource "aws_vpc_endpoint" "vpc_endpoint_ecr_api" {
+      + auto_accept                = true
+        id                         = "vpce-0efb5ad673ede2148"
+        tags                       = {
+            "Name" = "confluence-ops-endpoint-ecr-api"
+        }
+        # (20 unchanged attributes hidden)
+
+        # (1 unchanged block hidden)
+    }
+
+  # aws_vpc_endpoint.vpc_endpoint_ecr_dkr will be updated in-place
+  ~ resource "aws_vpc_endpoint" "vpc_endpoint_ecr_dkr" {
+      + auto_accept                = true
+        id                         = "vpce-0dfb32a51c9a40a63"
+        tags                       = {
+            "Name" = "confluence-ops-endpoint-ecr-dkr"
+        }
+        # (20 unchanged attributes hidden)
+
+        # (1 unchanged block hidden)
+    }
+
+  # aws_vpc_endpoint.vpc_endpoint_s3 will be updated in-place
+  ~ resource "aws_vpc_endpoint" "vpc_endpoint_s3" {
+      + auto_accept                = true
+        id                         = "vpce-0808ff10276325110"
+        tags                       = {
+            "Name" = "confluence-ops-endpoint-s3"
+        }
+        # (21 unchanged attributes hidden)
+    }
+
+Plan: 0 to add, 10 to change, 0 to destroy.
+
+─────────────────────────────────────────────────────────────────────────────
+
+Note: You didn't use the -out option to save this plan, so Terraform can't
+guarantee to take exactly these actions if you run "terraform apply" now.
