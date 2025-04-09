@@ -119,9 +119,7 @@ jobs:
       # Deploy AWS infrastructure
       - name: Deploy Terraform
         working-directory: workflow-network/
-        run: |
-          terraform plan -no-color
-          # terraform apply -auto-approve
+        run: terraform apply -auto-approve
 
   deploy-infrastructure:
     if: github.event.inputs.deployment == 'Infrastructure'
@@ -206,9 +204,7 @@ jobs:
       # Deploy AWS infrastructure
       - name: Deploy Terraform
         working-directory: workflow-infrastructure/
-        run: |
-          terraform plan -no-color
-          # terraform apply -auto-approve
+        run: terraform apply -auto-approve
 
   deploy-step-function:
     if: github.event.inputs.deployment == 'Step Function'
