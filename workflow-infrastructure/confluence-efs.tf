@@ -7,38 +7,12 @@ resource "aws_efs_file_system" "efs_fs_logs" {
   tags             = { Name = "${var.prefix}-logs" }
 }
 
-resource "aws_efs_mount_target" "efs_mt_a_logs" {
+resource "aws_efs_mount_target" "efs_mnt_logs" {
+  for_each = "${toset(var.vpc_subnets)}"
   file_system_id = aws_efs_file_system.efs_fs_logs.id
-  subnet_id      = aws_subnet.subnet_a_public.id
+  subnet_id = each.value
   security_groups = [
-    aws_vpc.vpc.default_security_group_id,
-    aws_security_group.efs_sg.id
-  ]
-}
-
-resource "aws_efs_mount_target" "efs_mt_b_logs" {
-  file_system_id = aws_efs_file_system.efs_fs_logs.id
-  subnet_id      = aws_subnet.subnet_b.id
-  security_groups = [
-    aws_vpc.vpc.default_security_group_id,
-    aws_security_group.efs_sg.id
-  ]
-}
-
-resource "aws_efs_mount_target" "efs_mt_c_logs" {
-  file_system_id = aws_efs_file_system.efs_fs_logs.id
-  subnet_id      = aws_subnet.subnet_c.id
-  security_groups = [
-    aws_vpc.vpc.default_security_group_id,
-    aws_security_group.efs_sg.id
-  ]
-}
-
-resource "aws_efs_mount_target" "efs_mt_d_logs" {
-  file_system_id = aws_efs_file_system.efs_fs_logs.id
-  subnet_id      = aws_subnet.subnet_d.id
-  security_groups = [
-    aws_vpc.vpc.default_security_group_id,
+    var.vpc_sg_id,
     aws_security_group.efs_sg.id
   ]
 }
@@ -52,38 +26,12 @@ resource "aws_efs_file_system" "efs_fs_val" {
   tags             = { Name = "${var.prefix}-validation" }
 }
 
-resource "aws_efs_mount_target" "efs_mt_a_val" {
+resource "aws_efs_mount_target" "efs_mnt_val" {
+  for_each = "${toset(var.vpc_subnets)}"
   file_system_id = aws_efs_file_system.efs_fs_val.id
-  subnet_id      = aws_subnet.subnet_a_public.id
+  subnet_id = each.value
   security_groups = [
-    aws_vpc.vpc.default_security_group_id,
-    aws_security_group.efs_sg.id
-  ]
-}
-
-resource "aws_efs_mount_target" "efs_mt_b_val" {
-  file_system_id = aws_efs_file_system.efs_fs_val.id
-  subnet_id      = aws_subnet.subnet_b.id
-  security_groups = [
-    aws_vpc.vpc.default_security_group_id,
-    aws_security_group.efs_sg.id
-  ]
-}
-
-resource "aws_efs_mount_target" "efs_mt_c_val" {
-  file_system_id = aws_efs_file_system.efs_fs_val.id
-  subnet_id      = aws_subnet.subnet_c.id
-  security_groups = [
-    aws_vpc.vpc.default_security_group_id,
-    aws_security_group.efs_sg.id
-  ]
-}
-
-resource "aws_efs_mount_target" "efs_mt_d_val" {
-  file_system_id = aws_efs_file_system.efs_fs_val.id
-  subnet_id      = aws_subnet.subnet_d.id
-  security_groups = [
-    aws_vpc.vpc.default_security_group_id,
+    var.vpc_sg_id,
     aws_security_group.efs_sg.id
   ]
 }
@@ -97,38 +45,12 @@ resource "aws_efs_file_system" "efs_fs_off" {
   tags             = { Name = "${var.prefix}-offline" }
 }
 
-resource "aws_efs_mount_target" "efs_mt_a_off" {
+resource "aws_efs_mount_target" "efs_mnt_off" {
+  for_each = "${toset(var.vpc_subnets)}"
   file_system_id = aws_efs_file_system.efs_fs_off.id
-  subnet_id      = aws_subnet.subnet_a_public.id
+  subnet_id = each.value
   security_groups = [
-    aws_vpc.vpc.default_security_group_id,
-    aws_security_group.efs_sg.id
-  ]
-}
-
-resource "aws_efs_mount_target" "efs_mt_b_off" {
-  file_system_id = aws_efs_file_system.efs_fs_off.id
-  subnet_id      = aws_subnet.subnet_b.id
-  security_groups = [
-    aws_vpc.vpc.default_security_group_id,
-    aws_security_group.efs_sg.id
-  ]
-}
-
-resource "aws_efs_mount_target" "efs_mt_c_off" {
-  file_system_id = aws_efs_file_system.efs_fs_off.id
-  subnet_id      = aws_subnet.subnet_c.id
-  security_groups = [
-    aws_vpc.vpc.default_security_group_id,
-    aws_security_group.efs_sg.id
-  ]
-}
-
-resource "aws_efs_mount_target" "efs_mt_d_off" {
-  file_system_id = aws_efs_file_system.efs_fs_off.id
-  subnet_id      = aws_subnet.subnet_d.id
-  security_groups = [
-    aws_vpc.vpc.default_security_group_id,
+    var.vpc_sg_id,
     aws_security_group.efs_sg.id
   ]
 }
@@ -142,38 +64,12 @@ resource "aws_efs_file_system" "efs_fs_out" {
   tags             = { Name = "${var.prefix}-output" }
 }
 
-resource "aws_efs_mount_target" "efs_mt_a_out" {
+resource "aws_efs_mount_target" "efs_mnt_out" {
+  for_each = "${toset(var.vpc_subnets)}"
   file_system_id = aws_efs_file_system.efs_fs_out.id
-  subnet_id      = aws_subnet.subnet_a_public.id
+  subnet_id = each.value
   security_groups = [
-    aws_vpc.vpc.default_security_group_id,
-    aws_security_group.efs_sg.id
-  ]
-}
-
-resource "aws_efs_mount_target" "efs_mt_b_out" {
-  file_system_id = aws_efs_file_system.efs_fs_out.id
-  subnet_id      = aws_subnet.subnet_b.id
-  security_groups = [
-    aws_vpc.vpc.default_security_group_id,
-    aws_security_group.efs_sg.id
-  ]
-}
-
-resource "aws_efs_mount_target" "efs_mt_c_out" {
-  file_system_id = aws_efs_file_system.efs_fs_out.id
-  subnet_id      = aws_subnet.subnet_c.id
-  security_groups = [
-    aws_vpc.vpc.default_security_group_id,
-    aws_security_group.efs_sg.id
-  ]
-}
-
-resource "aws_efs_mount_target" "efs_mt_d_out" {
-  file_system_id = aws_efs_file_system.efs_fs_out.id
-  subnet_id      = aws_subnet.subnet_d.id
-  security_groups = [
-    aws_vpc.vpc.default_security_group_id,
+    var.vpc_sg_id,
     aws_security_group.efs_sg.id
   ]
 }
@@ -187,38 +83,12 @@ resource "aws_efs_file_system" "efs_fs_diag" {
   tags             = { Name = "${var.prefix}-diagnostics" }
 }
 
-resource "aws_efs_mount_target" "efs_mt_a_diag" {
+resource "aws_efs_mount_target" "efs_mnt_diag" {
+  for_each = "${toset(var.vpc_subnets)}"
   file_system_id = aws_efs_file_system.efs_fs_diag.id
-  subnet_id      = aws_subnet.subnet_a_public.id
+  subnet_id = each.value
   security_groups = [
-    aws_vpc.vpc.default_security_group_id,
-    aws_security_group.efs_sg.id
-  ]
-}
-
-resource "aws_efs_mount_target" "efs_mt_b_diag" {
-  file_system_id = aws_efs_file_system.efs_fs_diag.id
-  subnet_id      = aws_subnet.subnet_b.id
-  security_groups = [
-    aws_vpc.vpc.default_security_group_id,
-    aws_security_group.efs_sg.id
-  ]
-}
-
-resource "aws_efs_mount_target" "efs_mt_c_diag" {
-  file_system_id = aws_efs_file_system.efs_fs_diag.id
-  subnet_id      = aws_subnet.subnet_c.id
-  security_groups = [
-    aws_vpc.vpc.default_security_group_id,
-    aws_security_group.efs_sg.id
-  ]
-}
-
-resource "aws_efs_mount_target" "efs_mt_d_diag" {
-  file_system_id = aws_efs_file_system.efs_fs_diag.id
-  subnet_id      = aws_subnet.subnet_d.id
-  security_groups = [
-    aws_vpc.vpc.default_security_group_id,
+    var.vpc_sg_id,
     aws_security_group.efs_sg.id
   ]
 }
@@ -232,38 +102,12 @@ resource "aws_efs_file_system" "efs_fs_moi" {
   tags             = { Name = "${var.prefix}-moi" }
 }
 
-resource "aws_efs_mount_target" "efs_mt_a_moi" {
+resource "aws_efs_mount_target" "efs_mnt_moi" {
+  for_each = "${toset(var.vpc_subnets)}"
   file_system_id = aws_efs_file_system.efs_fs_moi.id
-  subnet_id      = aws_subnet.subnet_a_public.id
+  subnet_id = each.value
   security_groups = [
-    aws_vpc.vpc.default_security_group_id,
-    aws_security_group.efs_sg.id
-  ]
-}
-
-resource "aws_efs_mount_target" "efs_mt_b_moi" {
-  file_system_id = aws_efs_file_system.efs_fs_moi.id
-  subnet_id      = aws_subnet.subnet_b.id
-  security_groups = [
-    aws_vpc.vpc.default_security_group_id,
-    aws_security_group.efs_sg.id
-  ]
-}
-
-resource "aws_efs_mount_target" "efs_mt_c_moi" {
-  file_system_id = aws_efs_file_system.efs_fs_moi.id
-  subnet_id      = aws_subnet.subnet_c.id
-  security_groups = [
-    aws_vpc.vpc.default_security_group_id,
-    aws_security_group.efs_sg.id
-  ]
-}
-
-resource "aws_efs_mount_target" "efs_mt_d_moi" {
-  file_system_id = aws_efs_file_system.efs_fs_moi.id
-  subnet_id      = aws_subnet.subnet_d.id
-  security_groups = [
-    aws_vpc.vpc.default_security_group_id,
+    var.vpc_sg_id,
     aws_security_group.efs_sg.id
   ]
 }
@@ -277,58 +121,14 @@ resource "aws_efs_file_system" "efs_fs_in" {
   tags             = { Name = "${var.prefix}-input" }
 }
 
-resource "aws_efs_mount_target" "efs_mt_a_in" {
+resource "aws_efs_mount_target" "efs_mnt_in" {
+  for_each = "${toset(var.vpc_subnets)}"
   file_system_id = aws_efs_file_system.efs_fs_in.id
-  subnet_id      = aws_subnet.subnet_a_public.id
+  subnet_id = each.value
   security_groups = [
-    aws_vpc.vpc.default_security_group_id,
+    var.vpc_sg_id,
     aws_security_group.efs_sg.id
   ]
-}
-
-resource "aws_efs_mount_target" "efs_mt_b_in" {
-  file_system_id = aws_efs_file_system.efs_fs_in.id
-  subnet_id      = aws_subnet.subnet_b.id
-  security_groups = [
-    aws_vpc.vpc.default_security_group_id,
-    aws_security_group.efs_sg.id
-  ]
-}
-
-resource "aws_efs_mount_target" "efs_mt_c_in" {
-  file_system_id = aws_efs_file_system.efs_fs_in.id
-  subnet_id      = aws_subnet.subnet_c.id
-  security_groups = [
-    aws_vpc.vpc.default_security_group_id,
-    aws_security_group.efs_sg.id
-  ]
-}
-
-resource "aws_efs_mount_target" "efs_mt_d_in" {
-  file_system_id = aws_efs_file_system.efs_fs_in.id
-  subnet_id      = aws_subnet.subnet_d.id
-  security_groups = [
-    aws_vpc.vpc.default_security_group_id,
-    aws_security_group.efs_sg.id
-  ]
-}
-
-# iterate access point
-resource "aws_efs_access_point" "generate_efs_ap_in" {
-  file_system_id = aws_efs_file_system.efs_fs_in.id
-  tags           = { Name = "${var.prefix}-iterate" }
-  posix_user {
-    gid = 0
-    uid = 0
-  }
-  root_directory {
-    creation_info {
-      owner_gid   = 1000
-      owner_uid   = 1000
-      permissions = 0755
-    }
-    path = "/"
-  }
 }
 
 # flpe
@@ -340,38 +140,12 @@ resource "aws_efs_file_system" "efs_fs_flpe" {
   tags             = { Name = "${var.prefix}-flpe" }
 }
 
-resource "aws_efs_mount_target" "efs_mt_a_flpe" {
+resource "aws_efs_mount_target" "efs_mnt_flpe" {
+  for_each = "${toset(var.vpc_subnets)}"
   file_system_id = aws_efs_file_system.efs_fs_flpe.id
-  subnet_id      = aws_subnet.subnet_a_public.id
+  subnet_id = each.value
   security_groups = [
-    aws_vpc.vpc.default_security_group_id,
-    aws_security_group.efs_sg.id
-  ]
-}
-
-resource "aws_efs_mount_target" "efs_mt_b_flpe" {
-  file_system_id = aws_efs_file_system.efs_fs_flpe.id
-  subnet_id      = aws_subnet.subnet_b.id
-  security_groups = [
-    aws_vpc.vpc.default_security_group_id,
-    aws_security_group.efs_sg.id
-  ]
-}
-
-resource "aws_efs_mount_target" "efs_mt_c_flpe" {
-  file_system_id = aws_efs_file_system.efs_fs_flpe.id
-  subnet_id      = aws_subnet.subnet_c.id
-  security_groups = [
-    aws_vpc.vpc.default_security_group_id,
-    aws_security_group.efs_sg.id
-  ]
-}
-
-resource "aws_efs_mount_target" "efs_mt_d_flpe" {
-  file_system_id = aws_efs_file_system.efs_fs_flpe.id
-  subnet_id      = aws_subnet.subnet_d.id
-  security_groups = [
-    aws_vpc.vpc.default_security_group_id,
+    var.vpc_sg_id,
     aws_security_group.efs_sg.id
   ]
 }
