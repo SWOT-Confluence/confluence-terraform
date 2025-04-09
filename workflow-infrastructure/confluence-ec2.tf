@@ -21,7 +21,7 @@ resource "aws_launch_template" "aws_ec2_lt_efs" {
   }
   vpc_security_group_ids = [aws_security_group.efs_sg.id]
   update_default_version = "true"
-  user_data              = base64encode(templatefile("./scripts/ec2-efs-user-data.sh", { logs = aws_efs_file_system.efs_fs_logs.id, validation = aws_efs_file_system.efs_fs_val.id, offline = aws_efs_file_system.efs_fs_off.id, output = aws_efs_file_system.efs_fs_out.id, diagnostics = aws_efs_file_system.efs_fs_diag.id, moi = aws_efs_file_system.efs_fs_moi.id, input = aws_efs_file_system.efs_fs_in.id, flpe = aws_efs_file_system.efs_fs_flpe.id }))
+  user_data              = base64encode(templatefile("${path.module}/scripts/ec2-efs-user-data.sh", { logs = aws_efs_file_system.efs_fs_logs.id, validation = aws_efs_file_system.efs_fs_val.id, offline = aws_efs_file_system.efs_fs_off.id, output = aws_efs_file_system.efs_fs_out.id, diagnostics = aws_efs_file_system.efs_fs_diag.id, moi = aws_efs_file_system.efs_fs_moi.id, input = aws_efs_file_system.efs_fs_in.id, flpe = aws_efs_file_system.efs_fs_flpe.id }))
 }
 
 # Amazon EC2 instance profile, role, and policy
