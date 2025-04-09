@@ -47,38 +47,20 @@ variable "ssh_subnet" {
   sensitive = true
 }
 
-variable "subnet_a_public_cidr" {
-  type        = string
-  description = "CIDR range for public subnet in us-west-2a"
-  sensitive = true
+variable "vpc_id" {
+  type = string
+  description = "Default VPC identifier"
+  # sensitive = true
 }
 
-variable "subnet_a_private_cidr" {
-  type        = string
-  description = "CIDR range for private subnet in us-west-2a"
-  sensitive = true
+variable "vpc_sg_id" {
+  type = string
+  description = "Default VPC security group"
+  # sensitive = true
 }
 
-variable "subnet_b_cidr" {
-  type        = string
-  description = "CIDR range for private subnet in us-west-2a"
-  sensitive = true
-}
-
-variable "subnet_c_cidr" {
-  type        = string
-  description = "CIDR range for private subnet in us-west-2a"
-  sensitive = true
-}
-
-variable "subnet_d_cidr" {
-  type        = string
-  description = "CIDR range for private subnet in us-west-2a"
-  sensitive = true
-}
-
-variable "vpc_cidr" {
-  type        = string
-  description = "CIDR range for VPC"
-  sensitive = true
+variable "vpc_subnets" {
+  type = list(string)
+  description = "VPC subnet identifiers"
+  # sensitive = true
 }

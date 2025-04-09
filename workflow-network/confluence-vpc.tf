@@ -160,12 +160,12 @@ resource "aws_vpc_endpoint" "vpc_endpoint_s3" {
           "s3:ListBucketMultipartUploads"
         ],
         "Resource" : [
-          "${aws_s3_bucket.aws_s3_bucket_sos.arn}",
-          "${aws_s3_bucket.aws_s3_bucket_sos.arn}/*",
-          "${aws_s3_bucket.aws_s3_bucket_json.arn}",
-          "${aws_s3_bucket.aws_s3_bucket_json.arn}/*",
-          "${aws_s3_bucket.aws_s3_bucket_config.arn}",
-          "${aws_s3_bucket.aws_s3_bucket_config.arn}/*"
+          "arn:aws:s3:::${var.prefix}-sos",
+          "arn:aws:s3:::${var.prefix}-sos/*",
+          "arn:aws:s3:::${var.prefix}-json",
+          "arn:aws:s3:::${var.prefix}-json/*",
+          "arn:aws:s3:::${var.prefix}-config",
+          "arn:aws:s3:::${var.prefix}-config/*"
         ]
       }
     ]
