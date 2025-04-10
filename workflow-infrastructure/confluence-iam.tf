@@ -13,7 +13,7 @@ resource "aws_iam_role" "aws_batch_service_role" {
       }
     ]
   })
-
+  permissions_boundary = var.permissions_boundary
 }
 
 resource "aws_iam_role_policy_attachment" "aws_batch_service_role_policy_attach" {
@@ -158,7 +158,7 @@ resource "aws_iam_role" "ecs_exe_task_role" {
       }
     ]
   })
-
+  permissions_boundary = var.permissions_boundary
 }
 
 resource "aws_iam_role_policy_attachment" "ecs_exe_role_policy_attach" {
@@ -205,7 +205,7 @@ resource "aws_iam_role" "batch_job_role" {
       }
     ]
   })
-
+  permissions_boundary = var.permissions_boundary
 }
 
 # # S3
