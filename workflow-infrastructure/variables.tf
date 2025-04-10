@@ -50,17 +50,14 @@ variable "prefix" {
 variable "vpc_id" {
   type = string
   description = "Default VPC identifier"
-  # sensitive = true
 }
 
 variable "vpc_sg_id" {
   type = string
   description = "Default VPC security group"
-  # sensitive = true
 }
 
 variable "vpc_subnets" {
   type = list(string)
   description = "VPC subnet identifiers"
-  # sensitive = true
 }
