@@ -28,6 +28,10 @@ on:
                 - VPC Network
                 - Infrastructure
                 - Step Function
+        version:
+          type: string
+          description: Application version to build container image for
+          required: true
 
 # Environment variables
 env:
@@ -94,6 +98,7 @@ jobs:
       
       - name: Define TF_VAR values
         run: |
+          echo "TF_VAR_app_version=${{ github.event.inputs.version }}"
           echo "TF_VAR_environment=$TARGET_ENV" >> $GITHUB_ENV
           echo "TF_VAR_prefix=$PREFIX_ENV" >> $GITHUB_ENV
           echo "TF_VAR_subnet_a_public_cidr=${{ secrets['PUBLIC_SUBNET'] }}" >> $GITHUB_ENV
