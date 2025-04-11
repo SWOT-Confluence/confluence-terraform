@@ -195,6 +195,7 @@ jobs:
           echo "TF_IN_AUTOMATION=true" >> $GITHUB_ENV
 
       - name: Initialize Terraform
+        working-directory: workflow-infrastructure/
         run: |
           terraform init -reconfigure \
               -backend-config="bucket=${PREFIX_ENV}-tf-state" \
@@ -202,10 +203,12 @@ jobs:
               -backend-config="region=${AWS_DEFAULT_REGION}"
 
       - name: Validate Terraform
+        working-directory: workflow-infrastructure/
         run: terraform validate -no-color
 
       # Deploy AWS infrastructure
       - name: Deploy Terraform
+        working-directory: workflow-infrastructure/
         run: terraform apply -auto-approve
 
   deploy-step-function:

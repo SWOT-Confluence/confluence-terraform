@@ -1,20 +1,24 @@
-# Data sources
+ terraform {
+  backend "s3" {
+    encrypt = true
+  }
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.0"
+    }
+  }
+}
+
+provider "aws" {
+  default_tags {
+    tags = local.default_tags
+  }
+  region  = var.aws_region
+}
+
 data "aws_caller_identity" "current" {}
 
-data "aws_subnet" "subnet_list" {
-  for_each = "${toset(var.vpc_subnets)}"
-  id = "${each.value}"
-}
-
-data "aws_key_pair" "ec2_key_pair" {
-  key_name = var.ec2_key_pair
-}
-
-data "aws_kms_key" "aws_s3" {
-  key_id = "alias/aws/s3"
-}
-
-# Local variables
 locals {
   account_id = sensitive(data.aws_caller_identity.current.account_id)
   default_tags = length(var.default_tags) == 0 ? {
@@ -22,4 +26,18 @@ locals {
     environment : lower(var.environment),
     version : var.app_version
   } : var.default_tags
+}
+
+module "confluence-terraform" {
+  source            = "./workflow-infrastructure"
+  app_name          = var.app_name
+  app_version       = var.app_version
+  aws_region        = var.aws_region
+  ec2_key_pair      = var.ec2_key_pair
+  sns_email_reports = var.sns_email_reports
+  environment       = var.environment
+  prefix            = var.prefix
+  vpc_id            = var.vpc_id
+  vpc_sg_id         = var.vpc_sg_id
+  vpc_subnets       = var.vpc_subnets
 }
