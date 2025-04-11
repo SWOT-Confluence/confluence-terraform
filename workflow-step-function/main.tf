@@ -29,7 +29,7 @@ locals {
 }
 
 module "confluence-terraform" {
-  source            = "./modules"
+  source            = "./modules/sfn"
   app_name          = var.app_name
   app_version       = var.app_version
   aws_region        = var.aws_region
