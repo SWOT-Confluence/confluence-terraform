@@ -13,6 +13,7 @@ resource "aws_iam_role" "step_function_role" {
       }
     ]
   })
+  permissions_boundary = var.permissions_boundary
 }
 
 # # Cloudwatch

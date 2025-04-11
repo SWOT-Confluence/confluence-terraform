@@ -30,3 +30,9 @@ variable "prefix" {
   type        = string
   description = "Prefix to add to all AWS resources as a unique identifier"
 }
+
+variable "permissions_boundary" {
+  type = string
+  description = "Determine if permission boundary needs to be set"
+  default = null
+}
