@@ -95,19 +95,6 @@ jobs:
       # Set up Terraform
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
-      
-      - name: Define TF_VAR values
-        run: |
-          echo "TF_VAR_app_version=${{ github.event.inputs.version }}"
-          echo "TF_VAR_environment=$TARGET_ENV" >> $GITHUB_ENV
-          echo "TF_VAR_prefix=$PREFIX_ENV" >> $GITHUB_ENV
-          echo "TF_VAR_subnet_a_public_cidr=${{ secrets['PUBLIC_SUBNET'] }}" >> $GITHUB_ENV
-          echo "TF_VAR_subnet_a_private_cidr=${{ secrets['PRIVATE_SUBNET_A'] }}" >> $GITHUB_ENV
-          echo "TF_VAR_subnet_b_cidr=${{ secrets['PRIVATE_SUBNET_B'] }}" >> $GITHUB_ENV
-          echo "TF_VAR_subnet_c_cidr=${{ secrets['PRIVATE_SUBNET_C'] }}" >> $GITHUB_ENV
-          echo "TF_VAR_subnet_d_cidr=${{ secrets['PRIVATE_SUBNET_D'] }}" >> $GITHUB_ENV
-          echo "TF_VAR_vpc_cidr=${{ secrets['VPC_CIDR'] }}" >> $GITHUB_ENV
-          echo "TF_IN_AUTOMATION=true" >> $GITHUB_ENV
 
       - name: Initialize Terraform
         working-directory: workflow-network/
@@ -124,7 +111,18 @@ jobs:
       # Deploy AWS infrastructure
       - name: Deploy Terraform
         working-directory: workflow-network/
-        run: terraform apply -auto-approve
+        run: |
+          echo "TF_VAR_app_version=${{ github.event.inputs.version }}"
+          echo "TF_VAR_environment=$TARGET_ENV" >> $GITHUB_ENV
+          echo "TF_VAR_prefix=$PREFIX_ENV" >> $GITHUB_ENV
+          echo "TF_VAR_subnet_a_public_cidr=${{ secrets['PUBLIC_SUBNET'] }}" >> $GITHUB_ENV
+          echo "TF_VAR_subnet_a_private_cidr=${{ secrets['PRIVATE_SUBNET_A'] }}" >> $GITHUB_ENV
+          echo "TF_VAR_subnet_b_cidr=${{ secrets['PRIVATE_SUBNET_B'] }}" >> $GITHUB_ENV
+          echo "TF_VAR_subnet_c_cidr=${{ secrets['PRIVATE_SUBNET_C'] }}" >> $GITHUB_ENV
+          echo "TF_VAR_subnet_d_cidr=${{ secrets['PRIVATE_SUBNET_D'] }}" >> $GITHUB_ENV
+          echo "TF_VAR_vpc_cidr=${{ secrets['VPC_CIDR'] }}" >> $GITHUB_ENV
+          echo "TF_IN_AUTOMATION=true" >> $GITHUB_ENV
+          terraform apply -auto-approve
 
   deploy-infrastructure:
     if: github.event.inputs.deployment == 'Infrastructure'
@@ -181,18 +179,6 @@ jobs:
       # Set up Terraform
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
-      
-      - name: Define TF_VAR values
-        run: |
-          echo "TF_VAR_app_version=${{ github.event.inputs.version }}"
-          echo "TF_VAR_sns_email_reports=${{ secrets[format('SNS_TOPIC_EMAIL_REPORTS_{0}', env.TARGET_ENV)] }}" >> $GITHUB_ENV
-          echo "TF_VAR_environment=$TARGET_ENV" >> $GITHUB_ENV
-          echo "TF_VAR_prefix=$PREFIX_ENV" >> $GITHUB_ENV
-          echo "TF_VAR_ec2_key_pair=${{ secrets[format('EC2_KEY_PAIR_{0}', env.TARGET_ENV)] }}" >> $GITHUB_ENV
-          echo "TF_VAR_vpc_id=${{ secrets[format('VPC_ID_{0}', env.TARGET_ENV)] }}" >> $GITHUB_ENV
-          echo "TF_VAR_vpc_sg_id=${{ secrets[format('VPC_SG_ID_{0}', env.TARGET_ENV)] }}" >> $GITHUB_ENV
-          echo "TF_VAR_vpc_subnets=${{ secrets[format('VPC_SUBNETS_{0}', env.TARGET_ENV)] }}" >> $GITHUB_ENV
-          echo "TF_IN_AUTOMATION=true" >> $GITHUB_ENV
 
       - name: Initialize Terraform
         run: |
@@ -206,7 +192,17 @@ jobs:
 
       # Deploy AWS infrastructure
       - name: Deploy Terraform
-        run: terraform apply -auto-approve
+        run: |
+          echo "TF_VAR_app_version=${{ github.event.inputs.version }}"
+          echo "TF_VAR_sns_email_reports=${{ secrets[format('SNS_TOPIC_EMAIL_REPORTS_{0}', env.TARGET_ENV)] }}" >> $GITHUB_ENV
+          echo "TF_VAR_environment=$TARGET_ENV" >> $GITHUB_ENV
+          echo "TF_VAR_prefix=$PREFIX_ENV" >> $GITHUB_ENV
+          echo "TF_VAR_ec2_key_pair=${{ secrets[format('EC2_KEY_PAIR_{0}', env.TARGET_ENV)] }}" >> $GITHUB_ENV
+          echo "TF_VAR_vpc_id=${{ secrets[format('VPC_ID_{0}', env.TARGET_ENV)] }}" >> $GITHUB_ENV
+          echo "TF_VAR_vpc_sg_id=${{ secrets[format('VPC_SG_ID_{0}', env.TARGET_ENV)] }}" >> $GITHUB_ENV
+          echo "TF_VAR_vpc_subnets=${{ secrets[format('VPC_SUBNETS_{0}', env.TARGET_ENV)] }}" >> $GITHUB_ENV
+          echo "TF_IN_AUTOMATION=true" >> $GITHUB_ENV
+          terraform apply -auto-approve
 
   deploy-step-function:
     if: github.event.inputs.deployment == 'Step Function'
@@ -263,13 +259,6 @@ jobs:
       # Set up Terraform
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
-      
-      - name: Define TF_VAR values
-        run: |
-          echo "TF_VAR_app_version=${{ github.event.inputs.version }}"
-          echo "TF_VAR_environment=$TARGET_ENV" >> $GITHUB_ENV
-          echo "TF_VAR_prefix=$PREFIX_ENV" >> $GITHUB_ENV
-          echo "TF_IN_AUTOMATION=true" >> $GITHUB_ENV
 
       - name: Initialize Terraform
         working-directory: workflow-step-function/
@@ -286,4 +275,9 @@ jobs:
       # Deploy AWS infrastructure
       - name: Deploy Terraform
         working-directory: workflow-step-function/
-        run: terraform apply -auto-approve
+        run: |
+          echo "TF_VAR_app_version=${{ github.event.inputs.version }}"
+          echo "TF_VAR_environment=$TARGET_ENV" >> $GITHUB_ENV
+          echo "TF_VAR_prefix=$PREFIX_ENV" >> $GITHUB_ENV
+          echo "TF_IN_AUTOMATION=true" >> $GITHUB_ENV
+          terraform apply -auto-approve
