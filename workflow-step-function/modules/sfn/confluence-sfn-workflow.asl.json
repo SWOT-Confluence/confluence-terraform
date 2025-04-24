@@ -1004,7 +1004,8 @@
                             },
                             "ContainerOverrides": {
                                 "Command": [
-                                    "/mnt/data/input/reaches.json",
+                                    "--input-dir",
+                                    "/mnt/data/input",
                                     "-i",
                                     "Ref::index"
                                 ]
@@ -1591,13 +1592,11 @@
                             },
                             "ContainerOverrides": {
                                 "Command": [
-                                    "--flag_specific_index",
-                                    "--reach_index",
-                                    "Ref::index",
-                                    "--sos_bucket",
-                                    "Ref::bucket_key",
-                                    "--filename",
-                                    "reaches.json"
+                                    "sic4dvar ",
+                                    "-r",
+                                    "reaches.json",
+                                    "--index",
+                                    "Ref::index"
                                 ]
                             },
                             "JobName.$": "States.Format('confluence-sic4dvar-{}-{}-{}', $.version, $.counter, $.context_value[0].reach_id)",
@@ -1640,7 +1639,7 @@
                 },
                 "Parameters": {
                     "Bucket": "${prefix}-json",
-                    "Key": "sicsets.json"
+                    "Key": "reaches.json"
                 }
             },
             "Label": "sic4dvar",
