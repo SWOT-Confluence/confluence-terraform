@@ -1587,7 +1587,7 @@
                             "PropagateTags": true,
                             "Tags": {
                                 "name.$": "States.Format('confluence-{}-{}-{}', $.run_type, $.version, $.counter)",
-                                "job.$": "States.Format('confluence-sic4dvar-{}-{}-{}', $.version, $.counter, $.context_value[0].reach_id)",
+                                "job.$": "States.Format('confluence-sic4dvar-{}-{}-{}', $.version, $.counter, $.context_value.reach_id)",
                                 "job_definition.$": "States.Format('confluence-sic4dvar-{}-{}', $.version, $.counter)"
                             },
                             "ContainerOverrides": {
@@ -1599,7 +1599,7 @@
                                     "Ref::index"
                                 ]
                             },
-                            "JobName.$": "States.Format('confluence-sic4dvar-{}-{}-{}', $.version, $.counter, $.context_value[0].reach_id)",
+                            "JobName.$": "States.Format('confluence-sic4dvar-{}-{}-{}', $.version, $.counter, $.context_value.reach_id)",
                             "Parameters": {
                                 "index.$": "States.Format('{}',$.context_index)",
                                 "bucket_key.$": "States.Format('${prefix}-sos/{}/{}', $.run_type, $.version)"
