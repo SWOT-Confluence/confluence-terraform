@@ -1004,6 +1004,7 @@
                             },
                             "ContainerOverrides": {
                                 "Command": [
+                                    "reaches.json",
                                     "--input-dir",
                                     "/mnt/data/input",
                                     "-i",
@@ -1592,7 +1593,7 @@
                             },
                             "ContainerOverrides": {
                                 "Command": [
-                                    "sic4dvar ",
+                                    "sic4dvar",
                                     "-r",
                                     "reaches.json",
                                     "--index",
