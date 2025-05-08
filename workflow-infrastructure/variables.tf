@@ -36,9 +36,9 @@ variable "environment" {
 }
 
 variable "permissions_boundary" {
-  type = string
+  type        = string
   description = "Determine if permission boundary needs to be set"
-  default = null
+  default     = null
 }
 
 variable "prefix" {
@@ -47,16 +47,16 @@ variable "prefix" {
 }
 
 variable "vpc_id" {
-  type = string
+  type        = string
   description = "Default VPC identifier"
 }
 
 variable "vpc_sg_id" {
-  type = string
+  type        = string
   description = "Default VPC security group"
 }
 
 variable "vpc_subnets" {
-  type = list(string)
+  type        = list(string)
   description = "VPC subnet identifiers"
 }
