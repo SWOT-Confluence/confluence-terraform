@@ -401,7 +401,11 @@
                             "ContainerOverrides": {
                                 "Command": [
                                     "-i",
-                                    "Ref::index"
+                                    "Ref::index",
+                                    "-n",
+                                    "/mnt/input",
+                                    "-o",
+                                    "/mnt/input/ssc"
                                 ]
                             },
                             "JobName.$": "States.Format('confluence-priors-{}-{}-{}-{}', $.run_type, $.version, $.counter, $.context_index)",
