@@ -143,8 +143,8 @@ resource "aws_vpc_endpoint" "vpc_endpoint_s3" {
           "s3:ListBucket"
         ],
         "Resource" : [
-          "arn:aws:s3:::podaac-swot-ops-cumulus-protected",
-          "arn:aws:s3:::lp-prod-protected"
+          "arn:aws:s3:::podaac-swot-ops-cumulus-protected/*",
+          "arn:aws:s3:::lp-prod-protected/*"
         ]
       },
       {
