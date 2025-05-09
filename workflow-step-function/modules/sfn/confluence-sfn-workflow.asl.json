@@ -1156,7 +1156,7 @@
                             "PropagateTags": true,
                             "Tags": {
                                 "name.$": "States.Format('confluence-{}-{}-{}', $.run_type, $.version, $.counter)",
-                                "job.$": "States.Format('confluence-ssc-model-deployment-{}-{}-{}', $.version, $.counter, $.context_value.reach_id)",
+                                "job.$": "States.Format('confluence-ssc-model-deployment-{}-{}-{}', $.version, $.counter, $.context_index)",
                                 "job_definition.$": "States.Format('confluence-ssc-model-deployment-{}-{}', $.version, $.counter)"
                             },
                             "ContainerOverrides": {
@@ -1181,7 +1181,7 @@
                                     }
                                 ]
                             },
-                            "JobName.$": "States.Format('confluence-ssc-model-deployment-{}-{}-{}', $.version, $.counter, $.context_value.reach_id)",
+                            "JobName.$": "States.Format('confluence-ssc-model-deployment-{}-{}-{}', $.version, $.counter, $.context_index)",
                             "Parameters": {
                                 "index.$": "States.Format('{}',$.context_index)",
                                 "prefix": "${prefix}"
