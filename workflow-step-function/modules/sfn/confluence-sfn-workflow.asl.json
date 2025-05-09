@@ -1130,7 +1130,7 @@
                                     "--ann_model_dir",
                                     "/mnt/input/ssc/model_static_files/nd_20250430"
                                 ],
-                                "environment": [
+                                "Environment": [
                                     {
                                         "name": "PREFIX",
                                         "value": "Ref::prefix"
