@@ -34,6 +34,8 @@ module "confluence-terraform" {
   app_version       = var.app_version
   aws_region        = var.aws_region
   ec2_key_pair      = var.ec2_key_pair
+  lpdaac_user       = var.lpdaac_user
+  lpdaac_password   = var.lpdaac_password
   sns_email_reports = var.sns_email_reports
   environment       = var.environment
   prefix            = var.prefix
