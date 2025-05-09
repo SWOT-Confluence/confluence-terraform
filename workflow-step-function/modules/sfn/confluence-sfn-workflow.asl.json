@@ -965,7 +965,7 @@
                 }
             },
             "Label": "priors",
-            "Next": "Hivdi",
+            "Next": "SSC Model Choice",
             "Catch": [
                 {
                     "ErrorEquals": [
@@ -1058,7 +1058,7 @@
                 }
             },
             "Label": "priors_gbpriors",
-            "Next": "Hivdi",
+            "Next": "SSC Model Choice",
             "Catch": [
                 {
                     "ErrorEquals": [
