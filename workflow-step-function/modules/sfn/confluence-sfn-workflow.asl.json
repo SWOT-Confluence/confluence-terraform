@@ -1132,8 +1132,8 @@
                                 ],
                                 "Environment": [
                                     {
-                                        "name": "PREFIX",
-                                        "value": "Ref::prefix"
+                                        "Name": "PREFIX",
+                                        "Value": "Ref::prefix"
                                     }
                                 ]
                             },
