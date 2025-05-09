@@ -235,7 +235,7 @@ resource "aws_batch_job_queue" "jq_ssc_input" {
 }
 
 # # ssc-model-deployment
-resource "aws_batch_job_queue" "jq_ssc_input" {
+resource "aws_batch_job_queue" "jq_ssc_model_deploy" {
   name     = "${var.prefix}-ssc-model-deployment"
   state    = "ENABLED"
   priority = 10
