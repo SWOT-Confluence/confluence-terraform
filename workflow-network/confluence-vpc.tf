@@ -122,24 +122,30 @@ resource "aws_vpc_endpoint" "vpc_endpoint_s3" {
     "Id" : "Policy1687360944299",
     "Statement" : [
       {
-        "Sid" : "AllowPodaacProtectedBucket",
+        "Sid" : "AllowDAACProtectedBucket",
         "Effect" : "Allow",
         "Principal" : "*",
         "Action" : [
           "s3:GetObject",
           "s3:ListBucket"
         ],
-        "Resource" : "arn:aws:s3:::podaac-swot-ops-cumulus-protected"
+        "Resource" : [
+          "arn:aws:s3:::podaac-swot-ops-cumulus-protected",
+          "arn:aws:s3:::lp-prod-protected"
+        ]
       },
       {
-        "Sid" : "AllowPodaacProtectedObjects",
+        "Sid" : "AllowDAACProtectedObjects",
         "Effect" : "Allow",
         "Principal" : "*",
         "Action" : [
           "s3:GetObject",
           "s3:ListBucket"
         ],
-        "Resource" : "arn:aws:s3:::podaac-swot-ops-cumulus-protected/*"
+        "Resource" : [
+          "arn:aws:s3:::podaac-swot-ops-cumulus-protected/*",
+          "arn:aws:s3:::lp-prod-protected/*"
+        ]
       },
       {
         "Sid" : "AllowECR",

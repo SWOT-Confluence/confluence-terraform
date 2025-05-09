@@ -189,6 +189,8 @@ jobs:
           echo "TF_VAR_environment=$TARGET_ENV" >> $GITHUB_ENV
           echo "TF_VAR_prefix=$PREFIX_ENV" >> $GITHUB_ENV
           echo "TF_VAR_ec2_key_pair=${{ secrets[format('EC2_KEY_PAIR_{0}', env.TARGET_ENV)] }}" >> $GITHUB_ENV
+          echo "TF_VAR_lpdaac_user=${{ secrets['LPDAAC_USER'] }}" >> $GITHUB_ENV
+          echo "TF_VAR_lpdaac_password=${{ secrets['LPDAAC_PASSWORD'] }}" >> $GITHUB_ENV
           echo "TF_VAR_vpc_id=${{ secrets[format('VPC_ID_{0}', env.TARGET_ENV)] }}" >> $GITHUB_ENV
           echo "TF_VAR_vpc_sg_id=${{ secrets[format('VPC_SG_ID_{0}', env.TARGET_ENV)] }}" >> $GITHUB_ENV
           echo "TF_VAR_vpc_subnets=${{ secrets[format('VPC_SUBNETS_{0}', env.TARGET_ENV)] }}" >> $GITHUB_ENV

@@ -1,4 +1,4 @@
- terraform {
+terraform {
   backend "s3" {
     encrypt = true
   }
@@ -14,7 +14,7 @@ provider "aws" {
   default_tags {
     tags = local.default_tags
   }
-  region  = var.aws_region
+  region = var.aws_region
 }
 
 data "aws_caller_identity" "current" {}
@@ -29,10 +29,10 @@ locals {
 }
 
 module "confluence-terraform" {
-  source            = "./modules/sfn"
-  app_name          = var.app_name
-  app_version       = var.app_version
-  aws_region        = var.aws_region
-  environment       = var.environment
-  prefix            = var.prefix
+  source      = "./modules/sfn"
+  app_name    = var.app_name
+  app_version = var.app_version
+  aws_region  = var.aws_region
+  environment = var.environment
+  prefix      = var.prefix
 }

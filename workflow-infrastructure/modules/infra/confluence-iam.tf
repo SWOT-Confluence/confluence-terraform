@@ -318,7 +318,11 @@ resource "aws_iam_policy" "batch_job_ssm_policy" {
           "ssm:GetParameters",
           "ssm:GetParametersByPath"
         ],
-        "Resource" : "arn:aws:ssm:${var.aws_region}:${local.account_id}:parameter/${var.prefix}-hydrocron-key"
+        "Resource" : [
+          "arn:aws:ssm:${var.aws_region}:${local.account_id}:parameter/${var.prefix}-hydrocron-key",
+          "arn:aws:ssm:${var.aws_region}:${local.account_id}:parameter/${var.prefix}-lpdaac-user",
+          "arn:aws:ssm:${var.aws_region}:${local.account_id}:parameter/${var.prefix}-lpdaac-password"
+        ]
       }
     ]
   })

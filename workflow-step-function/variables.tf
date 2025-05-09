@@ -31,7 +31,7 @@ variable "prefix" {
 }
 
 variable "permissions_boundary" {
-  type = string
+  type        = string
   description = "Determine if permission boundary needs to be set"
-  default = null
+  default     = null
 }

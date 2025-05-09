@@ -25,20 +25,30 @@ variable "ec2_key_pair" {
   description = "Key pair used to access EFS EC2 instances"
 }
 
-variable "sns_email_reports" {
-  type        = string
-  description = "Email address to SNS topic reports to"
-}
-
 variable "environment" {
   type        = string
   description = "The environment in which to deploy to"
 }
 
+variable "lpdaac_user" {
+  type        = string
+  description = "Username to retrieve LPDAAC data"
+}
+
+variable "lpdaac_password" {
+  type        = string
+  description = "Password to retrieve LPDAAC data"
+}
+
 variable "permissions_boundary" {
-  type = string
+  type        = string
   description = "Determine if permission boundary needs to be set"
-  default = null
+  default     = null
+}
+
+variable "sns_email_reports" {
+  type        = string
+  description = "Email address to SNS topic reports to"
 }
 
 variable "prefix" {
@@ -47,16 +57,16 @@ variable "prefix" {
 }
 
 variable "vpc_id" {
-  type = string
+  type        = string
   description = "Default VPC identifier"
 }
 
 variable "vpc_sg_id" {
-  type = string
+  type        = string
   description = "Default VPC security group"
 }
 
 variable "vpc_subnets" {
-  type = list(string)
+  type        = list(string)
   description = "VPC subnet identifiers"
 }
