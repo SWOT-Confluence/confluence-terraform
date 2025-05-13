@@ -2511,7 +2511,134 @@
                 }
             },
             "Label": "validation",
-            "Next": "Output",
+            "Next": "SSC Output Choice",
+            "Catch": [
+                {
+                    "ErrorEquals": [
+                        "States.ALL"
+                    ],
+                    "Next": "Report Fail",
+                    "ResultPath": "$.error"
+                }
+            ]
+        },
+        "SSC Output Choice": {
+            "Type": "Choice",
+            "Choices": [
+                {
+                    "Variable": "$.run_ssc",
+                    "StringEquals": "true",
+                    "Next": "SSC Output"
+                },
+                {
+                    "Variable": "$.run_ssc",
+                    "StringEquals": "false",
+                    "Next": "Output"
+                }
+            ]
+        },
+        "SSC Output": {
+            "Type": "Map",
+            "ResultPath": null,
+            "ItemSelector": {
+                "context_index.$": "$$.Map.Item.Index",
+                "context_value.$": "$$.Map.Item.Value",
+                "counter.$": "$.counter",
+                "run_type.$": "$.run_type",
+                "version.$": "$.version"
+            },
+            "ItemProcessor": {
+                "ProcessorConfig": {
+                    "Mode": "DISTRIBUTED",
+                    "ExecutionType": "STANDARD"
+                },
+                "StartAt": "Batch SubmitJob SSC Output",
+                "States": {
+                    "Batch SubmitJob SSC Output": {
+                        "Type": "Task",
+                        "Resource": "arn:aws:states:::batch:submitJob.sync",
+                        "Parameters": {
+                            "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-output",
+                            "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-output",
+                            "PropagateTags": true,
+                            "Tags": {
+                                "name.$": "States.Format('confluence-{}-{}-{}', $.run_type, $.version, $.counter)",
+                                "job.$": "States.Format('confluence-output-{}-{}-{}-{}',$.run_type, $.version, $.counter, $.context_index)",
+                                "job_definition.$": "States.Format('confluence-output-{}-{}-{}',$.run_type, $.version, $.counter)"
+                            },
+                            "ContainerOverrides": {
+                                "Command": [
+                                    "-i",
+                                    "Ref::index",
+                                    "-c",
+                                    "continent.json",
+                                    "-r",
+                                    "Ref::run_type",
+                                    "-s",
+                                    "Ref::sos_bucket",
+                                    "-m",
+                                    "priors",
+                                    "hivdi",
+                                    "metroman",
+                                    "moi",
+                                    "momma",
+                                    "neobam",
+                                    "offline",
+                                    "postdiagnostics",
+                                    "prediagnostics",
+                                    "sad",
+                                    "sic4dvar",
+                                    "swot",
+                                    "validation",
+                                    "ssc"
+                                ]
+                            },
+                            "JobName.$": "States.Format('confluence-output-{}-{}-{}-{}',$.run_type, $.version, $.counter, $.context_index)",
+                            "Parameters": {
+                                "index.$": "States.Format('{}',$.context_index)",
+                                "run_type.$": "$.run_type",
+                                "sos_bucket": "${prefix}-sos"
+                            }
+                        },
+                        "End": true,
+                        "TimeoutSeconds": 108000,
+                        "Retry": [
+                            {
+                                "ErrorEquals": [
+                                    "Batch.AWSBatchException",
+                                    "States.TaskFailed"
+                                ],
+                                "BackoffRate": 2,
+                                "MaxAttempts": 5,
+                                "IntervalSeconds": 60,
+                                "JitterStrategy": "FULL",
+                                "MaxDelaySeconds": 900
+                            },
+                            {
+                                "ErrorEquals": [
+                                    "States.Timeout"
+                                ],
+                                "BackoffRate": 2,
+                                "MaxAttempts": 3,
+                                "IntervalSeconds": 10,
+                                "JitterStrategy": "FULL"
+                            }
+                        ]
+                    }
+                }
+            },
+            "ItemReader": {
+                "Resource": "arn:aws:states:::s3:getObject",
+                "ReaderConfig": {
+                    "InputType": "JSON"
+                },
+                "Parameters": {
+                    "Bucket": "${prefix}-json",
+                    "Key": "continent.json"
+                }
+            },
+            "Label": "ssc_output",
+            "Next": "Report",
             "Catch": [
                 {
                     "ErrorEquals": [
