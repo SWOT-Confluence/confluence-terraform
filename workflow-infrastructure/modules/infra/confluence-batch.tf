@@ -244,3 +244,25 @@ resource "aws_batch_job_queue" "jq_ssc_model_deploy" {
     compute_environment = aws_batch_compute_environment.ce_flpe.arn
   }
 }
+
+# # lakeflow-input
+resource "aws_batch_job_queue" "jq_lakeflow_input" {
+  name     = "${var.prefix}-lakeflow-input"
+  state    = "ENABLED"
+  priority = 10
+  compute_environment_order {
+    order               = 1
+    compute_environment = aws_batch_compute_environment.ce_data.arn
+  }
+}
+
+# # lakeflow-deploy
+resource "aws_batch_job_queue" "jq_lakeflow_deploy" {
+  name     = "${var.prefix}-lakeflow-deploy"
+  state    = "ENABLED"
+  priority = 10
+  compute_environment_order {
+    order               = 1
+    compute_environment = aws_batch_compute_environment.ce_flpe.arn
+  }
+}
