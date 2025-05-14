@@ -131,7 +131,8 @@ resource "aws_vpc_endpoint" "vpc_endpoint_s3" {
         ],
         "Resource" : [
           "arn:aws:s3:::podaac-swot-ops-cumulus-protected",
-          "arn:aws:s3:::lp-prod-protected"
+          "arn:aws:s3:::lp-prod-protected",
+          "arn:aws:s3:::geoglows-v2-retrospective"
         ]
       },
       {
@@ -144,7 +145,8 @@ resource "aws_vpc_endpoint" "vpc_endpoint_s3" {
         ],
         "Resource" : [
           "arn:aws:s3:::podaac-swot-ops-cumulus-protected/*",
-          "arn:aws:s3:::lp-prod-protected/*"
+          "arn:aws:s3:::lp-prod-protected/*",
+          "arn:aws:s3:::geoglows-v2-retrospective/*"
         ]
       },
       {
