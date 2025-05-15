@@ -487,8 +487,8 @@
             "ResultPath": null,
             "Parameters": {
                 "JobName.$": "States.Format('confluence-lakeflow-input-{}-{}', $.version, $.counter)",
-                "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-combine-data",
-                "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-combine-data",
+                "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-lakeflow-input",
+                "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-lakeflow-input",
                 "PropagateTags": true,
                 "Tags": {
                     "name.$": "States.Format('confluence-{}-{}-{}', $.run_type, $.version, $.counter)",
