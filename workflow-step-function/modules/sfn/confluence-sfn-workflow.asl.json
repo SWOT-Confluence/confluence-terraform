@@ -1295,19 +1295,23 @@
                             },
                             "ContainerOverrides": {
                                 "Command": [
-                                    ""
-                                ],
-                                "Environment": [
-                                    {
-                                        "Name": "PREFIX",
-                                        "Value": "${prefix}"
-                                    }
+                                    "-c",
+                                    "/mnt/input/lakeflow/viable/viable_locations.csv",
+                                    "-s",
+                                    "/mnt/input/sos",
+                                    "-w",
+                                    "1",
+                                    "-i",
+                                    "/mnt/input/lakeflow",
+                                    "-o",
+                                    "/mnt/output/lakeflow",
+                                    "--index",
+                                    "Ref::index"
                                 ]
                             },
                             "JobName.$": "States.Format('confluence-lakeflow-deploy-{}-{}-{}', $.version, $.counter, $.context_index)",
                             "Parameters": {
-                                "index.$": "States.Format('{}',$.context_index)",
-                                "prefix": "${prefix}"
+                                "index.$": "States.Format('{}',$.context_index)"
                             }
                         },
                         "End": true,
