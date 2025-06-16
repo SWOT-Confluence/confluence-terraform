@@ -2,7 +2,7 @@
 data "aws_caller_identity" "current" {}
 
 data "aws_s3_bucket" "s3_json" {
-  bucket = "${var.prefix}-json"
+  bucket = var.s3_json_bucket
 }
 
 # Local variables
