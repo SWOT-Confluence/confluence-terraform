@@ -35,3 +35,8 @@ variable "permissions_boundary" {
   description = "Determine if permission boundary needs to be set"
   default     = null
 }
+
+variable "s3_json_bucket" {
+  type        = string
+  description = "S3 bucket to store JSON files"
+}

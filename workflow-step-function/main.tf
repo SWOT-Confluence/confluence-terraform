@@ -29,10 +29,11 @@ locals {
 }
 
 module "confluence-terraform" {
-  source      = "./modules/sfn"
-  app_name    = var.app_name
-  app_version = var.app_version
-  aws_region  = var.aws_region
-  environment = var.environment
-  prefix      = var.prefix
+  source         = "./modules/sfn"
+  app_name       = var.app_name
+  app_version    = var.app_version
+  aws_region     = var.aws_region
+  environment    = var.environment
+  prefix         = var.prefix
+  s3_json_bucket = var.s3_json_bucket
 }
