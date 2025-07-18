@@ -29,7 +29,9 @@
                 "Tags": {
                     "name.$": "States.Format('confluence-{}-{}-{}', $.run_type, $.version, $.counter)",
                     "job.$": "States.Format('confluence-init-workflow-subset-{}-{}', $.version, $.counter)",
-                    "job_definition.$": "States.Format('confluence-init-workflow-subset-{}-{}', $.version, $.counter)"
+                    "job_definition.$": "States.Format('confluence-init-workflow-subset-{}-{}', $.version, $.counter)",
+                    "application": "confluence",
+                    "version.$": "$.version"
                 },
                 "ContainerOverrides": {
                     "Command": [
@@ -67,7 +69,9 @@
                 "Tags": {
                     "name.$": "States.Format('confluence-{}-{}-{}', $.run_type, $.version, $.counter)",
                     "job.$": "States.Format('confluence-init-workflow-global-{}-{}', $.version, $.counter)",
-                    "job_definition.$": "States.Format('confluence-init-workflow-global-{}-{}', $.version, $.counter)"
+                    "job_definition.$": "States.Format('confluence-init-workflow-global-{}-{}', $.version, $.counter)",
+                    "application": "confluence",
+                    "version.$": "$.version"
                 },
                 "ContainerOverrides": {
                     "Command": [
@@ -118,7 +122,9 @@
                             "Tags": {
                                 "name.$": "States.Format('confluence-{}-{}-{}', $.run_type, $.version, $.counter)",
                                 "job.$": "States.Format('confluence-setfinder-subset-{}-{}-{}', $.version, $.counter, $.context_index)",
-                                "job_definition.$": "States.Format('confluence-setfinder-subset-{}-{}', $.version, $.counter)"
+                                "job_definition.$": "States.Format('confluence-setfinder-subset-{}-{}', $.version, $.counter)",
+                                "application": "confluence",
+                                "version.$": "$.version"
                             },
                             "ContainerOverrides": {
                                 "Command": [
@@ -213,7 +219,9 @@
                             "Tags": {
                                 "name.$": "States.Format('confluence-{}-{}-{}', $.run_type, $.version, $.counter)",
                                 "job.$": "States.Format('confluence-setfinder-subset-not-expanded-{}-{}-{}', $.version, $.counter, $.context_index)",
-                                "job_definition.$": "States.Format('confluence-setfinder-not-expanded-{}-{}', $.version, $.counter)"
+                                "job_definition.$": "States.Format('confluence-setfinder-not-expanded-{}-{}', $.version, $.counter)",
+                                "application": "confluence",
+                                "version.$": "$.version"
                             },
                             "ContainerOverrides": {
                                 "Command": [
@@ -304,7 +312,9 @@
                             "Tags": {
                                 "name.$": "States.Format('confluence-{}-{}-{}', $.run_type, $.version, $.counter)",
                                 "job.$": "States.Format('confluence-setfinder-global-{}-{}-{}', $.version, $.counter, $.context_index)",
-                                "job_definition.$": "States.Format('confluence-setfinder-global-{}-{}', $.version, $.counter)"
+                                "job_definition.$": "States.Format('confluence-setfinder-global-{}-{}', $.version, $.counter)",
+                                "application": "confluence",
+                                "version.$": "$.version"
                             },
                             "ContainerOverrides": {
                                 "Command": [
@@ -411,7 +421,9 @@
                             "Tags": {
                                 "name.$": "States.Format('confluence-{}-{}-{}', $.run_type, $.version, $.counter)",
                                 "job.$": "States.Format('confluence-ssc-input-{}-{}-{}-{}', $.run_type, $.version, $.counter, $.context_index)",
-                                "job_definition.$": "States.Format('confluence-ssc-input-{}-{}-{}', $.run_type, $.version, $.counter)"
+                                "job_definition.$": "States.Format('confluence-ssc-input-{}-{}-{}', $.run_type, $.version, $.counter)",
+                                "application": "confluence",
+                                "version.$": "$.version"
                             },
                             "ContainerOverrides": {
                                 "Command": [
@@ -493,7 +505,9 @@
                 "Tags": {
                     "name.$": "States.Format('confluence-{}-{}-{}', $.run_type, $.version, $.counter)",
                     "job.$": "States.Format('confluence-lakeflow-input-{}-{}', $.version, $.counter)",
-                    "job_definition.$": "States.Format('confluence-lakeflow-input-{}-{}', $.version, $.counter)"
+                    "job_definition.$": "States.Format('confluence-lakeflow-input-{}-{}', $.version, $.counter)",
+                    "application": "confluence",
+                    "version.$": "$.version"
                 },
                 "ContainerOverrides": {
                     "Command": [
@@ -535,7 +549,9 @@
                 "Tags": {
                     "name.$": "States.Format('confluence-{}-{}-{}', $.run_type, $.version, $.counter)",
                     "job.$": "States.Format('confluence-combine-data-subset-{}-{}', $.version, $.counter)",
-                    "job_definition.$": "States.Format('confluence-combine-data-subset-{}-{}', $.version, $.counter)"
+                    "job_definition.$": "States.Format('confluence-combine-data-subset-{}-{}', $.version, $.counter)",
+                    "application": "confluence",
+                    "version.$": "$.version"
                 },
                 "ContainerOverrides": {
                     "Command": [
@@ -579,7 +595,9 @@
                 "Tags": {
                     "name.$": "States.Format('confluence-{}-{}-{}', $.run_type, $.version, $.counter)",
                     "job.$": "States.Format('confluence-combine-data-global-{}-{}', $.version, $.counter)",
-                    "job_definition.$": "States.Format('confluence-combine-data-global-{}-{}', $.version, $.counter)"
+                    "job_definition.$": "States.Format('confluence-combine-data-global-{}-{}', $.version, $.counter)",
+                    "application": "confluence",
+                    "version.$": "$.version"
                 },
                 "ContainerOverrides": {
                     "Command": [
@@ -639,7 +657,9 @@
                             "Tags": {
                                 "name.$": "States.Format('confluence-{}-{}-{}', $.run_type, $.version, $.counter)",
                                 "job.$": "States.Format('confluence-input-subset-{}-{}-{}', $.version, $.counter, $.context_value.reach_id)",
-                                "job_definition.$": "States.Format('confluence-input-subset-{}-{}', $.version, $.counter)"
+                                "job_definition.$": "States.Format('confluence-input-subset-{}-{}', $.version, $.counter)",
+                                "application": "confluence",
+                                "version.$": "$.version"
                             },
                             "ContainerOverrides": {
                                 "Command": [
@@ -742,7 +762,9 @@
                             "Tags": {
                                 "name.$": "States.Format('confluence-{}-{}-{}', $.run_type, $.version, $.counter)",
                                 "job.$": "States.Format('confluence-input-global-{}-{}-{}', $.version, $.counter, $.context_value.reach_id)",
-                                "job_definition.$": "States.Format('confluence-input-global-{}-{}', $.version, $.counter)"
+                                "job_definition.$": "States.Format('confluence-input-global-{}-{}', $.version, $.counter)",
+                                "application": "confluence",
+                                "version.$": "$.version"
                             },
                             "ContainerOverrides": {
                                 "Command": [
@@ -859,7 +881,9 @@
                             "Tags": {
                                 "name.$": "States.Format('confluence-{}-{}-{}', $.run_type, $.version, $.counter)",
                                 "job.$": "States.Format('confluence-prediagnostics-{}-{}-{}', $.version, $.counter, $.context_value.reach_id)",
-                                "job_definition.$": "States.Format('confluence-prediagnostics-{}-{}', $.version, $.counter)"
+                                "job_definition.$": "States.Format('confluence-prediagnostics-{}-{}', $.version, $.counter)",
+                                "application": "confluence",
+                                "version.$": "$.version"
                             },
                             "ContainerOverrides": {
                                 "Command": [
@@ -968,7 +992,9 @@
                             "Tags": {
                                 "name.$": "States.Format('confluence-{}-{}-{}', $.run_type, $.version, $.counter)",
                                 "job.$": "States.Format('confluence-priors-{}-{}-{}-{}', $.run_type, $.version, $.counter, $.context_index)",
-                                "job_definition.$": "States.Format('confluence-priors-{}-{}-{}', $.run_type, $.version, $.counter)"
+                                "job_definition.$": "States.Format('confluence-priors-{}-{}-{}', $.run_type, $.version, $.counter)",
+                                "application": "confluence",
+                                "version.$": "$.version"
                             },
                             "ContainerOverrides": {
                                 "Command": [
@@ -1059,7 +1085,9 @@
                             "Tags": {
                                 "name.$": "States.Format('confluence-{}-{}-{}', $.run_type, $.version, $.counter)",
                                 "job.$": "States.Format('confluence-priors-{}-{}-{}-{}', $.run_type, $.version, $.counter, $.context_index)",
-                                "job_definition.$": "States.Format('confluence-priors-{}-{}-{}', $.run_type, $.version, $.counter)"
+                                "job_definition.$": "States.Format('confluence-priors-{}-{}-{}', $.run_type, $.version, $.counter)",
+                                "application": "confluence",
+                                "version.$": "$.version"
                             },
                             "ContainerOverrides": {
                                 "Command": [
@@ -1167,7 +1195,9 @@
                             "Tags": {
                                 "name.$": "States.Format('confluence-{}-{}-{}', $.run_type, $.version, $.counter)",
                                 "job.$": "States.Format('confluence-ssc-model-deployment-{}-{}-{}', $.version, $.counter, $.context_index)",
-                                "job_definition.$": "States.Format('confluence-ssc-model-deployment-{}-{}', $.version, $.counter)"
+                                "job_definition.$": "States.Format('confluence-ssc-model-deployment-{}-{}', $.version, $.counter)",
+                                "application": "confluence",
+                                "version.$": "$.version"
                             },
                             "ContainerOverrides": {
                                 "Command": [
@@ -1289,7 +1319,9 @@
                             "Tags": {
                                 "name.$": "States.Format('confluence-{}-{}-{}', $.run_type, $.version, $.counter)",
                                 "job.$": "States.Format('confluence-lakeflow-deploy-{}-{}-{}', $.version, $.counter, $.context_index)",
-                                "job_definition.$": "States.Format('confluence-lakeflow-deploy-{}-{}', $.version, $.counter)"
+                                "job_definition.$": "States.Format('confluence-lakeflow-deploy-{}-{}', $.version, $.counter)",
+                                "application": "confluence",
+                                "version.$": "$.version"
                             },
                             "ContainerOverrides": {
                                 "Command": [
@@ -1340,12 +1372,12 @@
                 }
             },
             "ItemReader": {
-                    "Resource": "arn:aws:states:::s3:getObject",
-                    "ReaderConfig": {
-                        "InputType": "CSV",
-                        "CSVHeaderLocation": "FIRST_ROW",
-                        "CSVDelimiter": "COMMA"
-                    },
+                "Resource": "arn:aws:states:::s3:getObject",
+                "ReaderConfig": {
+                    "InputType": "CSV",
+                    "CSVHeaderLocation": "FIRST_ROW",
+                    "CSVDelimiter": "COMMA"
+                },
                 "Parameters": {
                     "Bucket": "${prefix}-json",
                     "Key": "viable_locations.csv"
@@ -1391,7 +1423,9 @@
                             "Tags": {
                                 "name.$": "States.Format('confluence-{}-{}-{}', $.run_type, $.version, $.counter)",
                                 "job.$": "States.Format('confluence-metroman-{}-{}-{}', $.version, $.counter, $.context_value[0].reach_id)",
-                                "job_definition.$": "States.Format('confluence-metroman-{}-{}', $.version, $.counter)"
+                                "job_definition.$": "States.Format('confluence-metroman-{}-{}', $.version, $.counter)",
+                                "application": "confluence",
+                                "version.$": "$.version"
                             },
                             "ContainerOverrides": {
                                 "Command": [
@@ -1502,7 +1536,9 @@
                             "Tags": {
                                 "name.$": "States.Format('confluence-{}-{}-{}', $.run_type, $.version, $.counter)",
                                 "job.$": "States.Format('confluence-momma-constrained-{}-{}-{}', $.version, $.counter, $.context_value.reach_id)",
-                                "job_definition.$": "States.Format('confluence-momma-constrained-{}-{}', $.version, $.counter)"
+                                "job_definition.$": "States.Format('confluence-momma-constrained-{}-{}', $.version, $.counter)",
+                                "application": "confluence",
+                                "version.$": "$.version"
                             },
                             "ContainerOverrides": {
                                 "Command": [
@@ -1600,7 +1636,9 @@
                             "Tags": {
                                 "name.$": "States.Format('confluence-{}-{}-{}', $.run_type, $.version, $.counter)",
                                 "job.$": "States.Format('confluence-momma-unconstrained-{}-{}-{}', $.version, $.counter, $.context_value.reach_id)",
-                                "job_definition.$": "States.Format('confluence-momma-unconstrained-{}-{}', $.version, $.counter)"
+                                "job_definition.$": "States.Format('confluence-momma-unconstrained-{}-{}', $.version, $.counter)",
+                                "application": "confluence",
+                                "version.$": "$.version"
                             },
                             "ContainerOverrides": {
                                 "Command": [
@@ -1697,7 +1735,9 @@
                             "Tags": {
                                 "name.$": "States.Format('confluence-{}-{}-{}', $.run_type, $.version, $.counter)",
                                 "job.$": "States.Format('confluence-neobam-{}-{}-{}', $.version, $.counter, $.context_value.reach_id)",
-                                "job_definition.$": "States.Format('confluence-neobam-{}-{}', $.version, $.counter)"
+                                "job_definition.$": "States.Format('confluence-neobam-{}-{}', $.version, $.counter)",
+                                "application": "confluence",
+                                "version.$": "$.version"
                             },
                             "ContainerOverrides": {
                                 "Command": [
@@ -1792,7 +1832,9 @@
                             "Tags": {
                                 "name.$": "States.Format('confluence-{}-{}-{}', $.run_type, $.version, $.counter)",
                                 "job.$": "States.Format('confluence-sad-{}-{}-{}', $.version, $.counter, $.context_value.reach_id)",
-                                "job_definition.$": "States.Format('confluence-sad-{}-{}', $.version, $.counter)"
+                                "job_definition.$": "States.Format('confluence-sad-{}-{}', $.version, $.counter)",
+                                "application": "confluence",
+                                "version.$": "$.version"
                             },
                             "ContainerOverrides": {
                                 "Command": [
@@ -1887,7 +1929,9 @@
                             "Tags": {
                                 "name.$": "States.Format('confluence-{}-{}-{}', $.run_type, $.version, $.counter)",
                                 "job.$": "States.Format('confluence-sic4dvar-{}-{}-{}', $.version, $.counter, $.context_value.reach_id)",
-                                "job_definition.$": "States.Format('confluence-sic4dvar-{}-{}', $.version, $.counter)"
+                                "job_definition.$": "States.Format('confluence-sic4dvar-{}-{}', $.version, $.counter)",
+                                "application": "confluence",
+                                "version.$": "$.version"
                             },
                             "ContainerOverrides": {
                                 "Command": [
@@ -1980,7 +2024,9 @@
                             "Tags": {
                                 "name.$": "States.Format('confluence-{}-{}-{}', $.run_type, $.version, $.counter)",
                                 "job.$": "States.Format('confluence-metroman-consolidation-{}-{}-{}', $.version, $.counter, $.context_index)",
-                                "job_definition.$": "States.Format('confluence-metroman-consolidation-{}-{}', $.version, $.counter)"
+                                "job_definition.$": "States.Format('confluence-metroman-consolidation-{}-{}', $.version, $.counter)",
+                                "application": "confluence",
+                                "version.$": "$.version"
                             },
                             "ContainerOverrides": {
                                 "Command": [
@@ -2074,7 +2120,9 @@
                             "Tags": {
                                 "name.$": "States.Format('confluence-{}-{}-{}', $.run_type, $.version, $.counter)",
                                 "job.$": "States.Format('confluence-postdiagnostics-flpe-{}-{}-{}', $.version, $.counter, $.context_value.reach_id)",
-                                "job_definition.$": "States.Format('confluence-postdiagnostics-flpe-{}-{}', $.version, $.counter)"
+                                "job_definition.$": "States.Format('confluence-postdiagnostics-flpe-{}-{}', $.version, $.counter)",
+                                "application": "confluence",
+                                "version.$": "$.version"
                             },
                             "ContainerOverrides": {
                                 "Command": [
@@ -2176,7 +2224,9 @@
                             "Tags": {
                                 "name.$": "States.Format('confluence-{}-{}-{}', $.run_type, $.version, $.counter)",
                                 "job.$": "States.Format('confluence-moi-{}-{}-{}-{}',$.run_type, $.version, $.counter, $.context_value.basin_id)",
-                                "job_definition.$": "States.Format('confluence-moi-{}-{}-{}',$.run_type, $.version, $.counter)"
+                                "job_definition.$": "States.Format('confluence-moi-{}-{}-{}',$.run_type, $.version, $.counter)",
+                                "application": "confluence",
+                                "version.$": "$.version"
                             },
                             "ContainerOverrides": {
                                 "Command": [
@@ -2290,7 +2340,9 @@
                             "Tags": {
                                 "name.$": "States.Format('confluence-{}-{}-{}', $.run_type, $.version, $.counter)",
                                 "job.$": "States.Format('confluence-postdiagnostics-moi-{}-{}-{}', $.version, $.counter, $.context_value.reach_id)",
-                                "job_definition.$": "States.Format('confluence-postdiagnostics-moi-{}-{}', $.version, $.counter)"
+                                "job_definition.$": "States.Format('confluence-postdiagnostics-moi-{}-{}', $.version, $.counter)",
+                                "application": "confluence",
+                                "version.$": "$.version"
                             },
                             "ContainerOverrides": {
                                 "Command": [
@@ -2392,7 +2444,9 @@
                             "Tags": {
                                 "name.$": "States.Format('confluence-{}-{}-{}', $.run_type, $.version, $.counter)",
                                 "job.$": "States.Format('confluence-offline-{}-{}-{}-{}', $.run_type, $.version, $.counter, $.context_value.reach_id)",
-                                "job_definition.$": "States.Format('confluence-offline-{}-{}-{}', $.run_type, $.version, $.counter)"
+                                "job_definition.$": "States.Format('confluence-offline-{}-{}-{}', $.run_type, $.version, $.counter)",
+                                "application": "confluence",
+                                "version.$": "$.version"
                             },
                             "ContainerOverrides": {
                                 "Command": [
@@ -2486,7 +2540,9 @@
                             "Tags": {
                                 "name.$": "States.Format('confluence-{}-{}-{}', $.run_type, $.version, $.counter)",
                                 "job.$": "States.Format('confluence-validation-{}-{}-{}-{}',$.run_type, $.version, $.counter, $.context_value.reach_id)",
-                                "job_definition.$": "States.Format('confluence-validation-{}-{}-{}',$.run_type, $.version, $.counter)"
+                                "job_definition.$": "States.Format('confluence-validation-{}-{}-{}',$.run_type, $.version, $.counter)",
+                                "application": "confluence",
+                                "version.$": "$.version"
                             },
                             "ContainerOverrides": {
                                 "Command": [
@@ -2640,7 +2696,9 @@
                             "Tags": {
                                 "name.$": "States.Format('confluence-{}-{}-{}', $.run_type, $.version, $.counter)",
                                 "job.$": "States.Format('confluence-output-{}-{}-{}-{}',$.run_type, $.version, $.counter, $.context_index)",
-                                "job_definition.$": "States.Format('confluence-output-{}-{}-{}',$.run_type, $.version, $.counter)"
+                                "job_definition.$": "States.Format('confluence-output-{}-{}-{}',$.run_type, $.version, $.counter)",
+                                "application": "confluence",
+                                "version.$": "$.version"
                             },
                             "ContainerOverrides": {
                                 "Command": [
@@ -2752,7 +2810,9 @@
                             "Tags": {
                                 "name.$": "States.Format('confluence-{}-{}-{}', $.run_type, $.version, $.counter)",
                                 "job.$": "States.Format('confluence-output-{}-{}-{}-{}',$.run_type, $.version, $.counter, $.context_index)",
-                                "job_definition.$": "States.Format('confluence-output-{}-{}-{}',$.run_type, $.version, $.counter)"
+                                "job_definition.$": "States.Format('confluence-output-{}-{}-{}',$.run_type, $.version, $.counter)",
+                                "application": "confluence",
+                                "version.$": "$.version"
                             },
                             "ContainerOverrides": {
                                 "Command": [
@@ -2864,7 +2924,9 @@
                             "Tags": {
                                 "name.$": "States.Format('confluence-{}-{}-{}', $.run_type, $.version, $.counter)",
                                 "job.$": "States.Format('confluence-output-{}-{}-{}-{}',$.run_type, $.version, $.counter, $.context_index)",
-                                "job_definition.$": "States.Format('confluence-output-{}-{}-{}',$.run_type, $.version, $.counter)"
+                                "job_definition.$": "States.Format('confluence-output-{}-{}-{}',$.run_type, $.version, $.counter)",
+                                "application": "confluence",
+                                "version.$": "$.version"
                             },
                             "ContainerOverrides": {
                                 "Command": [
@@ -2977,7 +3039,9 @@
                             "Tags": {
                                 "name.$": "States.Format('confluence-{}-{}-{}', $.run_type, $.version, $.counter)",
                                 "job.$": "States.Format('confluence-output-{}-{}-{}-{}',$.run_type, $.version, $.counter, $.context_index)",
-                                "job_definition.$": "States.Format('confluence-output-{}-{}-{}',$.run_type, $.version, $.counter)"
+                                "job_definition.$": "States.Format('confluence-output-{}-{}-{}',$.run_type, $.version, $.counter)",
+                                "application": "confluence",
+                                "version.$": "$.version"
                             },
                             "ContainerOverrides": {
                                 "Command": [
@@ -3072,7 +3136,9 @@
                 "PropagateTags": true,
                 "Tags": {
                     "name.$": "States.Format('confluence-{}-{}-{}', $.run_type, $.version, $.counter)",
-                    "job.$": "States.Format('confluence-report-{}-{}', $.version, $.counter)"
+                    "job.$": "States.Format('confluence-report-{}-{}', $.version, $.counter)",
+                    "application": "confluence",
+                    "version.$": "$.version"
                 },
                 "ContainerOverrides": {
                     "Command": [
@@ -3113,7 +3179,9 @@
                 "PropagateTags": true,
                 "Tags": {
                     "name.$": "States.Format('confluence-{}-{}-{}', $.run_type, $.version, $.counter)",
-                    "job.$": "States.Format('confluence-clean-up-{}-{}', $.version, $.counter)"
+                    "job.$": "States.Format('confluence-clean-up-{}-{}', $.version, $.counter)",
+                    "application": "confluence",
+                    "version.$": "$.version"
                 },
                 "ContainerOverrides": {
                     "Command": [
@@ -3147,7 +3215,9 @@
                 "PropagateTags": true,
                 "Tags": {
                     "name.$": "States.Format('confluence-{}-{}-{}', $.run_type, $.version, $.counter)",
-                    "job.$": "States.Format('confluence-report-fail-{}-{}', $.version, $.counter)"
+                    "job.$": "States.Format('confluence-report-fail-{}-{}', $.version, $.counter)",
+                    "application": "confluence",
+                    "version.$": "$.version"
                 },
                 "ContainerOverrides": {
                     "Command": [
@@ -3189,7 +3259,9 @@
                 "PropagateTags": true,
                 "Tags": {
                     "name.$": "States.Format('confluence-{}-{}-{}', $.run_type, $.version, $.counter)",
-                    "job.$": "States.Format('confluence-clean-up-{}-{}', $.version, $.counter)"
+                    "job.$": "States.Format('confluence-clean-up-{}-{}', $.version, $.counter)",
+                    "application": "confluence",
+                    "version.$": "$.version"
                 },
                 "ContainerOverrides": {
                     "Command": [
