@@ -3153,7 +3153,9 @@
                         "-b",
                         "Ref::json_bucket",
                         "-k",
-                        "Ref::json_bucket_key"
+                        "Ref::json_bucket_key",
+                        "-v",
+                        "Ref::version"
                     ]
                 },
                 "Parameters": {
@@ -3163,7 +3165,8 @@
                     "run_type.$": "$.run_type",
                     "json_bucket": "${prefix}-json",
                     "json_bucket_key.$": "States.Format('{}-{}', $$.Execution.StartTime, $.counter)",
-                    "counter.$": "$.counter"
+                    "counter.$": "$.counter",
+                    "version.$": "States.Format('{}', $.version)"
                 }
             },
             "Next": "Clean Up"
