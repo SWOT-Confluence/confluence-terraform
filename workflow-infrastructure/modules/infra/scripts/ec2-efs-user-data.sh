@@ -65,6 +65,7 @@ mkdir -p /mnt/flpe/metroman
 mkdir -p /mnt/flpe/momma
 mkdir -p /mnt/flpe/sad
 mkdir -p /mnt/flpe/sic4dvar
+mkdir -p /mnt/flpe/consensus
 
 mkdir -p /mnt/input/gage
 mkdir -p /mnt/input/sos

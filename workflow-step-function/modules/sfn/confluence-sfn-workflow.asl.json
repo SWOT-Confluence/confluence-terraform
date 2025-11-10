@@ -953,6 +953,13 @@
         "Priors Choice": {
             "Type": "Choice",
             "Choices": [
+		{
+                    "And": [
+			    {"Variable": "$.skip_priors", "IsPresent": true},
+			    {"Variable": "$.skip_priors", "StringEquals": "true"}
+		    ],
+		    "Next": "SSC Model Choice"
+		},
                 {
                     "Variable": "$.run_gbpriors",
                     "StringEquals": "false",
@@ -1152,6 +1159,8 @@
                 }
             ]
         },
+
+
         "SSC Model Choice": {
             "Type": "Choice",
             "Choices": [
@@ -2601,6 +2610,100 @@
                 }
             },
             "Label": "validation",
+            "Next": "Consensus",
+            "Catch": [
+                {
+                    "ErrorEquals": [
+                        "States.ALL"
+                    ],
+                    "Next": "Report Fail",
+                    "ResultPath": "$.error"
+                }
+            ]
+        },
+        "Consensus": {
+            "Type": "Map",
+            "ToleratedFailurePercentagePath": "$.tolerated_failure_percentage",
+            "ResultPath": null,
+            "ItemSelector": {
+                "context_index.$": "$$.Map.Item.Index",
+                "context_value.$": "$$.Map.Item.Value",
+                "counter.$": "$.counter",
+                "run_type.$": "$.run_type",
+                "version.$": "$.version"
+            },
+            "ItemProcessor": {
+                "ProcessorConfig": {
+                    "Mode": "DISTRIBUTED",
+                    "ExecutionType": "STANDARD"
+                },
+                "StartAt": "Batch SubmitJob Consensus",
+                "States": {
+                    "Batch SubmitJob Consensus": {
+                        "Type": "Task",
+                        "Resource": "arn:aws:states:::batch:submitJob.sync",
+                        "Parameters": {
+                            "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-consensus",
+                            "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-consensus",
+                            "PropagateTags": true,
+                            "Tags": {
+                                "name.$": "States.Format('confluence-{}-{}-{}', $.run_type, $.version, $.counter)",
+                                "job.$": "States.Format('confluence-consensus-{}-{}-{}-{}',$.run_type, $.version, $.counter, $.context_value.reach_id)",
+                                "job_definition.$": "States.Format('confluence-consensus-{}-{}-{}',$.run_type, $.version, $.counter)",
+                                "application": "confluence",
+                                "version.$": "$.version"
+                            },
+                            "ContainerOverrides": {
+                                "Command": [
+                                    "-i",
+                                    "Ref::index"
+                                ]
+                            },
+                            "JobName.$": "States.Format('confluence-consensus-{}-{}-{}-{}',$.run_type, $.version, $.counter, $.context_value.reach_id)",
+                            "Parameters": {
+                                "bucket_key.$": "States.Format('${prefix}-sos/{}/{}', $.run_type, $.version)",
+                                "index.$": "States.Format('{}',$.context_index)",
+                                "run_type.$": "States.Format('{}', $.run_type)"
+                            }
+                        },
+                        "End": true,
+                        "TimeoutSeconds": 7200,
+                        "Retry": [
+                            {
+                                "ErrorEquals": [
+                                    "Batch.AWSBatchException",
+                                    "States.TaskFailed"
+                                ],
+                                "BackoffRate": 2,
+                                "MaxAttempts": 5,
+                                "IntervalSeconds": 60,
+                                "JitterStrategy": "FULL",
+                                "MaxDelaySeconds": 900
+                            },
+                            {
+                                "ErrorEquals": [
+                                    "States.Timeout"
+                                ],
+                                "BackoffRate": 2,
+                                "MaxAttempts": 3,
+                                "IntervalSeconds": 10,
+                                "JitterStrategy": "FULL"
+                            }
+                        ]
+                    }
+                }
+            },
+            "ItemReader": {
+                "Resource": "arn:aws:states:::s3:getObject",
+                "ReaderConfig": {
+                    "InputType": "JSON"
+                },
+                "Parameters": {
+                    "Bucket": "${prefix}-json",
+                    "Key": "reaches.json"
+                }
+            },
+            "Label": "consensus",
             "Next": "SSC Output Choice",
             "Catch": [
                 {
