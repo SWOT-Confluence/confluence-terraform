@@ -2658,7 +2658,7 @@
                                     "-i",
                                     "Ref::index",
 				    "-r",
-				    "reaches.json"
+				    "/mnt/input/reaches.json"
                                 ]
                             },
                             "JobName.$": "States.Format('confluence-consensus-{}-{}-{}-{}',$.run_type, $.version, $.counter, $.context_value.reach_id)",
