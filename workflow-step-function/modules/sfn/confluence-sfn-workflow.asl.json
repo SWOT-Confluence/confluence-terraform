@@ -1159,8 +1159,6 @@
                 }
             ]
         },
-
-
         "SSC Model Choice": {
             "Type": "Choice",
             "Choices": [
@@ -1210,18 +1208,20 @@
                             },
                             "ContainerOverrides": {
                                 "Command": [
-                                    "-i",
-                                    "Ref::index",
-                                    "-j",
-                                    "ssc_hls_list.json",
-                                    "-o",
-                                    "/mnt/flpe/ssc",
-                                    "-d",
-                                    "/mnt/input",
-                                    "--ckpt_path",
-                                    "/mnt/input/ssc/model_static_files/multitask_ckpts/deeplabv3p_distrib.pth.tar",
-                                    "--ann_model_dir",
-                                    "/mnt/input/ssc/model_static_files/nd_20250430"
+                                   "-i",
+                                   "Ref::index",
+                                   "-j",
+                                   "ssc_hls_list.json",
+                                   "-o",
+                                   "/mnt/flpe/ssc",
+                                   "-d",
+                                   "/mnt/input",
+                                   "--ckpt_path",
+                                   "/mnt/input/ssc/model_static_files/multitask_ckpts/deeplabv3p_distrib.pth.tar",
+                                   "--ann_model_dir",
+                                   "/mnt/input/ssc/model_static_files/nd_20250430",
+                                   "--sosbucket",
+                                   "svc-confluence-sit-config/sword"
                                 ],
                                 "Environment": [
                                     {
@@ -1343,7 +1343,7 @@
                                     "-i",
                                     "/mnt/input/lakeflow",
                                     "-o",
-                                    "/mnt/output/lakeflow",
+                                    "/mnt/flpe/lakeflow",
                                     "--index",
                                     "Ref::index"
                                 ]
