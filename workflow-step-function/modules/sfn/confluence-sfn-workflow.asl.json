@@ -2660,7 +2660,7 @@
 				    "-r",
 				    "/mnt/data/input/reaches.json",
 									"--mntdir",
-									"/mnt/data/"
+									"/mnt/data"
                                 ]
                             },
                             "JobName.$": "States.Format('confluence-consensus-{}-{}-{}-{}',$.run_type, $.version, $.counter, $.context_value.reach_id)",
