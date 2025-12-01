@@ -2831,7 +2831,8 @@
                                     "sic4dvar",
                                     "swot",
                                     "validation",
-                                    "ssc"
+                                    "ssc",
+									"consensus"
                                 ]
                             },
                             "JobName.$": "States.Format('confluence-output-{}-{}-{}-{}',$.run_type, $.version, $.counter, $.context_index)",
@@ -2945,7 +2946,8 @@
                                     "sic4dvar",
                                     "swot",
                                     "validation",
-                                    "lakeflow"
+                                    "lakeflow",
+									"consensus"
                                 ]
                             },
                             "JobName.$": "States.Format('confluence-output-{}-{}-{}-{}',$.run_type, $.version, $.counter, $.context_index)",
@@ -3060,7 +3062,8 @@
                                     "swot",
                                     "validation",
                                     "ssc",
-                                    "lakeflow"
+                                    "lakeflow",
+									"consensus"
                                 ]
                             },
                             "JobName.$": "States.Format('confluence-output-{}-{}-{}-{}',$.run_type, $.version, $.counter, $.context_index)",
@@ -3173,7 +3176,8 @@
                                     "sad",
                                     "sic4dvar",
                                     "swot",
-                                    "validation"
+                                    "validation",
+									"consensus"
                                 ]
                             },
                             "JobName.$": "States.Format('confluence-output-{}-{}-{}-{}',$.run_type, $.version, $.counter, $.context_index)",
