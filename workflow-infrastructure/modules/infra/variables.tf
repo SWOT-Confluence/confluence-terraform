@@ -19,6 +19,10 @@ variable "default_tags" {
   type    = map(string)
   default = {}
 }
+variable "batch_max_cpus" {
+  type    = number
+  default = 10000
+}
 
 variable "ec2_key_pair" {
   type        = string

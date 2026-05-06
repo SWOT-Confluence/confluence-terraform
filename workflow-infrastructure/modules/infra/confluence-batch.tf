@@ -4,7 +4,7 @@
 resource "aws_batch_compute_environment" "ce_data" {
   compute_environment_name = "${var.prefix}-data"
   compute_resources {
-    max_vcpus          = 10000
+    max_vcpus          = var.batch_max_cpus
     security_group_ids = [var.vpc_sg_id]
     subnets = var.vpc_subnets
     type = "FARGATE"
@@ -18,7 +18,7 @@ resource "aws_batch_compute_environment" "ce_data" {
 resource "aws_batch_compute_environment" "ce_diagnostics" {
   compute_environment_name = "${var.prefix}-diagnostics"
   compute_resources {
-    max_vcpus          = 10000
+    max_vcpus          = var.batch_max_cpus
     security_group_ids = [var.vpc_sg_id]
     subnets = var.vpc_subnets
     type = "FARGATE"
@@ -32,7 +32,7 @@ resource "aws_batch_compute_environment" "ce_diagnostics" {
 resource "aws_batch_compute_environment" "ce_flpe" {
   compute_environment_name = "${var.prefix}-flpe"
   compute_resources {
-    max_vcpus          = 10000
+    max_vcpus          = var.batch_max_cpus
     security_group_ids = [var.vpc_sg_id]
     subnets = var.vpc_subnets
     type = "FARGATE"
@@ -46,7 +46,7 @@ resource "aws_batch_compute_environment" "ce_flpe" {
 resource "aws_batch_compute_environment" "ce_discharge_metrics" {
   compute_environment_name = "${var.prefix}-discharge-metrics"
   compute_resources {
-    max_vcpus          = 10000
+    max_vcpus          = var.batch_max_cpus
     security_group_ids = [var.vpc_sg_id]
     subnets = var.vpc_subnets
     type = "FARGATE"
