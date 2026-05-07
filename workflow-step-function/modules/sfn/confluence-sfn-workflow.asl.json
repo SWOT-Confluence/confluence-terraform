@@ -134,7 +134,6 @@
                                     "MetroMan",
                                     "HiVDI",
                                     "SIC",
-                                    "NeoBAM",
                                     "-n",
                                     "/data",
                                     "-o",
@@ -231,7 +230,6 @@
                                     "MetroMan",
                                     "HiVDI",
                                     "SIC",
-                                    "NeoBAM",
                                     "-n",
                                     "/data",
                                     "-o",
@@ -324,7 +322,6 @@
                                     "MetroMan",
                                     "HiVDI",
                                     "SIC",
-                                    "NeoBAM",
                                     "-n",
                                     "/data",
                                     "-o",
@@ -1614,7 +1611,7 @@
                 }
             },
             "Label": "mommaConstrained",
-            "Next": "Neobam",
+            "Next": "Sic4dvar",
             "Catch": [
                 {
                     "ErrorEquals": [
@@ -1713,200 +1710,6 @@
                 }
             },
             "Label": "mommaUnconstrained",
-            "Next": "Neobam",
-            "Catch": [
-                {
-                    "ErrorEquals": [
-                        "States.ALL"
-                    ],
-                    "Next": "Report Fail",
-                    "ResultPath": "$.error"
-                }
-            ]
-        },
-        "Neobam": {
-            "Type": "Map",
-            "ToleratedFailurePercentagePath": "$.tolerated_failure_percentage",
-            "ResultPath": null,
-            "ItemSelector": {
-                "context_index.$": "$$.Map.Item.Index",
-                "context_value.$": "$$.Map.Item.Value",
-                "counter.$": "$.counter",
-                "run_type.$": "$.run_type",
-                "version.$": "$.version"
-            },
-            "ItemProcessor": {
-                "ProcessorConfig": {
-                    "Mode": "DISTRIBUTED",
-                    "ExecutionType": "STANDARD"
-                },
-                "StartAt": "Batch SubmitJob Neobam",
-                "States": {
-                    "Batch SubmitJob Neobam": {
-                        "Type": "Task",
-                        "Resource": "arn:aws:states:::batch:submitJob.sync",
-                        "Parameters": {
-                            "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-neobam",
-                            "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-flpe",
-                            "PropagateTags": true,
-                            "Tags": {
-                                "name.$": "States.Format('confluence-{}-{}-{}', $.run_type, $.version, $.counter)",
-                                "job.$": "States.Format('confluence-neobam-{}-{}-{}', $.version, $.counter, $.context_value.reach_id)",
-                                "job_definition.$": "States.Format('confluence-neobam-{}-{}', $.version, $.counter)",
-                                "application": "confluence",
-                                "version.$": "$.version"
-                            },
-                            "ContainerOverrides": {
-                                "Command": [
-                                    "-r",
-                                    "reaches.json",
-                                    "-i",
-                                    "Ref::index",
-                                    "-b",
-                                    "Ref::bucket_key"
-                                ]
-                            },
-                            "JobName.$": "States.Format('confluence-neobam-{}-{}-{}', $.version, $.counter, $.context_value.reach_id)",
-                            "Parameters": {
-                                "index.$": "States.Format('{}',$.context_index)",
-                                "bucket_key.$": "States.Format('${prefix}-sos/{}/{}', $.run_type, $.version)"
-                            }
-                        },
-                        "End": true,
-                        "TimeoutSeconds": 10800,
-                        "Retry": [
-                            {
-                                "ErrorEquals": [
-                                    "Batch.AWSBatchException",
-                                    "States.TaskFailed"
-                                ],
-                                "BackoffRate": 2,
-                                "MaxAttempts": 5,
-                                "IntervalSeconds": 60,
-                                "JitterStrategy": "FULL",
-                                "MaxDelaySeconds": 900
-                            },
-                            {
-                                "ErrorEquals": [
-                                    "States.Timeout"
-                                ],
-                                "BackoffRate": 2,
-                                "MaxAttempts": 3,
-                                "IntervalSeconds": 10,
-                                "JitterStrategy": "FULL"
-                            }
-                        ]
-                    }
-                }
-            },
-            "ItemReader": {
-                "Resource": "arn:aws:states:::s3:getObject",
-                "ReaderConfig": {
-                    "InputType": "JSON"
-                },
-                "Parameters": {
-                    "Bucket": "${prefix}-json",
-                    "Key": "reaches.json"
-                }
-            },
-            "Label": "neobam",
-            "Next": "Sad",
-            "Catch": [
-                {
-                    "ErrorEquals": [
-                        "States.ALL"
-                    ],
-                    "Next": "Report Fail",
-                    "ResultPath": "$.error"
-                }
-            ]
-        },
-        "Sad": {
-            "Type": "Map",
-            "ToleratedFailurePercentagePath": "$.tolerated_failure_percentage",
-            "ResultPath": null,
-            "ItemSelector": {
-                "context_index.$": "$$.Map.Item.Index",
-                "context_value.$": "$$.Map.Item.Value",
-                "counter.$": "$.counter",
-                "run_type.$": "$.run_type",
-                "version.$": "$.version"
-            },
-            "ItemProcessor": {
-                "ProcessorConfig": {
-                    "Mode": "DISTRIBUTED",
-                    "ExecutionType": "STANDARD"
-                },
-                "StartAt": "Batch SubmitJob Sad",
-                "States": {
-                    "Batch SubmitJob Sad": {
-                        "Type": "Task",
-                        "Resource": "arn:aws:states:::batch:submitJob.sync",
-                        "Parameters": {
-                            "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-sad",
-                            "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-flpe",
-                            "PropagateTags": true,
-                            "Tags": {
-                                "name.$": "States.Format('confluence-{}-{}-{}', $.run_type, $.version, $.counter)",
-                                "job.$": "States.Format('confluence-sad-{}-{}-{}', $.version, $.counter, $.context_value.reach_id)",
-                                "job_definition.$": "States.Format('confluence-sad-{}-{}', $.version, $.counter)",
-                                "application": "confluence",
-                                "version.$": "$.version"
-                            },
-                            "ContainerOverrides": {
-                                "Command": [
-                                    "-r",
-                                    "reaches.json",
-                                    "-i",
-                                    "Ref::index",
-                                    "-b",
-                                    "Ref::bucket_key"
-                                ]
-                            },
-                            "JobName.$": "States.Format('confluence-sad-{}-{}-{}', $.version, $.counter, $.context_value.reach_id)",
-                            "Parameters": {
-                                "index.$": "States.Format('{}',$.context_index)",
-                                "bucket_key.$": "States.Format('${prefix}-sos/{}/{}', $.run_type, $.version)"
-                            }
-                        },
-                        "End": true,
-                        "TimeoutSeconds": 7200,
-                        "Retry": [
-                            {
-                                "ErrorEquals": [
-                                    "Batch.AWSBatchException",
-                                    "States.TaskFailed"
-                                ],
-                                "BackoffRate": 2,
-                                "MaxAttempts": 5,
-                                "IntervalSeconds": 60,
-                                "JitterStrategy": "FULL",
-                                "MaxDelaySeconds": 900
-                            },
-                            {
-                                "ErrorEquals": [
-                                    "States.Timeout"
-                                ],
-                                "BackoffRate": 2,
-                                "MaxAttempts": 3,
-                                "IntervalSeconds": 10,
-                                "JitterStrategy": "FULL"
-                            }
-                        ]
-                    }
-                }
-            },
-            "ItemReader": {
-                "Resource": "arn:aws:states:::s3:getObject",
-                "ReaderConfig": {
-                    "InputType": "JSON"
-                },
-                "Parameters": {
-                    "Bucket": "${prefix}-json",
-                    "Key": "reaches.json"
-                }
-            },
-            "Label": "sad",
             "Next": "Sic4dvar",
             "Catch": [
                 {
