@@ -12,6 +12,7 @@ output "efs_file_system_ids" {
     validation = aws_efs_file_system.efs_fs_val.id
     output = aws_efs_file_system.efs_fs_out.id
     logs = aws_efs_file_system.efs_fs_logs.id
+    coastalq = aws_efs_file_system.efs_fs_coastalq.id
   }
 }
 

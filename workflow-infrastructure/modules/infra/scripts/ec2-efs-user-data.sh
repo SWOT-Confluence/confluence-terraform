@@ -51,6 +51,12 @@ mkdir -p $${EFS_DIRECTORY}
 echo "${flpe}:/ $${EFS_DIRECTORY} efs tls,_netdev" >> /etc/fstab
 chown -R ec2-user $${EFS_DIRECTORY}
 
+# coastalq
+EFS_DIRECTORY="/mnt/coastalq"
+mkdir -p $${EFS_DIRECTORY}
+echo "${coastalq}:/ $${EFS_DIRECTORY} efs tls,_netdev" >> /etc/fstab
+chown -R ec2-user $${EFS_DIRECTORY}
+
 # Mount
 mount -a -t efs defaults
 

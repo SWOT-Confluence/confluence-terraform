@@ -149,3 +149,22 @@ resource "aws_efs_mount_target" "efs_mnt_flpe" {
     aws_security_group.efs_sg.id
   ]
 }
+
+# coastalq
+resource "aws_efs_file_system" "efs_fs_coastalq" {
+  creation_token   = "${var.prefix}-coastalq"
+  encrypted        = true
+  performance_mode = "generalPurpose"
+  throughput_mode  = "elastic"
+  tags             = { Name = "${var.prefix}-coastalq" }
+} 
+
+resource "aws_efs_mount_target" "efs_mnt_flpe" {
+  for_each = "${toset(var.vpc_subnets)}"
+  file_system_id = aws_efs_file_system.efs_fs_coastalq.id
+  subnet_id = each.value
+  security_groups = [
+    var.vpc_sg_id, 
+    aws_security_group.efs_sg.id
+  ]
+}

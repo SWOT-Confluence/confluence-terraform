@@ -58,6 +58,17 @@ resource "aws_batch_compute_environment" "ce_discharge_metrics" {
 
 # Job Queues
 
+# # coastalq
+resource "aws_batch_job_queue" "jq_coastalq" {
+  name     = "${var.prefix}-coastalq"
+  state    = "ENABLED"
+  priority = 10
+  compute_environment_order {
+    order               = 1
+    compute_environment = aws_batch_compute_environment.ce_data.arn
+  }
+}
+
 # # combine_data
 resource "aws_batch_job_queue" "jq_combine_data" {
   name     = "${var.prefix}-combine-data"
