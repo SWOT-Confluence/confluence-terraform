@@ -1496,6 +1496,102 @@
                 }
             },
             "Label": "metroman",
+            "Next": "h2ivdi",
+            "Catch": [
+                {
+                    "ErrorEquals": [
+                        "States.ALL"
+                    ],
+                    "Next": "Report Fail",
+                    "ResultPath": "$.error"
+                }
+            ]
+        },
+        "h2ivdi": {
+            "Type": "Map",
+            "ToleratedFailurePercentagePath": "$.tolerated_failure_percentage",
+            "ResultPath": null,
+            "ItemSelector": {
+                "context_index.$": "$$.Map.Item.Index",
+                "context_value.$": "$$.Map.Item.Value",
+                "counter.$": "$.counter",
+                "run_type.$": "$.run_type",
+                "version.$": "$.version"
+            },
+            "ItemProcessor": {
+                "ProcessorConfig": {
+                    "Mode": "DISTRIBUTED",
+                    "ExecutionType": "STANDARD"
+                },
+                "StartAt": "Batch SubmitJob h2ivdi",
+                "States": {
+                    "Batch SubmitJob h2ivdi": {
+                        "Type": "Task",
+                        "Resource": "arn:aws:states:::batch:submitJob.sync",
+                        "Parameters": {
+                            "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-h2ivdi",
+                            "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-flpe",
+                            "PropagateTags": true,
+                            "Tags": {
+                                "name.$": "States.Format('confluence-{}-{}-{}', $.run_type, $.version, $.counter)",
+                                "job.$": "States.Format('confluence-h2ivdi-{}-{}-{}', $.version, $.counter, $.context_value[0].reach_id)",
+                                "job_definition.$": "States.Format('confluence-h2ivdi-{}-{}', $.version, $.counter)",
+                                "application": "confluence",
+                                "version.$": "$.version"
+                            },
+                            "ContainerOverrides": {
+                                "Command": [
+                                    "/mnt/data/input/reaches.json",
+                                    "--input-dir",
+                                    "/mnt/data/input",
+                                    "-i",
+                                    "Ref::index"
+                                ]
+                            },
+                            "JobName.$": "States.Format('confluence-h2ivdi-{}-{}-{}', $.version, $.counter, $.context_value[0].reach_id)",
+                            "Parameters": {
+                                "index.$": "States.Format('{}',$.context_index)",
+                                "bucket_key.$": "States.Format('${prefix}-sos/{}/{}', $.run_type, $.version)"
+                            }
+                        },
+                        "End": true,
+                        "TimeoutSeconds": 7200,
+                        "Retry": [
+                            {
+                                "ErrorEquals": [
+                                    "Batch.AWSBatchException",
+                                    "States.TaskFailed"
+                                ],
+                                "BackoffRate": 2,
+                                "MaxAttempts": 5,
+                                "IntervalSeconds": 60,
+                                "JitterStrategy": "FULL",
+                                "MaxDelaySeconds": 900
+                            },
+                            {
+                                "ErrorEquals": [
+                                    "States.Timeout"
+                                ],
+                                "BackoffRate": 2,
+                                "MaxAttempts": 3,
+                                "IntervalSeconds": 10,
+                                "JitterStrategy": "FULL"
+                            }
+                        ]
+                    }
+                }
+            },
+            "ItemReader": {
+                "Resource": "arn:aws:states:::s3:getObject",
+                "ReaderConfig": {
+                    "InputType": "JSON"
+                },
+                "Parameters": {
+                    "Bucket": "${prefix}-json",
+                    "Key": "metrosets.json"
+                }
+            },
+            "Label": "h2ivdi",
             "Next": "Momma Choice",
             "Catch": [
                 {
@@ -1507,6 +1603,8 @@
                 }
             ]
         },
+
+
         "Momma Choice": {
             "Type": "Choice",
             "Choices": [
@@ -2151,9 +2249,7 @@
                                     "basin.json",
                                     "-v",
                                     "-b",
-                                    "Ref::run_type",
-                                    "-s",
-                                    "Ref::bucket_key"
+                                    "Ref::run_type"
                                 ]
                             },
                             "JobName.$": "States.Format('confluence-moi-{}-{}-{}-{}',$.run_type, $.version, $.counter, $.context_value.basin_id)",
@@ -2223,7 +2319,7 @@
                 {
                     "Variable": "$.run_postdiagnostics",
                     "StringEquals": "false",
-                    "Next": "Offline"
+                    "Next": "Consensus"
                 }
             ]
         },
@@ -2320,7 +2416,7 @@
                 }
             },
             "Label": "postdiagnostics-moi",
-            "Next": "Offline",
+            "Next": "Consensus",
             "Catch": [
                 {
                     "ErrorEquals": [
@@ -2328,6 +2424,218 @@
                     ],
                     "Next": "Report Fail",
                     "ResultPath": "$.error"
+                }
+            ]
+        },
+        "Consensus": {
+            "Type": "Map",
+            "ToleratedFailurePercentagePath": "$.tolerated_failure_percentage",
+            "ResultPath": null,
+            "ItemSelector": {
+                "context_index.$": "$$.Map.Item.Index",
+                "context_value.$": "$$.Map.Item.Value",
+                "counter.$": "$.counter",
+                "run_type.$": "$.run_type",
+                "version.$": "$.version"
+            },
+            "ItemProcessor": {
+                "ProcessorConfig": {
+                    "Mode": "DISTRIBUTED",
+                    "ExecutionType": "STANDARD"
+                },
+                "StartAt": "Batch SubmitJob Consensus",
+                "States": {
+                    "Batch SubmitJob Consensus": {
+                        "Type": "Task",
+                        "Resource": "arn:aws:states:::batch:submitJob.sync",
+                        "Parameters": {
+                            "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-consensus",
+                            "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-consensus",
+                            "PropagateTags": true,
+                            "Tags": {
+                                "name.$": "States.Format('confluence-{}-{}-{}', $.run_type, $.version, $.counter)",
+                                "job.$": "States.Format('confluence-consensus-{}-{}-{}-{}',$.run_type, $.version, $.counter, $.context_value.reach_id)",
+                                "job_definition.$": "States.Format('confluence-consensus-{}-{}-{}',$.run_type, $.version, $.counter)",
+                                "application": "confluence",
+                                "version.$": "$.version"
+                            },
+                            "ContainerOverrides": {
+                                "Command": [
+                                    "-i",
+                                    "Ref::index",
+				    "-r",
+				    "/mnt/data/input/reaches.json",
+									"--mntdir",
+									"/mnt/data"
+                                ]
+                            },
+                            "JobName.$": "States.Format('confluence-consensus-{}-{}-{}-{}',$.run_type, $.version, $.counter, $.context_value.reach_id)",
+                            "Parameters": {
+                                "bucket_key.$": "States.Format('${prefix}-sos/{}/{}', $.run_type, $.version)",
+                                "index.$": "States.Format('{}',$.context_index)",
+                                "run_type.$": "States.Format('{}', $.run_type)"
+                            }
+                        },
+                        "End": true,
+                        "TimeoutSeconds": 7200,
+                        "Retry": [
+                            {
+                                "ErrorEquals": [
+                                    "Batch.AWSBatchException",
+                                    "States.TaskFailed"
+                                ],
+                                "BackoffRate": 2,
+                                "MaxAttempts": 5,
+                                "IntervalSeconds": 60,
+                                "JitterStrategy": "FULL",
+                                "MaxDelaySeconds": 900
+                            },
+                            {
+                                "ErrorEquals": [
+                                    "States.Timeout"
+                                ],
+                                "BackoffRate": 2,
+                                "MaxAttempts": 3,
+                                "IntervalSeconds": 10,
+                                "JitterStrategy": "FULL"
+                            }
+                        ]
+                    }
+                }
+            },
+            "ItemReader": {
+                "Resource": "arn:aws:states:::s3:getObject",
+                "ReaderConfig": {
+                    "InputType": "JSON"
+                },
+                "Parameters": {
+                    "Bucket": "${prefix}-json",
+                    "Key": "reaches.json"
+                }
+            },
+            "Label": "consensus",
+            "Next": "coastalq",
+            "Catch": [
+                {
+                    "ErrorEquals": [
+                        "States.ALL"
+                    ],
+                    "Next": "Report Fail",
+                    "ResultPath": "$.error"
+                }
+            ]
+        },
+
+        "coastalq": {
+            "Type": "Map",
+            "ToleratedFailurePercentagePath": "$.tolerated_failure_percentage",
+            "ResultPath": null,
+            "ItemSelector": {
+                "context_index.$": "$$.Map.Item.Index",
+                "context_value.$": "$$.Map.Item.Value",
+                "counter.$": "$.counter",
+                "run_type.$": "$.run_type",
+                "version.$": "$.version"
+            },
+            "ItemProcessor": {
+                "ProcessorConfig": {
+                    "Mode": "DISTRIBUTED",
+                    "ExecutionType": "STANDARD"
+                },
+                "StartAt": "Batch SubmitJob Coastalq",
+                "States": {
+                    "Batch SubmitJob Coastalq": {
+                        "Type": "Task",
+                        "Resource": "arn:aws:states:::batch:submitJob.sync",
+                        "Parameters": {
+                            "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-coastalq",
+                            "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-coastalq",
+                            "PropagateTags": true,
+                            "Tags": {
+                                "name.$": "States.Format('confluence-{}-{}-{}', $.run_type, $.version, $.counter)",
+                                "job.$": "States.Format('confluence-coastalq-{}-{}-{}-{}',$.run_type, $.version, $.counter, $.context_value.reach_id)",
+                                "job_definition.$": "States.Format('confluence-coastalq-{}-{}-{}',$.run_type, $.version, $.counter)",
+                                "application": "confluence",
+                                "version.$": "$.version"
+                            },
+                            "ContainerOverrides": {
+                                "Command": [
+                                    "-i",
+                                    "Ref::index",
+				    "-r",
+				    "/mnt/data/input/reaches.json",
+									"--mntdir",
+									"/mnt/data"
+                                ]
+                            },
+                            "JobName.$": "States.Format('confluence-coastalq-{}-{}-{}-{}',$.run_type, $.version, $.counter, $.context_value.reach_id)",
+                            "Parameters": {
+                                "bucket_key.$": "States.Format('${prefix}-sos/{}/{}', $.run_type, $.version)",
+                                "index.$": "States.Format('{}',$.context_index)",
+                                "run_type.$": "States.Format('{}', $.run_type)"
+                            }
+                        },
+                        "End": true,
+                        "TimeoutSeconds": 7200,
+                        "Retry": [
+                            {
+                                "ErrorEquals": [
+                                    "Batch.AWSBatchException",
+                                    "States.TaskFailed"
+                                ],
+                                "BackoffRate": 2,
+                                "MaxAttempts": 5,
+                                "IntervalSeconds": 60,
+                                "JitterStrategy": "FULL",
+                                "MaxDelaySeconds": 900
+                            },
+                            {
+                                "ErrorEquals": [
+                                    "States.Timeout"
+                                ],
+                                "BackoffRate": 2,
+                                "MaxAttempts": 3,
+                                "IntervalSeconds": 10,
+                                "JitterStrategy": "FULL"
+                            }
+                        ]
+                    }
+                }
+            },
+            "ItemReader": {
+                "Resource": "arn:aws:states:::s3:getObject",
+                "ReaderConfig": {
+                    "InputType": "JSON"
+                },
+                "Parameters": {
+                    "Bucket": "${prefix}-json",
+                    "Key": "reaches.json"
+                }
+            },
+            "Label": "coastalq",
+            "Next": "Offline Choice",
+            "Catch": [
+                {
+                    "ErrorEquals": [
+                        "States.ALL"
+                    ],
+                    "Next": "Report Fail",
+                    "ResultPath": "$.error"
+                }
+            ]
+        },
+        "Offline Choice":{
+            "Type": "Choice",
+            "Choices": [
+                {
+                "Variable": "$.offline",
+                "IsPresent": true,
+                "Next": "Offline"
+                },
+                {
+                "Variable": "$.offline",
+                "IsPresent": false,
+                "Next": "Validation"
                 }
             ]
         },
@@ -2415,7 +2723,7 @@
                     "Key": "reaches.json"
                 }
             },
-            "Label": "offline",
+            "Label": "Offline",
             "Next": "Validation",
             "Catch": [
                 {
@@ -2516,104 +2824,6 @@
                 }
             },
             "Label": "validation",
-            "Next": "Consensus",
-            "Catch": [
-                {
-                    "ErrorEquals": [
-                        "States.ALL"
-                    ],
-                    "Next": "Report Fail",
-                    "ResultPath": "$.error"
-                }
-            ]
-        },
-        "Consensus": {
-            "Type": "Map",
-            "ToleratedFailurePercentagePath": "$.tolerated_failure_percentage",
-            "ResultPath": null,
-            "ItemSelector": {
-                "context_index.$": "$$.Map.Item.Index",
-                "context_value.$": "$$.Map.Item.Value",
-                "counter.$": "$.counter",
-                "run_type.$": "$.run_type",
-                "version.$": "$.version"
-            },
-            "ItemProcessor": {
-                "ProcessorConfig": {
-                    "Mode": "DISTRIBUTED",
-                    "ExecutionType": "STANDARD"
-                },
-                "StartAt": "Batch SubmitJob Consensus",
-                "States": {
-                    "Batch SubmitJob Consensus": {
-                        "Type": "Task",
-                        "Resource": "arn:aws:states:::batch:submitJob.sync",
-                        "Parameters": {
-                            "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-consensus",
-                            "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-consensus",
-                            "PropagateTags": true,
-                            "Tags": {
-                                "name.$": "States.Format('confluence-{}-{}-{}', $.run_type, $.version, $.counter)",
-                                "job.$": "States.Format('confluence-consensus-{}-{}-{}-{}',$.run_type, $.version, $.counter, $.context_value.reach_id)",
-                                "job_definition.$": "States.Format('confluence-consensus-{}-{}-{}',$.run_type, $.version, $.counter)",
-                                "application": "confluence",
-                                "version.$": "$.version"
-                            },
-                            "ContainerOverrides": {
-                                "Command": [
-                                    "-i",
-                                    "Ref::index",
-				    "-r",
-				    "/mnt/data/input/reaches.json",
-									"--mntdir",
-									"/mnt/data"
-                                ]
-                            },
-                            "JobName.$": "States.Format('confluence-consensus-{}-{}-{}-{}',$.run_type, $.version, $.counter, $.context_value.reach_id)",
-                            "Parameters": {
-                                "bucket_key.$": "States.Format('${prefix}-sos/{}/{}', $.run_type, $.version)",
-                                "index.$": "States.Format('{}',$.context_index)",
-                                "run_type.$": "States.Format('{}', $.run_type)"
-                            }
-                        },
-                        "End": true,
-                        "TimeoutSeconds": 7200,
-                        "Retry": [
-                            {
-                                "ErrorEquals": [
-                                    "Batch.AWSBatchException",
-                                    "States.TaskFailed"
-                                ],
-                                "BackoffRate": 2,
-                                "MaxAttempts": 5,
-                                "IntervalSeconds": 60,
-                                "JitterStrategy": "FULL",
-                                "MaxDelaySeconds": 900
-                            },
-                            {
-                                "ErrorEquals": [
-                                    "States.Timeout"
-                                ],
-                                "BackoffRate": 2,
-                                "MaxAttempts": 3,
-                                "IntervalSeconds": 10,
-                                "JitterStrategy": "FULL"
-                            }
-                        ]
-                    }
-                }
-            },
-            "ItemReader": {
-                "Resource": "arn:aws:states:::s3:getObject",
-                "ReaderConfig": {
-                    "InputType": "JSON"
-                },
-                "Parameters": {
-                    "Bucket": "${prefix}-json",
-                    "Key": "reaches.json"
-                }
-            },
-            "Label": "consensus",
             "Next": "SSC Output Choice",
             "Catch": [
                 {
