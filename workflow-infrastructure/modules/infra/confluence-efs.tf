@@ -159,7 +159,7 @@ resource "aws_efs_file_system" "efs_fs_coastalq" {
   tags             = { Name = "${var.prefix}-coastalq" }
 } 
 
-resource "aws_efs_mount_target" "efs_mnt_flpe" {
+resource "aws_efs_mount_target" "efs_mnt_coastalq" {
   for_each = "${toset(var.vpc_subnets)}"
   file_system_id = aws_efs_file_system.efs_fs_coastalq.id
   subnet_id = each.value
