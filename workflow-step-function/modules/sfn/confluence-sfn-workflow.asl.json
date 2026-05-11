@@ -1,7 +1,23 @@
 {
     "Comment": "Confluence Workflow",
-    "StartAt": "Init Workflow Choice",
+    "StartAt": "Recover Choice",
     "States": {
+        "Recover Choice": {
+            "Type": "Choice",
+            "Comment": "Set 'recover' to 'true' to run from the 'NEXT' labeled step (HiVDI here) or 'false' to run the full workflow. This is helpful if a run errors out and can be recovered by restarting the job, changing resources, or some other non-critical failure.", 
+            "Choices": [
+                {
+                    "Variable": "$.recover",
+                    "StringEquals": "true",
+                    "Next": "hivdi"
+                },
+                {
+                    "Variable": "$.recover",
+                    "StringEquals": "false",
+                    "Next": "Init Workflow Choice"
+                }
+            ]
+        },
         "Init Workflow Choice": {
             "Type": "Choice",
             "Choices": [
@@ -1496,7 +1512,7 @@
                 }
             },
             "Label": "metroman",
-            "Next": "h2ivdi",
+            "Next": "hivdi",
             "Catch": [
                 {
                     "ErrorEquals": [
@@ -1507,7 +1523,7 @@
                 }
             ]
         },
-        "h2ivdi": {
+        "hivdi": {
             "Type": "Map",
             "ToleratedFailurePercentagePath": "$.tolerated_failure_percentage",
             "ResultPath": null,
@@ -1523,19 +1539,19 @@
                     "Mode": "DISTRIBUTED",
                     "ExecutionType": "STANDARD"
                 },
-                "StartAt": "Batch SubmitJob h2ivdi",
+                "StartAt": "Batch SubmitJob hivdi",
                 "States": {
-                    "Batch SubmitJob h2ivdi": {
+                    "Batch SubmitJob hivdi": {
                         "Type": "Task",
                         "Resource": "arn:aws:states:::batch:submitJob.sync",
                         "Parameters": {
-                            "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-h2ivdi",
+                            "JobDefinition": "arn:aws:batch:${aws_region}:${account_id}:job-definition/${prefix}-hivdi",
                             "JobQueue": "arn:aws:batch:${aws_region}:${account_id}:job-queue/${prefix}-flpe",
                             "PropagateTags": true,
                             "Tags": {
                                 "name.$": "States.Format('confluence-{}-{}-{}', $.run_type, $.version, $.counter)",
-                                "job.$": "States.Format('confluence-h2ivdi-{}-{}-{}', $.version, $.counter, $.context_value[0].reach_id)",
-                                "job_definition.$": "States.Format('confluence-h2ivdi-{}-{}', $.version, $.counter)",
+                                "job.$": "States.Format('confluence-hivdi-{}-{}-{}', $.version, $.counter, $.context_value[0].reach_id)",
+                                "job_definition.$": "States.Format('confluence-hivdi-{}-{}', $.version, $.counter)",
                                 "application": "confluence",
                                 "version.$": "$.version"
                             },
@@ -1548,7 +1564,7 @@
                                     "Ref::index"
                                 ]
                             },
-                            "JobName.$": "States.Format('confluence-h2ivdi-{}-{}-{}', $.version, $.counter, $.context_value[0].reach_id)",
+                            "JobName.$": "States.Format('confluence-hivdi-{}-{}-{}', $.version, $.counter, $.context_value[0].reach_id)",
                             "Parameters": {
                                 "index.$": "States.Format('{}',$.context_index)",
                                 "bucket_key.$": "States.Format('${prefix}-sos/{}/{}', $.run_type, $.version)"
@@ -1591,7 +1607,7 @@
                     "Key": "metrosets.json"
                 }
             },
-            "Label": "h2ivdi",
+            "Label": "hivdi",
             "Next": "Momma Choice",
             "Catch": [
                 {
@@ -1603,8 +1619,6 @@
                 }
             ]
         },
-
-
         "Momma Choice": {
             "Type": "Choice",
             "Choices": [
