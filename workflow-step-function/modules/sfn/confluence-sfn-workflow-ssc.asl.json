@@ -7,7 +7,8 @@
             "ResultPath": null,
             "ItemSelector": {
                 "context_index.$": "$$.Map.Item.Index",
-                "context_value.$": "$$.Map.Item.Value",
+                "continent.$": "$$.Map.Item.Value.continent",
+                "results.$": "$$.Map.Item.Value.results",
                 "counter.$": "$.counter",
                 "run_type.$": "$.run_type",
                 "version.$": "$.version"
@@ -35,8 +36,10 @@
                             },
                             "ContainerOverrides": {
                                 "Command": [
-                                    "-i",
-                                    "Ref::index",
+                                    "-c",
+                                    "Ref::continent",
+                                    "-w",
+                                    "Ref::results",
                                     "-n",
                                     "/mnt/input",
                                     "-o",
@@ -45,7 +48,9 @@
                             },
                             "JobName.$": "States.Format('confluence-ssc-input-{}-{}-{}-{}', $.run_type, $.version, $.counter, $.context_index)",
                             "Parameters": {
-                                "index.$": "States.Format('{}', $.context_index)"
+                                "index.$": "States.Format('{}', $.context_index)",
+                                "continent.$": "$.continent",
+                                "results.$": "$.results"
                             }
                         },
                         "End": true,
@@ -71,7 +76,7 @@
                 },
                 "Parameters": {
                     "Bucket": "${prefix}-json",
-                    "Key": "continent.json"
+                    "Key": "ssc-map.json"
                 }
             },
             "Label": "ssc_input",

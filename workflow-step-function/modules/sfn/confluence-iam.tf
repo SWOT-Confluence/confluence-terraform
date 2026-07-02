@@ -196,7 +196,9 @@ resource "aws_iam_policy" "sfn_states" {
           "states:StartExecution"
         ],
         "Resource" : [
-          "${aws_sfn_state_machine.confluence_state_machine.arn}"
+          "${aws_sfn_state_machine.confluence_state_machine.arn}",
+          "${aws_sfn_state_machine.confluence_ssc_state_machine.arn}"
+
         ]
       }
     ]
